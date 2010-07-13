@@ -519,7 +519,7 @@ af_ela_get_tidy_settings($paged_post,
 
 
 af_ela_set_month_table($settings, $month_names);
-
+//var_dump($menu_table,$menu,$tags,$tag);
 if ($paged_offset !=-1) {
 	switch($menu_table[$menu]) {
 	case 'chrono':
@@ -553,7 +553,7 @@ if ($paged_offset !=-1) {
 		break;
 			
 	case 'tags':	
-		$err = af_ela_read_tags();	
+		$err = af_ela_read_tags();
 		if ($err === false) die();
 		$err = af_ela_read_posts();
 		if ($err === false) die();
@@ -622,7 +622,8 @@ BEGIN_TEXT;
 		break;
 			
 	case 'tags':	
-		$err = af_ela_read_tags();	
+		$err = af_ela_read_tags();
+        //var_dump($tags, $tag);
 		if ($err === false) die();
 		$err = af_ela_read_posts();
 		if ($err === false) die();

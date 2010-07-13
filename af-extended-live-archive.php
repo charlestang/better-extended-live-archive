@@ -3,7 +3,7 @@
  Plugin Name: Better Extended Live Archives
  Plugin URI: http://extended-live-archive.googlecode.com/
  Description: The famous ELA for WP 2.7+. It's work for WP 3.0.
- Version: 0.70
+ Version: 0.80beta1
  Author: Charles
  Author URI: http://sexywp.com
  */
@@ -41,7 +41,7 @@ $ela_plugin_basename = plugin_basename(dirname(__FILE__));
 $ela_cache_root = WP_PLUGIN_DIR . '/' . $ela_plugin_basename . '/cache/';
 
 //the debug flag, if true, will create a log file
-$debug = true;
+$debug = false;
 $utw_is_present = true;
 
 

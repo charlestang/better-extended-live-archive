@@ -514,7 +514,7 @@ class af_ela_classGenerator {
 	 * ***********************************/	
 	function buildTagsTable($exclude='', $id = false, $order = false, $orderparam = 0) {
 		
-			global $wpdb;//, $tabletags, $tablepost2tag;
+			global $wpdb;
 			
 			if (!empty($exclude)) {
 				$excats = preg_split('/[\s,]+/',$exclude);
@@ -600,15 +600,28 @@ class af_ela_classGenerator {
 			if (!empty($exclude)) {
 				$excats = preg_split('/[\s,]+/',$exclude);
 				if (count($excats)) {
-					foreach ($excats as $excat) {
-						$exclusions .= ' AND tt.taxonomy = "category" AND tt.term_id <> ' . intval($excat) . ' ';
-					}
+					$in_expression = 'AND tt.term_id IN (' . implode(',', $excats) . ')';
+                    $sql = "SELECT p.ID AS `post_id`
+                            FROM $wpdb->posts AS p
+                            INNER JOIN {$wpdb->term_relationships} AS tr
+                                   ON (p.ID = tr.object_id)
+                            INNER JOIN {$wpdb->term_taxonomy} AS tt
+                                   ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+                            WHERE tt.taxonomy = 'category'
+                            $in_expression
+                    ";
+                    $posts_in_exclude_category = $wpdb->get_results($sql);
+                    $exclude_ids = array();
+                    foreach($posts_in_exclude_category as $p){
+                        $exclude_ids[] = $p->post_id;
+                    }
+                    logthis("SQL Query :Posts in Exclude cates: ". count($posts_in_exclude_category) .$sql, __FUNCTION__, __LINE__);
 				}
 			}
+            $pid_not_in = 'AND ID NOT IN (' . implode(',', $exclude_ids) . ')';
 			
 			$now = current_time('mysql', 1);
-			foreach( $this->tagsTable as $tag) {
-				$posts_in_tags[$tags[0]] = array();
+			foreach( $this->tagsTable as $key => $tag) {
 
                 $query = "SELECT ID, post_title, post_date AS `day`, comment_status, comment_count
                           FROM $wpdb->posts
@@ -620,12 +633,12 @@ class af_ela_classGenerator {
                           AND tt.taxonomy = 'post_tag'
                           AND post_status = 'publish'
                           AND post_date_gmt <= '$now'
-                          $exclusions
+                          $pid_not_in
                           ORDER BY post_date
                             ";
 
 				$posts_in_tag_results = $wpdb->get_results($query);
-				logthis("SQL Query :Posts in Tag: ". count($posts_in_tag_results) .$query, __FUNCTION__, __LINE__);
+				logthis("SQL Query :Posts in Tag: ". count($posts_in_tag_results) .  var_export($tag, true).$query, __FUNCTION__, __LINE__);
 				if( $posts_in_tag_results ) {
 
 					foreach( $posts_in_tag_results as $post_result ) {
@@ -635,8 +648,13 @@ class af_ela_classGenerator {
 						$this->cache->contentIs($this->postsInTagsTable[$tag[0]]);
 						$this->cache->writeFile('tag-' . $tag[0] . '.dat');
 					}
-				}
+				}else{
+                    unset($this->tagsTable[$key]);
+                    $this->tagsTable[0][0] = $this->tagsTable[0][0] - 1;
+                }
 			}
+            $this->cache->contentIs($this->tagsTable);
+            $this->cache->writeFile('tags.dat');
 		
 	}
 	/* ***********************************
