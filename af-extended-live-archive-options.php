@@ -250,7 +250,6 @@ function af_ela_option_update() {
 
 function af_ela_admin_page() {
 	af_ela_option_init();
-	var_dump($_POST);
 	if (isset($_POST['ela_submit_option'])) {
 		if (isset($_POST['ela_clear_cache'])) {
 			$cache = new af_ela_classCacheFile('');

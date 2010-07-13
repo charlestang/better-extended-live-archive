@@ -51,6 +51,8 @@ none.
 == Changelog ==
 = 0.80 =
 * Remove the version check in the admin page, you can use WP Plugin directory now.
+* Exclude categories feature not worked, now it has been fixed.
+* Error when tag list generating fixed.
 
 = 0.70 =
 * A SQL query bug fixed when new comment posted.
