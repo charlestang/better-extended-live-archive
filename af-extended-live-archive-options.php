@@ -225,6 +225,8 @@ function af_ela_option_update() {
         <?php _e('What\'s the point of not showing up any categories at all ?','ela');?>
     </strong></p></div> <?php
 	} else {
+        //var_dump($current_mode,$_POST['excluded_categories']);
+        $current_mode = 1;
 		if ($current_mode == 0) {
 			$settings['excluded_categories'] = $_POST['excluded_categories'][0];
 		} else {
@@ -390,7 +392,7 @@ function af_ela_echo_scripts() {
 		disableDOM('comment_text', 'num_comments');
 		disableDOM('closed_comment_text', 'num_comments');
 		disableDOM('hide_pingbacks_and_trackbacks', 'num_comments');
-		hideDOM('fieldsetpagedposts', 'paged_posts');
+		//hideDOM('fieldsetpagedposts', 'paged_posts');
 		<?php if($utw_is_present) { ?>disableDOMinv('tag_soup_X', 'tag_soup_cut0');<?php }?>;
 		disableTabs(1, 0);
 	}
@@ -680,6 +682,7 @@ function better_ela_what_about_menu_section($settings) {
 function better_ela_what_categories_to_show_section($settings) {
     ?>
     <h3 class="title"><?php _e('What categories to show?');?></h3>
+    <?php //var_dump($settings['excluded_categories']); ?>
     <p><?php _e('Check the categories you want to show in the category tab.');?></p>
     <table class="form-table"><tbody>
         <tr valign="top">
@@ -700,10 +703,10 @@ function better_ela_what_categories_to_show_section($settings) {
 			$asides_content = '';
 			$asides_select = '';
 			foreach ($asides_cats as $cat) {
-				$checked = in_array($cat->cat_ID, $asides_table) ? '' : 'checked ';
+				$checked = in_array($cat->cat_ID, $asides_table) ? '' : 'checked="checked"';
 				$asides_select .= $cat->cat_ID.',';
 				$asides_content .= '<label for="category-'.$cat->cat_ID.'">';
-                $asides_content .= '<input value="'.$cat->cat_ID.'" type="checkbox" name="excluded_categories[]" id="category-'.$cat->cat_ID.'" '. $checked  . '/>';
+                $asides_content .= '<input value="'.$cat->cat_ID.'" type="checkbox" name="excluded_categories[]" id="category-'.$cat->cat_ID.'" '. $checked  .'/>';
                 $asides_content .= $cat->cat_name.'</label><br/>';
 		   	}
 			echo $asides_content;

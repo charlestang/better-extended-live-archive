@@ -37,29 +37,92 @@ function logthis($message,$function = __FUNCTION__ ,$line = __LINE__, $file = __
 	}
 }
 
-/* ***********************************
- * Cache generator class
- * ***********************************/	
-class af_ela_classGenerator {
-	
-	var $cache;
-	var $yearTable = array();
-	var $monthTable = array();
+class Better_ELA_Cache_Builder {
+    /**
+     * Cache File
+     * @var object
+     * @access private
+     * @since 0.8
+     */
+    var $cache;
+
+    /**
+     * Exclude Posts IDs
+     * @var array
+     * @access private
+     * @since 0.8
+     */
+    var $exclude_posts = array();
+
+    /**
+     * How Many Posts In Each Year
+     * @var array
+     * @access private
+     * @since 0.8
+     */
+    var $year_table = array();
+
+    /**
+     * How Many Posts In Each Month
+     * @var array
+     * @access private
+     * @since 0.8
+     */
+    var $month_table = array();
+
 	var $catsTable = array();
 	var $postsInCatsTable = array();
 	var $postToGenerate = array();
 	var $tagsTable = array();
 	var $postsInTagsTable = array();
-	
-	/* ***********************************
-	 * Helper Function : class constructor
-	 * ***********************************/	
-	function af_ela_classGenerator() {
-		
-		$this->cache = new af_ela_classCacheFile('');
-		
-		return true;
-	}
+    
+	/**
+     * Constructor
+     */
+    function Better_ELA_Cache_Builder() {
+        $this->cache = new af_ela_classCacheFile('');
+    }
+
+    /**
+     * Find out posts you don't want them to be shown in the archives
+     * @param string $exclude
+     */
+    function find_exclude_posts($args) {
+        global $wpdb;
+        
+        $show_page = $args['show_page'] == 1;
+        $page_ids = array();
+        if (!$show_page){
+            $sql = "SELECT ID FROM {$wpdb->posts} WHERE post_type='page' AND post_status='publish'";
+            logthis($sql, __FUNCTION__, __LINE__);
+            $results = $wpdb->get_results($sql);
+            foreach ($results as $page){
+                $page_ids[] = $page->ID;
+            }
+        }
+        $this->exclude_posts = $page_ids;
+
+        $exclude = trim($args['excluded_categories'], ', ');
+        if (empty($exclude)) return;
+        $exclude_ids = preg_split('/[\s,]+/',$exclude);
+        $exclusion = '(' . implode(',', $exclude_ids) . ')';
+        $sql = 'SELECT DISTINCT p.ID '
+              ."FROM {$wpdb->posts} p "
+              ."INNER JOIN {$wpdb->term_relationships} tr ON ( p.ID=tr.object_id ) "
+              ."INNER JOIN {$wpdb->term_taxonomy} tt ON ( tr.term_taxonomy_id=tt.term_taxonomy_id ) "
+              .'WHERE tt.taxonomy=\'category\' '
+              ."AND tt.term_id IN {$exclusion}";
+        logthis($sql, __FUNCTION__, __LINE__);
+        $results = $wpdb->get_results($sql);
+        logthis(var_export($results, true), __FUNCTION__, __LINE__);
+        $exclude_ids = array();
+        foreach ($results as $post){
+            $exclude_ids[] = $post->ID;
+        }
+        $this->exclude_posts = array_merge($this->exclude_posts, $exclude_ids);
+        $this->exclude_posts = array_unique($this->exclude_posts);
+        logthis(var_export($this->exclude_posts, true), __FUNCTION__, __LINE__);
+    }
 	/* ***********************************
 	 * Helper Function : Find info about 
 	 * 		updated post.
@@ -71,7 +134,7 @@ class af_ela_classGenerator {
 			$excats = preg_split('/[\s,]+/',$exclude);
 			if (count($excats)) {
 				foreach ($excats as $excat) {
-					$exclusions .= ' AND category_id <> ' . intval($excat) . ' ';
+					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
 				}
 			}
 		}
@@ -99,7 +162,7 @@ class af_ela_classGenerator {
 			if ($results) {
 				foreach($results as $result) {
 					$this->postToGenerate['category_id'][] = $result->category_id;
-					}
+				}
 			}
 			$this->postToGenerate['new_year']= $results[0]->year;
 			$this->postToGenerate['new_month']= $results[0]->month;
@@ -159,8 +222,8 @@ class af_ela_classGenerator {
 					$this->postToGenerate['post_id'] = $id;
 					$this->postToGenerate['new_year']= $results[0]->year;
 					$this->postToGenerate['new_month'] = $results[0]->month;
-					$this->yearTable = array($this->postToGenerate['new_year'] => 0);
-					$this->monthTable[$this->postToGenerate['new_year']] = array($this->postToGenerate['new_month'] => 0);
+					$this->year_table = array($this->postToGenerate['new_year'] => 0);
+					$this->month_table[$this->postToGenerate['new_year']] = array($this->postToGenerate['new_month'] => 0);
 					$this->catsTable = $this->postToGenerate['category_id'];
 					return true;
 				}
@@ -202,23 +265,25 @@ class af_ela_classGenerator {
         logthis("SQL Query :"."Years Table Query1:" . count($year_results).$query, __FUNCTION__, __LINE__);
 		if( $year_results ) {
 			foreach( $year_results as $year_result ) {
-				if($year_result->count > 0) $this->yearTable[$year_result->year] = $year_result->count;
+				if($year_result->count > 0) $this->year_table[$year_result->year] = $year_result->count;
 			}
 		}
-		if ($this->yearTable) {
-			$this->cache->contentIs($this->yearTable);
+		if ($this->year_table) {
+			$this->cache->contentIs($this->year_table);
 			$res = $this->cache->writeFile('years.dat');
-			logthis($this->yearTable);
-			logthis($res);
+			logthis("var_export:" . var_export($this->year_table,true), __FUNCTION__, __LINE__);
+			logthis(var_export($res,true) , __FUNCTION__, __LINE__);
 		}
 		if($id) {
 			$this->cache->readFile('years.dat');
-			$diffyear = array_diff_assoc($this->cache->readFileContent, $this->yearTable);
+			$diffyear = array_diff_assoc($this->cache->readFileContent, $this->year_table);
+            logthis("var_export:diffyear:". var_export($diffyear, true), __FUNCTION__, __LINE__);
 			if (!empty($diffyear)) {
-				$this->yearTable = $diffyear;
+				$this->year_table = $diffyear;
 			} else {
-				$this->yearTable = array($this->postToGenerate['new_year'] => 0);
+				$this->year_table = array($this->postToGenerate['new_year'] => 0);
 			}
+            logthis("var_export:" . var_export($this->year_table,true), __FUNCTION__, __LINE__);
 		}
 	}
 	/* ***********************************
@@ -237,7 +302,7 @@ class af_ela_classGenerator {
 		}
 		
 		$now = current_time('mysql', 1);
-		foreach( $this->yearTable as $year => $y ) {
+		foreach( $this->year_table as $year => $y ) {
 			$query = "SELECT MONTH(p.post_date) AS `month`, COUNT(DISTINCT p.ID) AS `count`
 				FROM $wpdb->posts p
                 INNER JOIN {$wpdb->term_relationships} AS tr
@@ -256,19 +321,21 @@ class af_ela_classGenerator {
             logthis("SQL Query :"."Result Count:" . count($month_results).$query, __FUNCTION__, __LINE__);
 			if( $month_results ) {
 				foreach( $month_results as $month_result ) {
-					if ($month_result->count > 0) $this->monthTable[$year][$month_result->month] = $month_result->count;
+					if ($month_result->count > 0) $this->month_table[$year][$month_result->month] = $month_result->count;
 				}
-				if ($this->monthTable[$year]) {
-					$this->cache->contentIs($this->monthTable[$year]);
+				if ($this->month_table[$year]) {
+                    logthis(var_export($this->month_table, true), __FUNCTION__, __LINE__);
+                    logthis(var_export($year, true), __FUNCTION__, __LINE__);
+					$this->cache->contentIs($this->month_table[$year]);
 					$this->cache->writeFile($year . '.dat');
 				}
 				if($id) {
 					$this->cache->readFile($year . '.dat');
-					$diffmonth = array_diff_assoc($this->cache->readFileContent, $this->monthTable[$year]);
+					$diffmonth = array_diff_assoc($this->cache->readFileContent, $this->month_table[$year]);
 					if (!empty($diffmonth)) {
-						$this->monthTable[$year] = $diffmonth;
+						$this->month_table[$year] = $diffmonth;
 					} else {
-						$this->monthTable[$year] = array($this->postToGenerate['new_month'] => 0);
+						$this->month_table[$year] = array($this->postToGenerate['new_month'] => 0);
 					}
 				}
 			}
@@ -298,9 +365,12 @@ class af_ela_classGenerator {
 		$posts = array();
 		$now = current_time('mysql', 1);
         //TODO 这里foreach有可能遍历空数组？？？怎么回事，调查原因
-		foreach( $this->yearTable as $year => $y ) {
+        logthis(var_export($this->year_table, true), __FUNCTION__, __LINE__);
+        if (empty($this->year_table)) return;
+		foreach( $this->year_table as $year => $y ) {
 			$posts[$year] = array();
-			foreach( $this->monthTable[$year] as $month =>$m ) {
+            logthis('year:'.$year.'y:'.$y, __FUNCTION__, __LINE__);
+			foreach( $this->month_table[$year] as $month =>$m ) {
 				$posts[$year][$month] = array();
 				$query = "SELECT DISTINCT ID, post_title, DAYOFMONTH(post_date) as `day`, comment_status, comment_count
 					FROM $wpdb->posts                    
@@ -326,6 +396,7 @@ class af_ela_classGenerator {
 				}
 			}
 		}
+        logthis(var_export($posts, true), __FUNCTION__, __LINE__);
 	}
 	/* ***********************************
 	 * Helper Function : build Categories.
@@ -358,6 +429,7 @@ class af_ela_classGenerator {
 			}
 		}
 		$this->cache->contentIs($this->catsTable);
+        logthis(var_export($this->catsTable,true), __FUNCTION__, __LINE__);
 		$this->cache->writeFile('categories.dat');
 		if($id) {			
 			if (!empty($diffcats)) {
@@ -503,6 +575,7 @@ class af_ela_classGenerator {
                 }
 
 				if ($this->postsInCatsTable[$category[0]]) {
+                    logthis(var_export($this->postsInCatsTable[$category[0]],true), __FUNCTION__, __LINE__);
 					$this->cache->contentIs($this->postsInCatsTable[$category[0]]);
 					$this->cache->writeFile('cat-' . $category[0] . '.dat');
 				}
@@ -567,6 +640,7 @@ class af_ela_classGenerator {
 				$this->tagsTable[0] = array($tagged_posts, $posted_tags);
 				
 				$this->cache->contentIs($this->tagsTable);
+                logthis(var_export($this->tagsTable, true), __FUNCTION__, __LINE__);
 				$this->cache->writeFile('tags.dat');
 				
 				if($id) {
@@ -601,9 +675,9 @@ class af_ela_classGenerator {
 				$excats = preg_split('/[\s,]+/',$exclude);
 				if (count($excats)) {
 					$in_expression = 'AND tt.term_id IN (' . implode(',', $excats) . ')';
-                    $sql = "SELECT p.ID AS `post_id`
-                            FROM $wpdb->posts AS p
-                            INNER JOIN {$wpdb->term_relationships} AS tr
+                    $sql = "SELECT p.ID AS `post_id` 
+                            FROM $wpdb->posts AS p 
+                            INNER JOIN {$wpdb->term_relationships} AS tr 
                                    ON (p.ID = tr.object_id)
                             INNER JOIN {$wpdb->term_taxonomy} AS tt
                                    ON (tr.term_taxonomy_id = tt.term_taxonomy_id)

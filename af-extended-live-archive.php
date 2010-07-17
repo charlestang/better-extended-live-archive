@@ -3,7 +3,7 @@
  Plugin Name: Better Extended Live Archives
  Plugin URI: http://extended-live-archive.googlecode.com/
  Description: The famous ELA for WP 2.7+. It's work for WP 3.0.
- Version: 0.80beta1
+ Version: 0.80beta2
  Author: Charles
  Author URI: http://sexywp.com
  */
@@ -41,7 +41,7 @@ $ela_plugin_basename = plugin_basename(dirname(__FILE__));
 $ela_cache_root = WP_PLUGIN_DIR . '/' . $ela_plugin_basename . '/cache/';
 
 //the debug flag, if true, will create a log file
-$debug = false;
+$debug = true;
 $utw_is_present = true;
 
 
@@ -164,7 +164,7 @@ TEXT;
  **************************************/ 
 function af_ela_comment_change($id) {
 	global $wpdb;
-	$generator = new af_ela_classGenerator;
+	$generator = new Better_ELA_Cache_Builder();
 	
 	$settings = get_option('af_ela_options');
 	
@@ -182,7 +182,7 @@ function af_ela_comment_change($id) {
  **************************************/	
 function af_ela_post_change($id) {
 	global $wpdb;
-	$generator = new af_ela_classGenerator;
+	$generator = new Better_ELA_Cache_Builder();
 	
 	$settings = get_option('af_ela_options');
 	
@@ -228,7 +228,7 @@ function af_ela_create_cache($settings) {
 		if(!af_ela_create_cache_dir()) return false;
 	}
 	
-	$generator = new af_ela_classGenerator;
+	$generator = new Better_ELA_Cache_Builder();
 	
 	if(!$settings['tag_soup_cut'] || empty($settings['tag_soup_X'])) { 
 		$order = false;
@@ -236,11 +236,13 @@ function af_ela_create_cache($settings) {
 		$order = $settings['tag_soup_cut'];
 		$orderparam = $settings['tag_soup_X'];
 	}
+
+    $generator->find_exclude_posts(array('excluded_categories' => $settings['excluded_categories'], 'show_page' => false));
 	
 	$generator->buildYearsTable($settings['excluded_categories']);
 
 	$generator->buildMonthsTable($settings['excluded_categories']);
-	
+
 	$generator->buildPostsInMonthsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
 
 	$generator->buildCatsTable($settings['excluded_categories']);
