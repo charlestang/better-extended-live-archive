@@ -7,14 +7,6 @@
  Author: Charles
  Author URI: http://sexywp.com
  */
-/*
- PName: Extended Live Archives
- PURI: http://www.sonsofskadi.net/extended-live-archive/
- Descript: Implements a dynamic archive, inspired by <a href="http://binarybonsai.com/archives/2004/11/21/freya-dissection/#livearchives">Binary Bonsai</a> and the original <a href="http://www.jonas.rabbe.com/archives/2005/05/08/super-archives-plugin-for-wordpress/">Super Archives by Jonas Rabbe</a>. Visit <a href="options-general.php?page=af-extended-live-archive/af-extended-live-archive-options.php">the ELA option panel</a> to initialize the plugin.
- Ver: 0.10beta-r18
- OriginAuthor: Arnaud Froment
- OriginAuthorURI: http://www.sonsofskadi.net/
- */
 
 /*
 // +----------------------------------------------------------------------+
@@ -41,7 +33,7 @@ $ela_plugin_basename = plugin_basename(dirname(__FILE__));
 $ela_cache_root = WP_PLUGIN_DIR . '/' . $ela_plugin_basename . '/cache/';
 
 //the debug flag, if true, will create a log file
-$debug = true;
+$debug = false;
 $utw_is_present = true;
 
 
@@ -168,7 +160,11 @@ function af_ela_comment_change($id) {
 	
 	$settings = get_option('af_ela_options');
 	
-	if ($id) $generator->buildPostToGenerateTable($settings['excluded_categories'], $id, true);
+	if ($id) {
+        $generator->find_exclude_posts(array('excluded_categories' => $settings['excluded_categories'], 'show_page' => false));
+        $generator->buildPostToGenerateTable($settings['excluded_categories'], $id, true);
+        if (empty($generator->postToGenerate)) return $id;
+    }
 	
 	$generator->buildPostsInMonthsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks'], $generator->postToGenerate['post_id']);
 		
@@ -182,12 +178,15 @@ function af_ela_comment_change($id) {
  **************************************/	
 function af_ela_post_change($id) {
 	global $wpdb;
-	$generator = new Better_ELA_Cache_Builder();
+    logthis('ID:'.$id, __FUNCTION__, __LINE__, __FILE__);
+    $generator = new Better_ELA_Cache_Builder();
 	
 	$settings = get_option('af_ela_options');
 	
 	if ($id) {
+        $generator->find_exclude_posts(array('excluded_categories' => $settings['excluded_categories'], 'show_page' => false));
 		$generator->buildPostToGenerateTable($settings['excluded_categories'], $id);
+        if (empty($generator->postToGenerate)) return $id;
 	}
 					
 	if(!$settings['tag_soup_cut'] || empty($settings['tag_soup_X'])) { 
@@ -327,7 +326,7 @@ function af_ela_shorcode(){
 add_action('wp_head', 'af_ela_header');
 // make sure the cache is rebuilt when post changes
 add_action('publish_post', 'af_ela_post_change');
-add_action('delete_post', 'af_ela_post_change');
+add_action('deleted_post', 'af_ela_post_change');
 // make sure the cache is rebuilt when comments change
 add_action('comment_post', 'af_ela_comment_change');
 add_action('trackback_post', 'af_ela_comment_change');

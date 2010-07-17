@@ -52,7 +52,7 @@ class Better_ELA_Cache_Builder {
      * @access private
      * @since 0.8
      */
-    var $exclude_posts = array();
+    var $excluded_posts = array();
 
     /**
      * How Many Posts In Each Year
@@ -94,13 +94,13 @@ class Better_ELA_Cache_Builder {
         $page_ids = array();
         if (!$show_page){
             $sql = "SELECT ID FROM {$wpdb->posts} WHERE post_type='page' AND post_status='publish'";
-            logthis($sql, __FUNCTION__, __LINE__);
+            logthis('SQL Query:' . $sql, __FUNCTION__, __LINE__);
             $results = $wpdb->get_results($sql);
             foreach ($results as $page){
                 $page_ids[] = $page->ID;
             }
         }
-        $this->exclude_posts = $page_ids;
+        $this->excluded_posts = $page_ids;
 
         $exclude = trim($args['excluded_categories'], ', ');
         if (empty($exclude)) return;
@@ -112,16 +112,16 @@ class Better_ELA_Cache_Builder {
               ."INNER JOIN {$wpdb->term_taxonomy} tt ON ( tr.term_taxonomy_id=tt.term_taxonomy_id ) "
               .'WHERE tt.taxonomy=\'category\' '
               ."AND tt.term_id IN {$exclusion}";
-        logthis($sql, __FUNCTION__, __LINE__);
+        logthis('SQL Query:' . $sql, __FUNCTION__, __LINE__);
         $results = $wpdb->get_results($sql);
         logthis(var_export($results, true), __FUNCTION__, __LINE__);
         $exclude_ids = array();
         foreach ($results as $post){
             $exclude_ids[] = $post->ID;
         }
-        $this->exclude_posts = array_merge($this->exclude_posts, $exclude_ids);
-        $this->exclude_posts = array_unique($this->exclude_posts);
-        logthis(var_export($this->exclude_posts, true), __FUNCTION__, __LINE__);
+        $this->excluded_posts = array_merge($this->excluded_posts, $exclude_ids);
+        $this->excluded_posts = array_unique($this->excluded_posts);
+        logthis(var_export($this->excluded_posts, true), __FUNCTION__, __LINE__);
     }
 	/* ***********************************
 	 * Helper Function : Find info about 
@@ -131,13 +131,14 @@ class Better_ELA_Cache_Builder {
 		global $wpdb;
 		
 		if (!empty($exclude)) {
-			$excats = preg_split('/[\s,]+/',$exclude);
-			if (count($excats)) {
-				foreach ($excats as $excat) {
-					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-				}
-			}
-		}
+//			$excats = preg_split('/[\s,]+/',$exclude);
+//			if (count($excats)) {
+//				foreach ($excats as $excat) {
+//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
+//				}
+//			}
+            $exclusions = ' AND ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
+        }
 
 		if(!$commentId) {
 			if($id) { 
@@ -154,18 +155,20 @@ class Better_ELA_Cache_Builder {
                               ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
                 WHERE tt.taxonomy = 'category'
 				AND post_date > 0
-				$exclusions $dojustid
+				$dojustid $exclusions
                 GROUP BY tr.object_id
 				ORDER By post_date DESC";
 			$results = $wpdb->get_results($query);
-            logthis("SQL Query :"."Result Count:" . count($results) .$query, __FUNCTION__, __LINE__);
+            logthis('SQL Query:' . "Result Count:" . count($results) .$query, __FUNCTION__, __LINE__);
 			if ($results) {
 				foreach($results as $result) {
 					$this->postToGenerate['category_id'][] = $result->category_id;
 				}
-			}
-			$this->postToGenerate['new_year']= $results[0]->year;
-			$this->postToGenerate['new_month']= $results[0]->month;
+                $this->postToGenerate['new_year']= $results[0]->year;
+                $this->postToGenerate['new_month']= $results[0]->month;
+            }else{
+                return true;
+            }
 			
 
             $query = "SELECT t.term_id AS `tag_id`
@@ -178,7 +181,7 @@ class Better_ELA_Cache_Builder {
                       $dojustid2
                     ";
             $results = $wpdb->get_results($query);
-            logthis("SQL Query :"."Result Count:" . count($results).$query, __FUNCTION__, __LINE__);
+            logthis('SQL Query:' . "Result Count:" . count($results).$query, __FUNCTION__, __LINE__);
             if ($results) {
                 foreach($results as $result) {
                     $this->postToGenerate['tag_id'][] = $result->tag_id;
@@ -192,7 +195,7 @@ class Better_ELA_Cache_Builder {
 				WHERE comment_ID = $id AND comment_approved = '1'";
 			
 			$result = $wpdb->get_var($query);
-            logthis("SQL Query :"."Result Count:" . count($result).$query, __FUNCTION__, __LINE__);
+            logthis('SQL Query:' . "Result Count:" . count($result).$query, __FUNCTION__, __LINE__);
 			if ($result) {
 				$id = $result;
 				if($id) {
@@ -209,12 +212,12 @@ class Better_ELA_Cache_Builder {
                                      ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
                           WHERE tt.taxonomy = 'category'
                           AND post_date > 0
-                          $exclusions $dojustid
+                          $dojustid $exclusions
                           GROUP BY tr.object_id
                           ORDER By post_date DESC";
 				
 				$results = $wpdb->get_results($query);
-                logthis("SQL Query :"."Result Count:" . count($results).$query ."\n". var_export($this->postToGenerate,true), __FUNCTION__, __LINE__);
+                logthis('SQL Query:' . "Result Count:" . count($results).$query ."\n". var_export($this->postToGenerate,true), __FUNCTION__, __LINE__);
 				if($results) {
 					foreach($results as $result) {
 						$this->postToGenerate['category_id'][]=$result->category_id;
@@ -238,23 +241,32 @@ class Better_ELA_Cache_Builder {
 		global $wpdb;
 		
 		if (!empty($exclude)) {
-			$excats = preg_split('/[\s,]+/',$exclude);
-			if (count($excats)) {
-				foreach ($excats as $excat) {
-					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-				}
-			}
+//			$excats = preg_split('/[\s,]+/',$exclude);
+//			if (count($excats)) {
+//				foreach ($excats as $excat) {
+//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
+//				}
+//			}
+            $exclusions = ' AND p.ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
 		}
 		$now = current_time('mysql', 1);
 		
+//		$query = "SELECT YEAR(p.post_date) AS `year`, COUNT(DISTINCT p.ID) AS `count`
+//			FROM $wpdb->posts p
+//            INNER JOIN {$wpdb->term_relationships} AS tr
+//                       ON (p.ID = tr.object_id)
+//            INNER JOIN {$wpdb->term_taxonomy} AS tt
+//                       ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+//            WHERE tt.taxonomy = 'category'
+//			AND p.post_date > 0
+//            AND p.post_date_gmt < '$now'
+//            AND p.post_status = 'publish'
+//			$exclusions
+//            GROUP BY year
+//			ORDER By p.post_date DESC";
 		$query = "SELECT YEAR(p.post_date) AS `year`, COUNT(DISTINCT p.ID) AS `count`
-			FROM $wpdb->posts p 
-            INNER JOIN {$wpdb->term_relationships} AS tr
-                       ON (p.ID = tr.object_id)
-            INNER JOIN {$wpdb->term_taxonomy} AS tt
-                       ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-            WHERE tt.taxonomy = 'category'
-			AND p.post_date > 0
+			FROM $wpdb->posts p
+            WHERE p.post_date > 0
             AND p.post_date_gmt < '$now'
             AND p.post_status = 'publish'
 			$exclusions
@@ -262,7 +274,7 @@ class Better_ELA_Cache_Builder {
 			ORDER By p.post_date DESC";
 		
 		$year_results = $wpdb->get_results($query);
-        logthis("SQL Query :"."Years Table Query1:" . count($year_results).$query, __FUNCTION__, __LINE__);
+        logthis('SQL Query:' . "Years Table Query1:" . count($year_results).$query, __FUNCTION__, __LINE__);
 		if( $year_results ) {
 			foreach( $year_results as $year_result ) {
 				if($year_result->count > 0) $this->year_table[$year_result->year] = $year_result->count;
@@ -293,32 +305,41 @@ class Better_ELA_Cache_Builder {
 		global $wpdb;
 		
 		if (!empty($exclude)) {
-			$excats = preg_split('/[\s,]+/',$exclude);
-			if (count($excats)) {
-				foreach ($excats as $excat) {
-					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-				}
-			}
+//			$excats = preg_split('/[\s,]+/',$exclude);
+//			if (count($excats)) {
+//				foreach ($excats as $excat) {
+//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
+//				}
+//			}
+            $exclusions = ' AND p.ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
 		}
 		
 		$now = current_time('mysql', 1);
 		foreach( $this->year_table as $year => $y ) {
+//			$query = "SELECT MONTH(p.post_date) AS `month`, COUNT(DISTINCT p.ID) AS `count`
+//				FROM $wpdb->posts p
+//                INNER JOIN {$wpdb->term_relationships} AS tr
+//                           ON (p.ID = tr.object_id)
+//                INNER JOIN {$wpdb->term_taxonomy} AS tt
+//                           ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+//                WHERE tt.taxonomy = 'category'
+//				AND YEAR(p.post_date) = $year
+//				$exclusions
+//				AND p.post_date_gmt < '$now'
+//                AND p.post_status = 'publish'
+//                GROUP BY month
+//				ORDER By p.post_date DESC";
 			$query = "SELECT MONTH(p.post_date) AS `month`, COUNT(DISTINCT p.ID) AS `count`
 				FROM $wpdb->posts p
-                INNER JOIN {$wpdb->term_relationships} AS tr
-                           ON (p.ID = tr.object_id)
-                INNER JOIN {$wpdb->term_taxonomy} AS tt
-                           ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-                WHERE tt.taxonomy = 'category'
-				AND YEAR(p.post_date) = $year
-				$exclusions  
+                WHERE YEAR(p.post_date) = $year
+				$exclusions
 				AND p.post_date_gmt < '$now'
                 AND p.post_status = 'publish'
                 GROUP BY month
 				ORDER By p.post_date DESC";
 			
 			$month_results = $wpdb->get_results($query);
-            logthis("SQL Query :"."Result Count:" . count($month_results).$query, __FUNCTION__, __LINE__);
+            logthis('SQL Query:' . "Result Count:" . count($month_results).$query, __FUNCTION__, __LINE__);
 			if( $month_results ) {
 				foreach( $month_results as $month_result ) {
 					if ($month_result->count > 0) $this->month_table[$year][$month_result->month] = $month_result->count;
@@ -354,12 +375,13 @@ class Better_ELA_Cache_Builder {
 		}
 		
 		if (!empty($exclude)) {
-			$excats = preg_split('/[\s,]+/',$exclude);
-			if (count($excats)) {
-				foreach ($excats as $excat) {
-					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-				}
-			}
+//			$excats = preg_split('/[\s,]+/',$exclude);
+//			if (count($excats)) {
+//				foreach ($excats as $excat) {
+//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
+//				}
+//			}
+            $exclusions = ' AND ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
 		}
 		
 		$posts = array();
@@ -370,20 +392,29 @@ class Better_ELA_Cache_Builder {
 		foreach( $this->year_table as $year => $y ) {
 			$posts[$year] = array();
             logthis('year:'.$year.'y:'.$y, __FUNCTION__, __LINE__);
+            if (empty($year)) continue;
 			foreach( $this->month_table[$year] as $month =>$m ) {
 				$posts[$year][$month] = array();
+//				$query = "SELECT DISTINCT ID, post_title, DAYOFMONTH(post_date) as `day`, comment_status, comment_count
+//					FROM $wpdb->posts
+//                    INNER JOIN $wpdb->term_relationships AS tr ON (ID = tr.object_id)
+//                    INNER JOIN $wpdb->term_taxonomy AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
+//                    WHERE tt.taxonomy = 'category'
+//					AND YEAR(post_date) = $year
+//					AND MONTH(post_date) = $month
+//					AND post_status = 'publish'
+//					AND post_date_gmt < '$now'
+//                    $exclusions
+//					ORDER By post_date DESC";
 				$query = "SELECT DISTINCT ID, post_title, DAYOFMONTH(post_date) as `day`, comment_status, comment_count
-					FROM $wpdb->posts                    
-                    INNER JOIN $wpdb->term_relationships AS tr ON (ID = tr.object_id)
-                    INNER JOIN $wpdb->term_taxonomy AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-                    WHERE tt.taxonomy = 'category'
-					AND YEAR(post_date) = $year
-					AND MONTH(post_date) = $month 
-					AND post_status = 'publish' 
+					FROM $wpdb->posts
+                    WHERE YEAR(post_date) = $year
+					AND MONTH(post_date) = $month
+					AND post_status = 'publish'
 					AND post_date_gmt < '$now'
                     $exclusions
 					ORDER By post_date DESC";
-				logthis("SQL Query :".$query, __FUNCTION__, __LINE__);
+				logthis('SQL Query:' . $query, __FUNCTION__, __LINE__);
 				$post_results = $wpdb->get_results($query);
 				if( $post_results ) {
 					foreach( $post_results as $post_result ) {
@@ -471,7 +502,7 @@ class Better_ELA_Cache_Builder {
                       ORDER BY $sort_column $sort_order";
 			
 			$categories = $wpdb->get_results($query);
-            logthis("SQL Query : Categories: ".count($categories) . $query, __FUNCTION__, __LINE__);
+            logthis('SQL Query:' . " Categories: ".count($categories) . $query, __FUNCTION__, __LINE__);
 		}
 
 		if (!count($category_posts)) {
@@ -484,7 +515,7 @@ class Better_ELA_Cache_Builder {
 
 			
 			$cat_counts = $wpdb->get_results($query);
-            logthis("SQL Query : Categories Counts: " . count($cat_counts) .$query, __FUNCTION__, __LINE__);
+            logthis('SQL Query:' . " Categories Counts: " . count($cat_counts) .$query, __FUNCTION__, __LINE__);
 	        if (! empty($cat_counts)) {
 	            foreach ($cat_counts as $cat_count) {
 	                if (1 != intval($hide_empty) || $cat_count > 0) {
@@ -526,16 +557,18 @@ class Better_ELA_Cache_Builder {
 			$ping = '';
 		}
 		if (!empty($exclude)) {
-			$excats = preg_split('/[\s,]+/',$exclude);
-			if (count($excats)) {
-				foreach ($excats as $excat) {
-					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-				}
-			}
+//			$excats = preg_split('/[\s,]+/',$exclude);
+//			if (count($excats)) {
+//				foreach ($excats as $excat) {
+//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
+//				}
+//			}
+            $exclusions = ' AND p.ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
 		}
 		$now = current_time('mysql', 1);
 		logthis($this->catsTable);
         //TODO 这里foreach也可能遍历空对象，调查原因
+        if (empty($this->catsTable)) return;
 		foreach( $this->catsTable as $category ) {
 			$posts_in_cat[$category[0]] = array();
             $query = "SELECT p.ID AS `post_id`
@@ -550,7 +583,7 @@ class Better_ELA_Cache_Builder {
             ";
 			
 			$posts_in_cat_results = $wpdb->get_results($query);
-            logthis("SQL Query :Posts in Cat:" . count($posts_in_cat_results) .$query, __FUNCTION__, __LINE__);
+            logthis('SQL Query:' . "Posts in Cat:" . count($posts_in_cat_results) .$query, __FUNCTION__, __LINE__);
 			if( $posts_in_cat_results ) {
 				$posts_in_cat_results = array_reverse($posts_in_cat_results);
 				$post_id_set = array();
@@ -567,7 +600,7 @@ class Better_ELA_Cache_Builder {
                     ORDER By post_date";
 
                 $post_results = $wpdb->get_results($query);
-                logthis("SQL Query :Post Results". count($post_results) .$query, __FUNCTION__, __LINE__);
+                logthis('SQL Query:' . "Post Results". count($post_results) .$query, __FUNCTION__, __LINE__);
                 if( $post_results ) {
                     foreach( $post_results as $post_result ) {
                         $this->postsInCatsTable[$category[0]][$post_result->ID] = array($post_result->day, $post_result->post_title, get_permalink($post_result->ID), $post_result->comment_count, $post_result->comment_status);
@@ -622,7 +655,7 @@ class Better_ELA_Cache_Builder {
                       ";
 
 			$tagsSet = $wpdb->get_results($query);
-			logthis("SQL Query :Tag Sets:". count($tagsSet) .$query, __FUNCTION__, __LINE__);
+			logthis('SQL Query:' . "Tag Sets:". count($tagsSet) .$query, __FUNCTION__, __LINE__);
 			$tagged_posts = 0;
 			$posted_tags = 0;
 			if( !empty($tagsSet) ) {
@@ -689,7 +722,7 @@ class Better_ELA_Cache_Builder {
                     foreach($posts_in_exclude_category as $p){
                         $exclude_ids[] = $p->post_id;
                     }
-                    logthis("SQL Query :Posts in Exclude cates: ". count($posts_in_exclude_category) .$sql, __FUNCTION__, __LINE__);
+                    logthis('SQL Query:' . "Posts in Exclude cates: ". count($posts_in_exclude_category) .$sql, __FUNCTION__, __LINE__);
 				}
 			}
             $pid_not_in = 'AND ID NOT IN (' . implode(',', $exclude_ids) . ')';
@@ -712,7 +745,7 @@ class Better_ELA_Cache_Builder {
                             ";
 
 				$posts_in_tag_results = $wpdb->get_results($query);
-				logthis("SQL Query :Posts in Tag: ". count($posts_in_tag_results) .  var_export($tag, true).$query, __FUNCTION__, __LINE__);
+				logthis('SQL Query:' . "Posts in Tag: ". count($posts_in_tag_results) .  var_export($tag, true).$query, __FUNCTION__, __LINE__);
 				if( $posts_in_tag_results ) {
 
 					foreach( $posts_in_tag_results as $post_result ) {
