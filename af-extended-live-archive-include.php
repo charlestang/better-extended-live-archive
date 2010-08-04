@@ -20,7 +20,11 @@ function logthis($message,$function = __FUNCTION__ ,$line = __LINE__, $file = __
 		$now = current_time('mysql', 1);
 		$messageHeader = $now." - In ". basename($file) . " - In ".$function." at ".$line ." : \r\n";
 		fwrite($handle, $messageHeader);
-		fwrite($handle, str_replace("\t", "", serialize($message)));
+        if (is_array($message) || is_object($message)){
+            fwrite($handle, var_export($message,true));
+        }else{
+            fwrite($handle, $message);
+        }
 		fwrite($handle, "\r\n\r\n");
 		fclose($handle);
 	} else if($info) {
@@ -33,6 +37,32 @@ function logthis($message,$function = __FUNCTION__ ,$line = __LINE__, $file = __
 		fwrite($handle, $messageHeader);
 		fwrite($handle, str_replace("\t", "", serialize($message)));
 		fwrite($handle, "\r\n\r\n");
+		fclose($handle);
+	}
+}
+
+function dlog($function = __FUNCTION__, $line = __LINE__){
+    global $debug;
+    if ($debug) {
+		$handle = @fopen(ABSPATH ."wp-content/ela-debug.log", 'a');
+		if( $handle === false ) {
+			return false;
+		}
+		$now = current_time('mysql', 1);
+		$messageHeader = '['.$now."][Func:".$function.":".$line ."] : \r\n";
+		fwrite($handle, $messageHeader);
+        $messages = func_get_args();
+        $num = func_num_args();
+        for ($idx = 2; $idx < $num; $idx ++){
+            $message = $messages[$idx];
+            if (is_array($message) || is_object($message)){
+                fwrite($handle, var_export($message,true));
+            }else{
+                fwrite($handle, $message);
+            }
+            fwrite($handle, "\r\n");
+        }
+		fwrite($handle, "\r\n");
 		fclose($handle);
 	}
 }
@@ -128,15 +158,9 @@ class Better_ELA_Cache_Builder {
 	 * 		updated post.
 	 * ***********************************/	
 	function buildPostToGenerateTable($exclude, $id, $commentId = false) {
-		global $wpdb;
-		
-		if (!empty($exclude)) {
-//			$excats = preg_split('/[\s,]+/',$exclude);
-//			if (count($excats)) {
-//				foreach ($excats as $excat) {
-//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-//				}
-//			}
+        global $wpdb;
+
+        if (!empty($this->excluded_posts)) {
             $exclusions = ' AND ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
         }
 
@@ -237,131 +261,95 @@ class Better_ELA_Cache_Builder {
 	/* ***********************************
 	 * Helper Function : build Years.
 	 * ***********************************/	
-	function buildYearsTable($exclude, $id = false) {
-		global $wpdb;
-		
-		if (!empty($exclude)) {
-//			$excats = preg_split('/[\s,]+/',$exclude);
-//			if (count($excats)) {
-//				foreach ($excats as $excat) {
-//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-//				}
-//			}
-            $exclusions = ' AND p.ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
-		}
-		$now = current_time('mysql', 1);
-		
-//		$query = "SELECT YEAR(p.post_date) AS `year`, COUNT(DISTINCT p.ID) AS `count`
-//			FROM $wpdb->posts p
-//            INNER JOIN {$wpdb->term_relationships} AS tr
-//                       ON (p.ID = tr.object_id)
-//            INNER JOIN {$wpdb->term_taxonomy} AS tt
-//                       ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-//            WHERE tt.taxonomy = 'category'
-//			AND p.post_date > 0
-//            AND p.post_date_gmt < '$now'
-//            AND p.post_status = 'publish'
-//			$exclusions
-//            GROUP BY year
-//			ORDER By p.post_date DESC";
-		$query = "SELECT YEAR(p.post_date) AS `year`, COUNT(DISTINCT p.ID) AS `count`
-			FROM $wpdb->posts p
-            WHERE p.post_date > 0
-            AND p.post_date_gmt < '$now'
-            AND p.post_status = 'publish'
-			$exclusions
-            GROUP BY year
-			ORDER By p.post_date DESC";
-		
-		$year_results = $wpdb->get_results($query);
-        logthis('SQL Query:' . "Years Table Query1:" . count($year_results).$query, __FUNCTION__, __LINE__);
-		if( $year_results ) {
-			foreach( $year_results as $year_result ) {
-				if($year_result->count > 0) $this->year_table[$year_result->year] = $year_result->count;
-			}
-		}
-		if ($this->year_table) {
-			$this->cache->contentIs($this->year_table);
-			$res = $this->cache->writeFile('years.dat');
-			logthis("var_export:" . var_export($this->year_table,true), __FUNCTION__, __LINE__);
-			logthis(var_export($res,true) , __FUNCTION__, __LINE__);
-		}
-		if($id) {
-			$this->cache->readFile('years.dat');
-			$diffyear = array_diff_assoc($this->cache->readFileContent, $this->year_table);
-            logthis("var_export:diffyear:". var_export($diffyear, true), __FUNCTION__, __LINE__);
-			if (!empty($diffyear)) {
-				$this->year_table = $diffyear;
-			} else {
-				$this->year_table = array($this->postToGenerate['new_year'] => 0);
-			}
-            logthis("var_export:" . var_export($this->year_table,true), __FUNCTION__, __LINE__);
+    function build_years_table($id = false) {
+        global $debug, $wpdb;
+
+        if (!empty($this->excluded_posts)) {
+            $exclusions = ' AND `ID` NOT IN(' . implode(',', $this->excluded_posts) . ') ';
+        }
+
+		$sql = 'SELECT YEAR(`post_date`) `year`, COUNT(`ID`) `count` '
+			    ."FROM {$wpdb->posts} "
+                .'WHERE `post_status` = \'publish\' '
+                .$exclusions
+                .'GROUP BY `year` ORDER By `post_date` DESC';		
+		$year_results = $wpdb->get_results($sql);
+        dlog(__FUNCTION__, __LINE__, 'SQL Query:'.$sql, 'Results Count:'.count($year_results));
+
+        if ($year_results) {
+            foreach ($year_results as $year_result) {
+                if ($year_result->count > 0)
+                    $this->year_table[$year_result->year] = $year_result->count;
+            }
+        }
+		if (!empty($this->year_table)) {
+            if (false !== $id){ //如果更新单篇文章
+                $this->cache->readFile('years.dat');
+                $diffyears = array_diff_assoc($this->year_table, $this->cache->readFileContent);                
+                if (!empty($diffyears)){ //如果Year表发生变化，重写Year表cache
+                    $this->cache->contentIs($this->year_table);
+                    $this->cache->writeFile('years.dat');
+                    dlog(__FUNCTION__,__LINE__,'Years Table Updated:',$this->year_table);
+                    $this->year_table = $diffyears;
+                    dlog(__FUNCTION__,__LINE__,'Different Years:',$diffyears);
+                } else {
+                    $this->year_table = array($this->postToGenerate['new_year'] => 0);
+                }
+            } else {
+                $this->cache->contentIs($this->year_table);
+                $this->cache->writeFile('years.dat');
+                dlog(__FUNCTION__,__LINE__,'Years Table:',$this->year_table);
+            }		
 		}
 	}
 	/* ***********************************
 	 * Helper Function : build Months.
 	 * ***********************************/
-	function buildMonthsTable($exclude, $id = false) {
-		global $wpdb;
-		
-		if (!empty($exclude)) {
-//			$excats = preg_split('/[\s,]+/',$exclude);
-//			if (count($excats)) {
-//				foreach ($excats as $excat) {
-//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-//				}
-//			}
-            $exclusions = ' AND p.ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
-		}
-		
-		$now = current_time('mysql', 1);
-		foreach( $this->year_table as $year => $y ) {
-//			$query = "SELECT MONTH(p.post_date) AS `month`, COUNT(DISTINCT p.ID) AS `count`
-//				FROM $wpdb->posts p
-//                INNER JOIN {$wpdb->term_relationships} AS tr
-//                           ON (p.ID = tr.object_id)
-//                INNER JOIN {$wpdb->term_taxonomy} AS tt
-//                           ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-//                WHERE tt.taxonomy = 'category'
-//				AND YEAR(p.post_date) = $year
-//				$exclusions
-//				AND p.post_date_gmt < '$now'
-//                AND p.post_status = 'publish'
-//                GROUP BY month
-//				ORDER By p.post_date DESC";
-			$query = "SELECT MONTH(p.post_date) AS `month`, COUNT(DISTINCT p.ID) AS `count`
-				FROM $wpdb->posts p
-                WHERE YEAR(p.post_date) = $year
-				$exclusions
-				AND p.post_date_gmt < '$now'
-                AND p.post_status = 'publish'
-                GROUP BY month
-				ORDER By p.post_date DESC";
-			
-			$month_results = $wpdb->get_results($query);
-            logthis('SQL Query:' . "Result Count:" . count($month_results).$query, __FUNCTION__, __LINE__);
-			if( $month_results ) {
-				foreach( $month_results as $month_result ) {
-					if ($month_result->count > 0) $this->month_table[$year][$month_result->month] = $month_result->count;
-				}
-				if ($this->month_table[$year]) {
-                    logthis(var_export($this->month_table, true), __FUNCTION__, __LINE__);
-                    logthis(var_export($year, true), __FUNCTION__, __LINE__);
-					$this->cache->contentIs($this->month_table[$year]);
-					$this->cache->writeFile($year . '.dat');
-				}
-				if($id) {
-					$this->cache->readFile($year . '.dat');
-					$diffmonth = array_diff_assoc($this->cache->readFileContent, $this->month_table[$year]);
-					if (!empty($diffmonth)) {
-						$this->month_table[$year] = $diffmonth;
-					} else {
-						$this->month_table[$year] = array($this->postToGenerate['new_month'] => 0);
-					}
-				}
-			}
-		}
-	}
+	function build_months_table($id = false) {
+        global $wpdb;
+
+        if (!empty($this->excluded_posts)) {
+            $exclusions = ' AND `ID` NOT IN(' . implode(',', $this->excluded_posts) . ') ';
+        }
+
+        foreach ($this->year_table as $year => $y) {
+            $sql = 'SELECT MONTH(`post_date`) `month`, COUNT(`ID`) `count` '
+				  ."FROM {$wpdb->posts} "
+                  ."WHERE YEAR(`post_date`)={$year} "
+				  .$exclusions
+                  .'AND `post_status`=\'publish\' '
+                  .'GROUP BY `month` ORDER By `post_date` DESC';
+			$month_results = $wpdb->get_results($sql);
+            dlog(__FUNCTION__,__LINE__,'SQL Query: '.$sql,'Results Count: '.count($month_results));
+
+            if (!empty($month_results)) {
+                foreach ($month_results as $month_result) {
+                    if ($month_result->count > 0){
+                        $this->month_table[$year][$month_result->month] = $month_result->count;
+                    }
+                }
+                if (!empty($this->month_table[$year])) {
+                    if ($id !== false){
+                        $this->cache->readFile($year . '.dat');
+                        $diffmonth = array_diff_assoc($this->month_table[$year], $this->cache->readFileContent);
+                        if (!empty($diffmonth)){                            
+                            $this->cache->contentIs($this->month_table[$year]);
+                            $this->cache->writeFile($year . '.dat');
+                            dlog(__FUNCTION__,__LINE__,'Month Table Updated: ',$this->month_table[$year]);
+                            $this->month_table[$year] = $diffmonth;
+                            dlog(__FUNCTION__,__LINE__,'Different Months: ',$this->month_table[$year]);
+                        }else{
+                            $this->month_table[$year] = array($this->postToGenerate['new_month'] => 0);
+                        }
+                    } else {
+                        $this->cache->contentIs($this->month_table[$year]);
+                        $this->cache->writeFile($year . '.dat');
+                        dlog(__FUNCTION__,__LINE__,'Month Table: ',$this->month_table[$year]);
+                    }                   
+                }
+            }
+        }
+    }
 	/* ***********************************
 	 * Helper Function : build Posts in 
 	 * 			Month.

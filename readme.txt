@@ -54,6 +54,7 @@ none.
 * Exclude categories feature not worked, now it has been fixed.
 * Error when tag list generating fixed.
 * Post new bug fixed.
+* SQL query optimized.
 
 = 0.70 =
 * A SQL query bug fixed when new comment posted.

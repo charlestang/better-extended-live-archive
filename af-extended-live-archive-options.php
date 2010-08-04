@@ -113,30 +113,41 @@ function af_ela_option_init($reset = false) {
 		$newSettings['last_modified'] = gmdate("D, d M Y H:i:s",time());
 		$newSettings['installed_version'] = af_ela_info('currentversion');
 		
-		update_option('af_ela_options', $newSettings, 'Set of Options for Extended Live Archive');
-		update_option('af_ela_option_mode', (get_option('af_ela_options') ? 1:0), 'ELA option mode');
+		update_option('af_ela_options', $newSettings);
+		update_option('af_ela_option_mode', (get_option('af_ela_options') ? 1:0));
 		
 		$res = true;
 		if( !is_dir($af_ela_cache_root) ) {
-            $res = af_ela_create_cache_dir(); /* TODO this function is not defined */
+            $res = af_ela_create_cache_dir();
 			if( !$res ) {
 				?>
-		<div class="updated"><p><strong>
-            <?php _e('Unable to create cache directory. Check your server credentials on the wp-content directory.','ela');?>
-        </strong></p></div>
-	<?php		return;
+                <div class="updated"><p><strong>
+                    <?php _e('Unable to create cache directory. '
+                             .'Check your server credentials on the '
+                             .'wp-content directory.','ela');?>
+                </strong></p></div>
+                <?php
+                return;
 			} else {
 				if( $res === true ) {
 					$res = af_ela_create_cache($settings);
 					if( $res === true ) {?>
-		<div class="updated"><p><strong>
-            <?php _e('The cache files have been created for the first time. You should be up and running. Enjoy.','ela');?>
-        </strong></p></div>
-	<?php		 	} else {?>
-		<div class="updated"><p><strong>
-            <?php _e('Unable to create the cache files. Check your server credentials on the wp-content/af-extended-live-archive directory.','ela');?>
-        </strong></p></div>
-	<?php 			return;
+                        <div class="updated"><p><strong>
+                            <?php _e('The cache files have been created for '
+                                     .'the first time. You should be up and '
+                                     .'running. Enjoy.','ela');?>
+                        </strong></p></div>
+                        <?php
+                    } else {
+                        ?>
+                        <div class="updated"><p><strong>
+                            <?php _e('Unable to create the cache files. Check '
+                                     .'your server credentials on the '
+                                     .'wp-content/better-extended-live-archive '
+                                     .'directory.','ela');?>
+                        </strong></p></div>
+                        <?php
+                        return;
 					}
 				}
 			}
@@ -149,12 +160,12 @@ function af_ela_option_init($reset = false) {
 	<?php		}
 			} else {?>
 		<div class="updated"><p><strong>
-            <?php _e('Unable to update the cache files to the newer version of the plugin. Check your server credentials on the wp-content/af-extended-live-archive directory.','ela');?>
+            <?php _e('Unable to update the cache files to the newer version of the plugin. Check your server credentials on the wp-content/better-extended-live-archive directory.','ela');?>
         </strong></p></div>
 	<?php 	return;
 			}
 		}
-		update_option('af_ela_is_initialized', af_ela_info('currentversion'), 'ELA plugin has already been initialized');
+		update_option('af_ela_is_initialized', af_ela_info('currentversion'));
 	}
 }
 
@@ -215,10 +226,10 @@ function af_ela_option_update() {
 		
 	$current_mode = get_option('af_ela_option_mode');
 	$asides_cats = $wpdb->get_results("SELECT t.term_id AS `cat_ID`, t.name AS `cat_name`
-                      FROM $wpdb->terms AS t
-                      INNER JOIN {$wpdb->term_taxonomy} AS tt
-                            ON (t.term_id = tt.term_id)
-                      WHERE tt.taxonomy = 'category'");
+                                       FROM $wpdb->terms AS t
+                                       INNER JOIN {$wpdb->term_taxonomy} AS tt
+                                            ON (t.term_id = tt.term_id)
+                                       WHERE tt.taxonomy = 'category'");
 	$comma ='';
 	if (!isset($_POST['excluded_categories'])) {?>
 	<div class="updated"><p><strong>
