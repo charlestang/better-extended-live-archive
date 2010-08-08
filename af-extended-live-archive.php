@@ -3,17 +3,11 @@
  Plugin Name: Better Extended Live Archives
  Plugin URI: http://extended-live-archive.googlecode.com/
  Description: The famous ELA for WP 2.7+. It's work for WP 3.0.
- Version: 0.80beta2
+ Version: 0.80beta3
  Author: Charles
  Author URI: http://sexywp.com
  */
 
-/*
-// +----------------------------------------------------------------------+
-// | Licenses and copyright acknowledgements are located at               |
-// | http://www.sonsofskadi.net/wp-content/elalicenses.txt                |
-// +----------------------------------------------------------------------+
-*/
 $ela_js_version = "0.50";
 if ( !defined('WP_CONTENT_URL') )
 	define( 'WP_CONTENT_URL', get_option('siteurl') . '/wp-content');
@@ -33,7 +27,7 @@ $ela_plugin_basename = plugin_basename(dirname(__FILE__));
 $ela_cache_root = WP_PLUGIN_DIR . '/' . $ela_plugin_basename . '/cache/';
 
 //the debug flag, if true, will create a log file
-$debug = true;
+$debug = false;
 $utw_is_present = true;
 
 
@@ -166,7 +160,7 @@ function af_ela_comment_change($id) {
         if (empty($generator->postToGenerate)) return $id;
     }
 	
-	$generator->buildPostsInMonthsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks'], $generator->postToGenerate['post_id']);
+	$generator->build_posts_in_months_table();
 		
 	$generator->buildPostsInCatsTable($settings['excluded_categories'],$settings['hide_pingbacks_and_trackbacks'], $generator->postToGenerate['post_id'] );
 
@@ -202,13 +196,13 @@ function af_ela_post_change($id) {
 	
 	$generator->build_months_table($id);
 	
-	$generator->buildPostsInMonthsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks'], $id);
+	$generator->build_posts_in_months_table();
 		
 	$generator->buildCatsTable($settings['excluded_categories'], $id);
 	
 	$generator->buildPostsInCatsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
 	
-    $ret = $generator->buildTagsTable($settings['excluded_categories'], $idTags, $order, $orderparam);
+    $ret = $generator->build_tags_table($idTags, $order, $orderparam);
 		
 	if($ret) $generator->buildPostsInTagsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
 	
@@ -242,13 +236,13 @@ function af_ela_create_cache($settings) {
 
 	$generator->build_months_table();
 
-	$generator->buildPostsInMonthsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
+	$generator->build_posts_in_months_table();
 
 	$generator->buildCatsTable($settings['excluded_categories']);
 
 	$generator->buildPostsInCatsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
 	
-	$ret = $generator->buildTagsTable($settings['excluded_categories'], false, $order, $orderparam);
+	$ret = $generator->build_tags_table(false, $order, $orderparam);
 	
 	if($ret) $generator->buildPostsInTagsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
 	
@@ -322,16 +316,22 @@ function af_ela_shorcode(){
     return $ela;
 }
 
-// insert javascript in headers
-add_action('wp_head', 'af_ela_header');
-// make sure the cache is rebuilt when post changes
-add_action('publish_post', 'af_ela_post_change');
-add_action('deleted_post', 'af_ela_post_change');
-// make sure the cache is rebuilt when comments change
-add_action('comment_post', 'af_ela_comment_change');
-add_action('trackback_post', 'af_ela_comment_change');
-add_action('pingback_post', 'af_ela_comment_change');
-add_action('delete_comment', 'af_ela_comment_change');
-add_action('admin_menu', 'af_ela_admin_pages');
-add_shortcode('extended-live-archive', 'af_ela_shorcode');
-?>
+add_action('plugins_loaded', 'better_ela_init');
+function better_ela_init(){
+    // insert javascript in headers
+    add_action('wp_head', 'af_ela_header');
+    // make sure the cache is rebuilt when post changes
+    add_action('publish_post', 'af_ela_post_change');
+    add_action('deleted_post', 'af_ela_post_change');
+    // make sure the cache is rebuilt when comments change
+    add_action('comment_post', 'af_ela_comment_change');
+    add_action('trackback_post', 'af_ela_comment_change');
+    add_action('pingback_post', 'af_ela_comment_change');
+    add_action('delete_comment', 'af_ela_comment_change');
+    add_shortcode('extended-live-archive', 'af_ela_shorcode');
+    
+    if (is_admin()){
+        add_action('admin_head', 'better_ela_js_code_in_admin_page');
+        add_action('admin_menu', 'af_ela_admin_pages');
+    }
+}

@@ -55,6 +55,7 @@ none.
 * Error when tag list generating fixed.
 * Post new bug fixed.
 * SQL query optimized.
+* Cache update functions optimized.
 
 = 0.70 =
 * A SQL query bug fixed when new comment posted.

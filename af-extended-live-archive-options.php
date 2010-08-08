@@ -358,28 +358,6 @@ function af_ela_echo_scripts() {
 			document.getElementById('menu_order_tab' + first).disabled = false;
 		}
 	}
-	function disableDOM(ID, disabler) {
-		var i;
-		if (document.getElementById(disabler).checked == true) {
-			document.getElementById(ID).disabled = false;
-		} else {
-			document.getElementById(ID).disabled = true;
-		}
-	}
-	function disableDOMinv(ID, disabler) {
-		if (document.getElementById(disabler).checked == true) {
-			document.getElementById(ID).disabled= true;
-		} else {
-			document.getElementById(ID).disabled = false;
-		}
-	}
-	function hideDOM(ID, disabler) {
-		if (document.getElementById(disabler).checked == true) {
-			document.getElementById(ID).style.display = "block";
-		} else {
-			document.getElementById(ID).style.display = "none";
-		}
-	}
 	function selectAllCategories(list) {
 		var i;
 		var temp = new Array();
@@ -398,13 +376,6 @@ function af_ela_echo_scripts() {
 	}
 	
 	function initUnavailableOptions(){
-		disableDOM('number_text', 'num_entries');
-		<?php if($utw_is_present) { ?>disableDOM('number_text_tagged', 'num_entries_tagged');<?php }?>;
-		disableDOM('comment_text', 'num_comments');
-		disableDOM('closed_comment_text', 'num_comments');
-		disableDOM('hide_pingbacks_and_trackbacks', 'num_comments');
-		//hideDOM('fieldsetpagedposts', 'paged_posts');
-		<?php if($utw_is_present) { ?>disableDOMinv('tag_soup_X', 'tag_soup_cut0');<?php }?>;
 		disableTabs(1, 0);
 	}
 	
@@ -416,7 +387,7 @@ function af_ela_echo_scripts() {
 
 function af_ela_echo_fieldset_info($option_mode_text,$advancedState) {
 ?>
-    <fieldset class="options" style="float: left; width: 25%;">
+    <!--<fieldset class="options" style="float: left; width: 25%;">
         <legend><?php _e('Extended Live Archive info','ela');?> </legend>
 
 		<div class="submit" style="text-align:center; ">
@@ -435,7 +406,8 @@ function af_ela_echo_fieldset_info($option_mode_text,$advancedState) {
 		</tr>
 			
 			
-		</fieldset><?php
+		</fieldset>-->
+<?php
 }
 
 // <editor-fold defaultstate="collapsed" desc="Print the ELA infomation section.">
@@ -741,7 +713,7 @@ function better_ela_what_about_paged_posts_section($settings) {
     ?>
     <h3 class="title"><?php _e('What about paged posts?.','ela');?></h3>
     <p><?php _e('The layout of the posts when using a paged list instead of complete list .','ela');?></p>
-    <table class="form-table"><tbody>
+    <table class="form-table paged-posts-section"><tbody>
     <?php
     better_ela_helper_txtbox(
         __('Max # of Posts per page:','ela'),
@@ -789,6 +761,56 @@ function better_ela_helper_txtbox($caption, $id, $default, $description, $html =
         <input type="text" class="regular-text" style="width:12.5em;" value="<?php echo $default;?>" id="<?php echo $id;?>" name="<?php echo $id;?>">
         <span class="description"><?php echo $description;?></span></td>
 </tr>
+<?php
+}
+// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="JS code in admin page.">
+function better_ela_js_code_in_admin_page(){
+?>
+<script type="text/javascript">
+//<![CDATA[
+(function($){
+    var disable_control = function(idx,ctrl){
+        $(ctrl).get(0).disabled = true;
+    };
+    var enable_control = function(idx,ctrl){
+        $(ctrl).get(0).disabled = false;
+    };
+    var set_status = function(item,targets){
+        var checked = $(item).get(0).checked;
+        if (arguments.length==3?!checked:checked){
+            $.each(targets,enable_control);
+        }else{
+            $.each(targets,disable_control);
+        }
+    };
+    function form_item_control(switcher, targets){ //表单项控制
+        var $switcher = $(switcher);
+        set_status($switcher.get(0), targets);
+        $switcher.bind('click',function(){
+            var that = this;
+            set_status(that, targets);
+        });
+    }
+    $(function(){
+        form_item_control('#paged_posts',$('table.paged-posts-section input'));
+        form_item_control('#num_entries',$('#number_text'));
+        form_item_control('#num_comments',$('#comment_text'));
+        form_item_control('#num_comments',$('#closed_comment_text'));
+        form_item_control('#num_comments',$('#hide_pingbacks_and_trackbacks'));
+        form_item_control('#num_entries_tagged', $('#number_text_tagged'));
+        set_status('#tag_soup_cut0',$('#tag_soup_X'),0);
+        var $radios = $('input[name="tag_soup_cut"]');
+        $radios.each(function(){
+            $(this).bind('click',function(){
+                set_status('#tag_soup_cut0',$('#tag_soup_X'),0);
+            });
+        });
+    });
+})(jQuery);
+//]]>
+</script>
 <?php
 }
 // </editor-fold>

@@ -124,7 +124,7 @@ class Better_ELA_Cache_Builder {
         $page_ids = array();
         if (!$show_page){
             $sql = "SELECT ID FROM {$wpdb->posts} WHERE post_type='page' AND post_status='publish'";
-            logthis('SQL Query:' . $sql, __FUNCTION__, __LINE__);
+            dlog(__FUNCTION__,__LINE__,'SQL Query: ',$sql);
             $results = $wpdb->get_results($sql);
             foreach ($results as $page){
                 $page_ids[] = $page->ID;
@@ -142,16 +142,16 @@ class Better_ELA_Cache_Builder {
               ."INNER JOIN {$wpdb->term_taxonomy} tt ON ( tr.term_taxonomy_id=tt.term_taxonomy_id ) "
               .'WHERE tt.taxonomy=\'category\' '
               ."AND tt.term_id IN {$exclusion}";
-        logthis('SQL Query:' . $sql, __FUNCTION__, __LINE__);
+        dlog(__FUNCTION__,__LINE__,'SQL Query: ',$sql);
         $results = $wpdb->get_results($sql);
-        logthis(var_export($results, true), __FUNCTION__, __LINE__);
+        dlog(__FUNCTION__,__LINE__,'Posts In Excluded Categories: ',$results);
         $exclude_ids = array();
         foreach ($results as $post){
             $exclude_ids[] = $post->ID;
         }
         $this->excluded_posts = array_merge($this->excluded_posts, $exclude_ids);
         $this->excluded_posts = array_unique($this->excluded_posts);
-        logthis(var_export($this->excluded_posts, true), __FUNCTION__, __LINE__);
+        dlog(__FUNCTION__,__LINE__,'Posts to Exclude: ',$this->excluded_posts);
     }
 	/* ***********************************
 	 * Helper Function : Find info about 
@@ -335,7 +335,7 @@ class Better_ELA_Cache_Builder {
                         if (!empty($diffmonth)){                            
                             $this->cache->contentIs($this->month_table[$year]);
                             $this->cache->writeFile($year . '.dat');
-                            dlog(__FUNCTION__,__LINE__,'Month Table Updated: ',$this->month_table[$year]);
+                            dlog(__FUNCTION__,__LINE__,'Year: ',$year,' Month Table Updated: ',$this->month_table[$year]);
                             $this->month_table[$year] = $diffmonth;
                             dlog(__FUNCTION__,__LINE__,'Different Months: ',$this->month_table[$year]);
                         }else{
@@ -344,7 +344,7 @@ class Better_ELA_Cache_Builder {
                     } else {
                         $this->cache->contentIs($this->month_table[$year]);
                         $this->cache->writeFile($year . '.dat');
-                        dlog(__FUNCTION__,__LINE__,'Month Table: ',$this->month_table[$year]);
+                        dlog(__FUNCTION__,__LINE__,'Year: ',$year,' Month Table: ',$this->month_table[$year]);
                     }                   
                 }
             }
@@ -354,74 +354,58 @@ class Better_ELA_Cache_Builder {
 	 * Helper Function : build Posts in 
 	 * 			Month.
 	 * ***********************************/
-	function buildPostsInMonthsTable($exclude, $hide_ping_and_track, $id = false) {
-		global $wpdb;
-		if( 1 == $hide_ping_and_track ) {
-			$ping = "AND comment_type NOT LIKE '%pingback%' AND comment_type NOT LIKE '%trackback%'";
-		} else {
-			$ping = '';
-		}
-		
-		if (!empty($exclude)) {
-//			$excats = preg_split('/[\s,]+/',$exclude);
-//			if (count($excats)) {
-//				foreach ($excats as $excat) {
-//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-//				}
-//			}
+	function build_posts_in_months_table() {
+        global $wpdb;
+
+        if (!empty($this->excluded_posts)) {
             $exclusions = ' AND ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
-		}
-		
-		$posts = array();
+        }
+
+        $posts = array();
 		$now = current_time('mysql', 1);
-        //TODO 这里foreach有可能遍历空数组？？？怎么回事，调查原因
-        logthis(var_export($this->year_table, true), __FUNCTION__, __LINE__);
-        if (empty($this->year_table)) return;
+        if (empty($this->year_table)) { //TODO: 这里很奇怪，按理说，这里永远不会出现空的情况
+            return;
+        }
+        
 		foreach( $this->year_table as $year => $y ) {
 			$posts[$year] = array();
-            logthis('year:'.$year.'y:'.$y, __FUNCTION__, __LINE__);
-            if (empty($year)) continue;
+            dlog(__FUNCTION__,__LINE__,'Now Processing Year: ',$year);
 			foreach( $this->month_table[$year] as $month =>$m ) {
 				$posts[$year][$month] = array();
-//				$query = "SELECT DISTINCT ID, post_title, DAYOFMONTH(post_date) as `day`, comment_status, comment_count
-//					FROM $wpdb->posts
-//                    INNER JOIN $wpdb->term_relationships AS tr ON (ID = tr.object_id)
-//                    INNER JOIN $wpdb->term_taxonomy AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-//                    WHERE tt.taxonomy = 'category'
-//					AND YEAR(post_date) = $year
-//					AND MONTH(post_date) = $month
-//					AND post_status = 'publish'
-//					AND post_date_gmt < '$now'
-//                    $exclusions
-//					ORDER By post_date DESC";
-				$query = "SELECT DISTINCT ID, post_title, DAYOFMONTH(post_date) as `day`, comment_status, comment_count
-					FROM $wpdb->posts
-                    WHERE YEAR(post_date) = $year
-					AND MONTH(post_date) = $month
-					AND post_status = 'publish'
-					AND post_date_gmt < '$now'
-                    $exclusions
-					ORDER By post_date DESC";
-				logthis('SQL Query:' . $query, __FUNCTION__, __LINE__);
-				$post_results = $wpdb->get_results($query);
+                dlog(__FUNCTION__,__LINE__,'Now Processing Month: ',$month);
+                $sql = 'SELECT `ID`,`post_title`,DAYOFMONTH(`post_date`) `day`,`comment_status`,`comment_count` '
+                      ."FROM {$wpdb->posts} WHERE YEAR(`post_date`)={$year} "
+					  ."AND MONTH(`post_date`)={$month} "
+                      .'AND post_status=\'publish\' '
+                      .$exclusions
+					  .'ORDER By `post_date` DESC';
+				$post_results = $wpdb->get_results($sql);
+                dlog(__FUNCTION__,__LINE__,'SQL Query: ',$sql,"\nResult Count: ",count($post_results));
 				if( $post_results ) {
 					foreach( $post_results as $post_result ) {
-							$posts[$year][$month][$post_result->ID] = array($post_result->day, $post_result->post_title, get_permalink($post_result->ID), $post_result->comment_count, $post_result->comment_status);
+							$posts[$year][$month][$post_result->ID] = array(
+                                $post_result->day,
+                                $post_result->post_title,
+                                get_permalink($post_result->ID),
+                                $post_result->comment_count,
+                                $post_result->comment_status
+                            );
 					}
 				}
-				if ($posts[$year][$month]) {
+				if (!empty($posts[$year][$month])) {
 					$this->cache->contentIs($posts[$year][$month]);
 					$this->cache->writeFile($year . '-' . $month . '.dat');
+                    dlog(__FUNCTION__,__LINE__,$year . '-' . $month . '.dat Updated. Content is: ',$posts[$year][$month]);
 				}
 			}
 		}
-        logthis(var_export($posts, true), __FUNCTION__, __LINE__);
 	}
 	/* ***********************************
 	 * Helper Function : build Categories.
 	 * ***********************************/	
 	function buildCatsTable($exclude='', $id = false) {
 		$this->buildCatsList('ID', 'asc', FALSE, TRUE, '0', 0, $exclude, TRUE);
+        dlog(__FUNCTION__,__LINE__,"Category Table: ",$this->catsTable);
 		foreach( $this->catsTable as $category ) {
 			$parentcount = 0;
 			if(($parentkey = $category[4])) {
@@ -536,21 +520,10 @@ class Better_ELA_Cache_Builder {
 	 * Helper Function : build Posts In 
 	 * 			Categories
 	 * ***********************************/	
-	function buildPostsInCatsTable($exclude='',$hide_ping_and_track) {
+	function buildPostsInCatsTable() {
 		global $wpdb, $category_posts;
-		
-		if( 1 == $hide_ping_and_track ) {
-			$ping = "AND comment_type NOT LIKE '%pingback%' AND comment_type NOT LIKE '%trackback%'";
-		} else {
-			$ping = '';
-		}
-		if (!empty($exclude)) {
-//			$excats = preg_split('/[\s,]+/',$exclude);
-//			if (count($excats)) {
-//				foreach ($excats as $excat) {
-//					$exclusions .= ' AND tt.term_id <> ' . intval($excat) . ' ';
-//				}
-//			}
+
+		if (!empty($this->excluded_posts)) {
             $exclusions = ' AND p.ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
 		}
 		$now = current_time('mysql', 1);
@@ -606,18 +579,9 @@ class Better_ELA_Cache_Builder {
 	/* ***********************************
 	 * Helper Function : build Tags.
 	 * ***********************************/	
-	function buildTagsTable($exclude='', $id = false, $order = false, $orderparam = 0) {
+	function build_tags_table($id = false, $order = false, $orderparam = 0) {
 		
 			global $wpdb;
-			
-			if (!empty($exclude)) {
-				$excats = preg_split('/[\s,]+/',$exclude);
-				if (count($excats)) {
-					foreach ($excats as $excat) {
-						$exclusions .= ' AND p2c.category_id <> ' . intval($excat) . ' ';
-					}
-				}
-			}
 					
 			switch($order) {
 				case 2: // X is the min number of post per tag
@@ -631,8 +595,6 @@ class Better_ELA_Cache_Builder {
 				$ordering = "";
 				break;
 			}
-			
-			$now = current_time('mysql', 1);
 
             $query = "SELECT t.term_id AS `tag_id`, t.name AS `tag`, tt.count AS tag_count
                       FROM $wpdb->terms AS t
@@ -642,8 +604,8 @@ class Better_ELA_Cache_Builder {
                       $ordering
                       ";
 
-			$tagsSet = $wpdb->get_results($query);
-			logthis('SQL Query:' . "Tag Sets:". count($tagsSet) .$query, __FUNCTION__, __LINE__);
+			$tagsSet = $wpdb->get_results($query);			
+            dlog(__FUNCTION__,__LINE__,'SQL Query: ',$query,'Result Count: ',count($tagsSet));
 			$tagged_posts = 0;
 			$posted_tags = 0;
 			if( !empty($tagsSet) ) {
@@ -661,7 +623,8 @@ class Better_ELA_Cache_Builder {
 				$this->tagsTable[0] = array($tagged_posts, $posted_tags);
 				
 				$this->cache->contentIs($this->tagsTable);
-                logthis(var_export($this->tagsTable, true), __FUNCTION__, __LINE__);
+
+                dlog(__FUNCTION__,__LINE__,'Tags Table: ',$this->tagsTable);
 				$this->cache->writeFile('tags.dat');
 				
 				if($id) {
@@ -682,42 +645,16 @@ class Better_ELA_Cache_Builder {
 	 * Helper Function : build Posts In 
 	 * 			Tags
 	 * ***********************************/	
-	function buildPostsInTagsTable($exclude='',$hide_ping_and_track) {
+	function buildPostsInTagsTable() {
 		
-			global $wpdb;//, $tabletags, $tablepost2tag;
-			
-			if( 1 == $hide_ping_and_track ) {
-				$ping = "AND comment_type NOT LIKE '%pingback%' AND comment_type NOT LIKE '%trackback%'";
-			} else {
-				$ping = '';
-			}
-			
-			if (!empty($exclude)) {
-				$excats = preg_split('/[\s,]+/',$exclude);
-				if (count($excats)) {
-					$in_expression = 'AND tt.term_id IN (' . implode(',', $excats) . ')';
-                    $sql = "SELECT p.ID AS `post_id` 
-                            FROM $wpdb->posts AS p 
-                            INNER JOIN {$wpdb->term_relationships} AS tr 
-                                   ON (p.ID = tr.object_id)
-                            INNER JOIN {$wpdb->term_taxonomy} AS tt
-                                   ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-                            WHERE tt.taxonomy = 'category'
-                            $in_expression
-                    ";
-                    $posts_in_exclude_category = $wpdb->get_results($sql);
-                    $exclude_ids = array();
-                    foreach($posts_in_exclude_category as $p){
-                        $exclude_ids[] = $p->post_id;
-                    }
-                    logthis('SQL Query:' . "Posts in Exclude cates: ". count($posts_in_exclude_category) .$sql, __FUNCTION__, __LINE__);
-				}
-			}
-            $pid_not_in = 'AND ID NOT IN (' . implode(',', $exclude_ids) . ')';
-			
-			$now = current_time('mysql', 1);
-			foreach( $this->tagsTable as $key => $tag) {
+			global $wpdb;
 
+            if (!empty($this->excluded_posts)) {
+                $exclusions = ' AND ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
+            }
+			
+			foreach( $this->tagsTable as $key => $tag) {
+                if($key==0) continue;
                 $query = "SELECT ID, post_title, post_date AS `day`, comment_status, comment_count
                           FROM $wpdb->posts
                           INNER JOIN $wpdb->term_relationships AS tr
@@ -727,17 +664,15 @@ class Better_ELA_Cache_Builder {
                           WHERE tt.term_id = $tag[0]
                           AND tt.taxonomy = 'post_tag'
                           AND post_status = 'publish'
-                          AND post_date_gmt <= '$now'
-                          $pid_not_in
-                          ORDER BY post_date
-                            ";
+                          $exclusions
+                          ORDER BY post_date";
 
 				$posts_in_tag_results = $wpdb->get_results($query);
-				logthis('SQL Query:' . "Posts in Tag: ". count($posts_in_tag_results) .  var_export($tag, true).$query, __FUNCTION__, __LINE__);
+                dlog(__FUNCTION__,__LINE__,'SQL Query: ',$query,'Result Count: ',count($posts_in_tag_results));
 				if( $posts_in_tag_results ) {
 
 					foreach( $posts_in_tag_results as $post_result ) {
-								$this->postsInTagsTable[$tag[0]][$post_result->ID] = array($post_result->day, $post_result->post_title, get_permalink($post_result->ID), $post_result->comment_count, $post_result->comment_status);
+						$this->postsInTagsTable[$tag[0]][$post_result->ID] = array($post_result->day, $post_result->post_title, get_permalink($post_result->ID), $post_result->comment_count, $post_result->comment_status);
 					}
 					if ($this->postsInTagsTable[$tag[0]]) {
 						$this->cache->contentIs($this->postsInTagsTable[$tag[0]]);
@@ -749,6 +684,7 @@ class Better_ELA_Cache_Builder {
                 }
 			}
             $this->cache->contentIs($this->tagsTable);
+            dlog(__FUNCTION__,__LINE__,'Tags Table Rewrite: ',$this->tagsTable);
             $this->cache->writeFile('tags.dat');
 		
 	}
