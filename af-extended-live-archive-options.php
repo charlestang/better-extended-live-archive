@@ -6,8 +6,6 @@
 // +----------------------------------------------------------------------+
 */
 
-include_once(ABSPATH . WPINC . '/class-snoopy.php');
- 
 $af_ela_cache_root = dirname(__FILE__) . '/cache/';
 
 function af_ela_info($show='') {
@@ -17,9 +15,6 @@ function af_ela_info($show='') {
 		$plugins= get_plugins();
     	$info = $plugins[$ela_plugin_pathname]['Version'];
         break;
-    case 'localeversion' :
-    	$info = '9918';
-    	break;
     case 'born_on' :
     	$info = 'June 22, 2006'; //This is my birthday. ^-^
     	break;
@@ -35,9 +30,6 @@ function af_ela_info($show='') {
 	case 'supportname' :
     	$info = 'Google code issue.';
     	break; 
-    case 'remoteversion':
-    	$info = 'http://sexywp.com/contact';
-     	break;
      default:
      	$info = '';
      	break;   
@@ -246,31 +238,8 @@ function af_ela_option_update() {
 	
 }
 
-function af_ela_remote_version_check() {
-	if (class_exists(snoopy)) {
-		$client = new Snoopy();
-		$client->_fp_timeout = 4;
-		if (@$client->fetch(af_ela_info('remoteversion')) === false) {
-			return -1;
-		}
-	   	$remote = $client->results;
-   		if (!$remote || strlen($remote) > 8 ) {
-			return -1;
-		} 
-		if (intval($remote) > intval(af_ela_info('localeversion'))) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-}
-
 function af_ela_admin_page() {
 	af_ela_option_init();
-    $remote = af_ela_remote_version_check();
-	if ($remote == 1) {
-		echo '<div id="message" class="updated fade"><p><a href="'. af_ela_info('homeurl').'" title="'.af_ela_info('homename').'">'.__('There is a ELA update available','ela'). '</a></p></div>';
-	}
 	
 	if (isset($_POST['ela_submit_option'])) {
 		if (isset($_POST['ela_clear_cache'])) {

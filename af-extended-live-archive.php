@@ -309,7 +309,7 @@ function af_ela_set_config($config, $reset=false) {
  **************************************/
 include_once('af-extended-live-archive-options.php');
 function af_ela_admin_pages() {
-	if (function_exists('add_options_page')) add_options_page('Ext. Live Archive Options', 'Ext. Live Archive', 9, 'extended-live-archive','af_ela_admin_page');
+	if (function_exists('add_options_page')) add_options_page('Ext. Live Archive Options', 'Ext. Live Archive', 'activate_plugins', 'extended-live-archive','af_ela_admin_page');
 }
 
 
