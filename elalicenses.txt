@@ -44,7 +44,7 @@
 // |                                                                      |
 // | This javascript has been modified to make a 'digging archive' as     |
 // | outlined by Michael Heilemann in his dissection of Freya             |
-// |ï¿½[http://binarybonsai.com/archives/2004/11/21/freya-dissection/]     |
+// | [http://binarybonsai.com/archives/2004/11/21/freya-dissection/]      |
 // +----------------------------------------------------------------------+
 //
 // +----------------------------------------------------------------------+
@@ -62,7 +62,7 @@
 // +----------------------------------------------------------------------+
 // | This CSS is primarily a rework based on the style sheet Michael      |
 // | Heilemann put together to support an earlier revision of this plugin |
-// |ï¿½withing his little-more-than-just-a-theme-for-wordpress, K2.        |
+// | withing his little-more-than-just-a-theme-for-wordpress, K2.         |
 // | [http://binarybonsai.com/wordpress/k2/]                              |
 // +----------------------------------------------------------------------+
 //
@@ -79,7 +79,7 @@
 // | for more info.                                                       |
 // |                                                                      |
 // | Copyright 2005  Arnaud Froment                                       |
-// | Copyright 2005  Jonas Rabbe  (emailï¿½: jonas@rabbe.com)              |
+// | Copyright 2005  Jonas Rabbe  (email : jonas@rabbe.com)               |
 // |                                                                      |
 // | This program is free software; you can redistribute it and/or modify |
 // | it under the terms of the GNU General Public License as published by |
