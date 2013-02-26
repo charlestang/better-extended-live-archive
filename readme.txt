@@ -4,7 +4,7 @@ Donate link: http://sexywp.com/archives
 Tags: template tags, archive, post
 Requires at least: 2.6
 Tested up to: 3.0
-Stable tag: 0.70
+Stable tag: 0.71
 
 Extended Live Archive(ELA) is a very cool WordPress plugin, which can generate a clean, structured archive page with fantastic visual effect.
 

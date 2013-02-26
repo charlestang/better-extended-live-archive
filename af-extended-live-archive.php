@@ -3,7 +3,7 @@
  Plugin Name: Better Extended Live Archives
  Plugin URI: http://extended-live-archive.googlecode.com/
  Description: The famous ELA for WP 2.7+. It's work for WP 3.0.
- Version: 0.70
+ Version: 0.71
  Author: Charles
  Author URI: http://sexywp.com
  */
@@ -109,12 +109,12 @@ function af_ela_super_archive($arguments = '') {
 	$plugin_path = WP_PLUGIN_URL . '/' . $ela_plugin_basename;
 	global $ela_js_version;
     $process_uri = $plugin_path . '/includes/af-ela.php';
-    if (!settings){
+    if (!$settings){
         echo '<script type="text/javascript">';
         echo "document.write('<div id=\"af-ela\"><p class=\"alert\">Plugin is not initialized. Admin or blog owner, visit the ELA option panel in your admin section.</p></div>')";
         echo '</script>';
     }else{
-	$text .= <<<TEXT
+	$text = <<<TEXT
 <script type="text/javascript">
 var af_elaProcessURI = '${process_uri}';
 var af_elaResultID = '${settings['id']}';
@@ -230,6 +230,7 @@ function af_ela_create_cache($settings) {
 	
 	$generator = new af_ela_classGenerator;
 	
+    $orderparam = 0;
 	if(!$settings['tag_soup_cut'] || empty($settings['tag_soup_X'])) { 
 		$order = false;
 	} else {

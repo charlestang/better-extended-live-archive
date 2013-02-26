@@ -177,6 +177,7 @@ class af_ela_classGenerator {
 	function buildYearsTable($exclude, $id = false) {
 		global $wpdb;
 		
+        $exclusions = '';
 		if (!empty($exclude)) {
 			$excats = preg_split('/[\s,]+/',$exclude);
 			if (count($excats)) {
@@ -230,6 +231,7 @@ class af_ela_classGenerator {
 	function buildMonthsTable($exclude, $id = false) {
 		global $wpdb;
 		
+        $exclusions = '';
 		if (!empty($exclude)) {
 			$excats = preg_split('/[\s,]+/',$exclude);
 			if (count($excats)) {
@@ -289,6 +291,7 @@ class af_ela_classGenerator {
 			$ping = '';
 		}
 		
+        $exclusions = '';
 		if (!empty($exclude)) {
 			$excats = preg_split('/[\s,]+/',$exclude);
 			if (count($excats)) {
@@ -375,6 +378,7 @@ class af_ela_classGenerator {
 	function buildCatsList($sort_column = 'ID', $sort_order = 'asc', $hide_empty = FALSE, $children=TRUE, $child_of=0, $categories=0, $exclude = '', $hierarchical=TRUE, $id = false) {
 		global $wpdb, $category_posts;
 		
+        $exclusions = '';
 		if (!empty($exclude)) {
 			$excats = preg_split('/[\s,]+/',$exclude);
 			if (count($excats)) {
@@ -450,6 +454,7 @@ class af_ela_classGenerator {
 	function buildPostsInCatsTable($exclude='',$hide_ping_and_track) {
 		global $wpdb, $category_posts;
 		
+        $exclusions = '';
 		if( 1 == $hide_ping_and_track ) {
 			$ping = "AND comment_type NOT LIKE '%pingback%' AND comment_type NOT LIKE '%trackback%'";
 		} else {

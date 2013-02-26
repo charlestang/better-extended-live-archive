@@ -158,6 +158,7 @@ function af_ela_generate_years() {
 	global $year, $years, $settings, $fade;
 	$year_list = '';
 	foreach( $years as $y => $p ) {
+        $num = '';
 		$current = '';
 		$current_text = '';
 		if( $y == $year ) {
@@ -167,7 +168,7 @@ function af_ela_generate_years() {
 		
 		if( $settings['num_entries'] == 1 ) {
 			$num = ' ' . str_replace('%', $p, $settings['number_text']);
-			}
+		}
 			
 			$year_list .= <<<END_TEXT
 <li id="${settings['id']}-year-$y"$current>$y$num$current_text</li>
@@ -186,6 +187,7 @@ function af_ela_generate_months() {
 	global $month, $months, $month_names, $settings, $paged_post, $fade;
 	$month_list = '';
 	foreach( $months as $m => $p ) {
+        $num = '';
 		$current = '';
 		$current_text = '';
 		if( $m == $month ) {
@@ -196,7 +198,7 @@ function af_ela_generate_months() {
 		
 		if( $settings['num_entries'] == 1 ) {
 			$num = ' ' . str_replace('%', $p, $settings['number_text']);
-			}
+		}
 			
 			$n = $month_names[$m];
 			$month_list .= <<<END_TEXT
@@ -231,6 +233,7 @@ function af_ela_generate_categories() {
 				$current_text = '';
 			}
 			
+            $num = '';
 			if( $settings['num_entries'] == 1 ) {
 				$num = ' ' . str_replace('%', $p[3], $settings['number_text']);
 			}
@@ -371,6 +374,7 @@ function af_ela_generate_posts() {
 	}
 	$processed_posts = 0;
 	foreach( $posts as $d => $p ) {
+        $cmt_text = '';
 		$processed_posts++;
 		if ($paged_offset!=-1 && $paged_offset >= $processed_posts) {
 			continue;
@@ -388,6 +392,7 @@ function af_ela_generate_posts() {
 
 		$title = af_ela_truncate_title($p[1]);
 
+        $day = '';
 		switch($menu_table[$menu]) {
 		case 'cats':
 			$post_in_menu = "-cats";
