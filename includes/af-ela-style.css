@@ -1,9 +1,17 @@
-*
+/*
 // +----------------------------------------------------------------------+
 // | Licenses and copyright acknowledgements are located at               |
 // | http://www.sonsofskadi.net/wp-content/elalicenses.txt                |
 // +----------------------------------------------------------------------+
 */
+#af-ela {
+    clear:both;
+    overflow:hidden;
+    font-size: 14px;
+    line-height: 2;
+    margin-top: 5px;
+    padding-top: 5px;
+}
 #af-ela ul {
 	padding: 0;
     margin: 0;
@@ -13,10 +21,15 @@
 	list-style-image: none;
 	text-align: left;
 	padding: 1px 8px;
+    margin: 0 auto;
+}
+#af-ela-post-chrono li:first-child {
+    padding-top: 0;
 }
 #af-ela-menu {
 	border-bottom: 1px solid #ccc;
 	margin-bottom: 0;
+    height:24px;
 }
 #af-ela-menu li {
 	display: inline;
@@ -87,6 +100,9 @@
 	border-bottom: 1px solid #FFD324 !important;
 	padding-top: 0;
 	padding-bottom: 0;
+}
+#af-ela-year li.selected:first-child, #af-ela-month li.selected:first-child,#af-ela-post-chrono li:hover:first-child {
+    border-top: none !important;
 }
 #af-ela-loading {
 	margin: 0;
