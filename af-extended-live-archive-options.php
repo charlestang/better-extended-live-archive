@@ -107,30 +107,34 @@ function af_ela_option_init($reset = false) {
 		$newSettings['last_modified'] = gmdate("D, d M Y H:i:s",time());
 		$newSettings['installed_version'] = af_ela_info('currentversion');
 		
-		update_option('af_ela_options', $newSettings, 'Set of Options for Extended Live Archive');
-		update_option('af_ela_option_mode', (get_option('af_ela_options') ? 1:0), 'ELA option mode');
+		update_option('af_ela_options', $newSettings);
+		update_option('af_ela_option_mode', (get_option('af_ela_options') ? 1:0));
 		
 		$res = true;
 		if( !is_dir($af_ela_cache_root) ) {
-            $res = af_ela_create_cache_dir(); /* TODO this function is not defined */
+            $res = af_ela_create_cache_dir();
 			if( !$res ) {
 				?>
-		<div class="updated"><p><strong>
+                <div class="updated"><p><strong>
             <?php _e('Unable to create cache directory. Check your server credentials on the wp-content directory.','ela');?>
-        </strong></p></div>
-	<?php		return;
+                </strong></p></div>
+                <?php
+                return;
 			} else {
 				if( $res === true ) {
 					$res = af_ela_create_cache($settings);
 					if( $res === true ) {?>
-		<div class="updated"><p><strong>
+                        <div class="updated"><p><strong>
             <?php _e('The cache files have been created for the first time. You should be up and running. Enjoy.','ela');?>
-        </strong></p></div>
-	<?php		 	} else {?>
-		<div class="updated"><p><strong>
+                        </strong></p></div>
+                        <?php
+                    } else {
+                        ?>
+                        <div class="updated"><p><strong>
             <?php _e('Unable to create the cache files. Check your server credentials on the wp-content/af-extended-live-archive directory.','ela');?>
-        </strong></p></div>
-	<?php 			return;
+                        </strong></p></div>
+                        <?php
+                        return;
 					}
 				}
 			}
@@ -143,12 +147,12 @@ function af_ela_option_init($reset = false) {
 	<?php		}
 			} else {?>
 		<div class="updated"><p><strong>
-            <?php _e('Unable to update the cache files to the newer version of the plugin. Check your server credentials on the wp-content/af-extended-live-archive directory.','ela');?>
+            <?php _e('Unable to update the cache files to the newer version of the plugin. Check your server credentials on the wp-content/better-extended-live-archive directory.','ela');?>
         </strong></p></div>
 	<?php 	return;
 			}
 		}
-		update_option('af_ela_is_initialized', af_ela_info('currentversion'), 'ELA plugin has already been initialized');
+		update_option('af_ela_is_initialized', af_ela_info('currentversion'));
 	}
 }
 
@@ -208,13 +212,18 @@ function af_ela_option_update() {
 	if( isset($_POST['idle_content']) )     $settings['idle_content']     = urldecode($_POST['idle_content']);
 		
 	$current_mode = get_option('af_ela_option_mode');
-	$asides_cats = $wpdb->get_results("SELECT * from $wpdb->categories");
+	$asides_cats = $wpdb->get_results("SELECT t.term_id AS `cat_ID`, t.name AS `cat_name`
+                                       FROM $wpdb->terms AS t
+                                       INNER JOIN {$wpdb->term_taxonomy} AS tt
+                                            ON (t.term_id = tt.term_id)
+                                       WHERE tt.taxonomy = 'category'");
 	$comma ='';
 	if (!isset($_POST['excluded_categories'])) {?>
 	<div class="updated"><p><strong>
         <?php _e('What\'s the point of not showing up any categories at all ?','ela');?>
     </strong></p></div> <?php
 	} else {
+        $current_mode = 1;
 		if ($current_mode == 0) {
 			$settings['excluded_categories'] = $_POST['excluded_categories'][0];
 		} else {
@@ -240,7 +249,6 @@ function af_ela_option_update() {
 
 function af_ela_admin_page() {
 	af_ela_option_init();
-	
 	if (isset($_POST['ela_submit_option'])) {
 		if (isset($_POST['ela_clear_cache'])) {
 			$cache = new af_ela_classCacheFile('');
@@ -281,35 +289,42 @@ function af_ela_admin_page() {
 
 	af_ela_echo_scripts();
 
-?>	<div class="wrap">
-		<h2>ELA Options</h2><?php
-	af_ela_echo_fieldset_info($option_mode_text,$advancedState);
-?>		<form method="post">
-		<input type="hidden" name="ela_submit_option" value="1" /><?php
-	af_ela_echo_fieldset_whattoshow($settings,$basicState, $current_mode);
-?>		<hr style="clear: both; border: none;" /><?php
-	af_ela_echo_fieldset_howtoshow($settings,$advancedState);
-	af_ela_echo_fieldset_howtocut($settings,$advancedState);
-?>		<hr style="clear: both; border: none;" /><?php
-	af_ela_echo_fieldset_whataboutthemenus($settings,$advancedState);
-	af_ela_echo_fieldset_whatcategoriestoshow($settings,$advancedState);
-	af_ela_echo_fieldset_whataboutthepagedposts($settings,$advancedState);
-?>		<hr style="clear: both; border: none;" />
-		<div class="submit">
-			<input type="submit" name="update_generic" value="<?php _e('Update Options Now') ?>" />
-		</div>
-		</form>
-	</div>
-	<div class="wrap">
-		<h2><?php _e('ELA Cache Management','ela');?></h2>
-		<form method="post">
+?>
+<div class="wrap">
+	<h2>ELA Options</h2>
+    <?php better_ela_infomation();?>
+    <form action="" method="post">
+    <?php
+        better_ela_what_to_show_section($settings);
+        better_ela_how_to_show_section($settings);
+        better_ela_how_to_cut_section($settings);
+        better_ela_what_about_menu_section($settings);
+    ?>
+        <hr style="clear: both; border: none;" />
+    <?php af_ela_echo_fieldset_info($option_mode_text,$advancedState);?>
+    
 		<input type="hidden" name="ela_submit_option" value="1" />
-		<p><?php _e('You need to clear the cache so that it gets re-built whenever you are making changes related to a category without editing or creating a post (like renaming, creating, deleting a category for instance','ela');?></p>
-		<div class="submit">
-			<input type="submit" name="ela_clear_cache" value="<?php _e('Empty Cache Now') ?>" />
-		</div>
-		</form>
-	</div>
+        <hr style="clear: both; border: none;" />
+    <?php
+
+        better_ela_what_categories_to_show_section($settings);
+        better_ela_what_about_paged_posts_section($settings);
+    ?>
+        <hr style="clear: both; border: none;" />
+		<p class="submit">
+			<input type="submit" name="update_generic" value="<?php _e('Update Options Now','ela');?>" class="button-primary" />
+		</p>
+	</form>
+    <hr style="clear: both; border: none;" />
+    <h2><?php _e('ELA Cache Management','ela');?></h2>
+    <form method="post">
+        <input type="hidden" name="ela_submit_option" value="1" />
+        <p><?php _e('You need to clear the cache so that it gets re-built whenever you are making changes related to a category without editing or creating a post (like renaming, creating, deleting a category for instance','ela');?></p>
+        <p class="submit">
+            <input type="submit" name="ela_clear_cache" value="<?php _e('Empty Cache Now','ela') ?>" class="button-primary"/>
+        </p>
+    </form>
+</div>
 <?php
 }
 
@@ -327,28 +342,6 @@ function af_ela_echo_scripts() {
 			}
 		} else {
 			document.getElementById('menu_order_tab' + first).disabled = false;
-		}
-	}
-	function disableDOM(ID, disabler) {
-		var i;
-		if (document.getElementById(disabler).checked == true) {
-			document.getElementById(ID).disabled = false;
-		} else {
-			document.getElementById(ID).disabled = true;
-		}
-	}
-	function disableDOMinv(ID, disabler) {
-		if (document.getElementById(disabler).checked == true) {
-			document.getElementById(ID).disabled= true;
-		} else {
-			document.getElementById(ID).disabled = false;
-		}
-	}
-	function hideDOM(ID, disabler) {
-		if (document.getElementById(disabler).checked == true) {
-			document.getElementById(ID).style.display = "block";
-		} else {
-			document.getElementById(ID).style.display = "none";
 		}
 	}
 	function selectAllCategories(list) {
@@ -369,13 +362,6 @@ function af_ela_echo_scripts() {
 	}
 	
 	function initUnavailableOptions(){
-		disableDOM('number_text', 'num_entries');
-		<?php if($utw_is_present) { ?>disableDOM('number_text_tagged', 'num_entries_tagged');<?php }?>;
-		disableDOM('comment_text', 'num_comments');
-		disableDOM('closed_comment_text', 'num_comments');
-		disableDOM('hide_pingbacks_and_trackbacks', 'num_comments');
-		hideDOM('fieldsetpagedposts', 'paged_posts');
-		<?php if($utw_is_present) { ?>disableDOMinv('tag_soup_X', 'tag_soup_cut0');<?php }?>;
 		disableTabs(1, 0);
 	}
 	
@@ -387,300 +373,292 @@ function af_ela_echo_scripts() {
 
 function af_ela_echo_fieldset_info($option_mode_text,$advancedState) {
 ?>
-		<fieldset class="options" style="float: left; width: 25%;"><legend><?php _e('Extended Live Archive info','ela');?> </legend>
-		<table width="100%" cellspacing="2" cellpadding="5" class="editform">
-			<tr>
-				<th width="33%" valign="top" scope="row"><label><?php _e('Version:','ela');?></label></th>
-				<td><?php echo af_ela_info('currentversion'); ?></td>
-			</tr>
-			<tr>
-				<th width="33%" valign="top" scope="row"><label><?php _e('Latest news:','ela');?></label></th>
-				<td><a href="<?php echo af_ela_info('homeurl'); ?>"><?php echo af_ela_info('homename'); ?></a></td>
-			</tr>
-			<tr>
-				<th width="33%" valign="top" scope="row"><label><?php _e('Get help:','ela');?></label></th>
-				<td><a href="<?php echo af_ela_info('supporturl'); ?>"><?php echo af_ela_info('supportname'); ?></a></td>
-			</tr>
-			<tr>
-				<th width="33%" valign="top" scope="row"><label><?php _e('Works great with:','ela');?></label></th>
-				<td>WP 2.7</td>
-			</tr>
-			<tr>
-				<th width="33%" valign="top" scope="row"><label><?php _e('Feel absolutly free to ','ela');?></label></th>
-				<td>
-                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                    <input type="hidden" name="cmd" value="_s-xclick">
-                    <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
-                    <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                    <img alt="" border="0" src="https://www.paypal.com/zh_XC/i/scr/pixel.gif" width="1" height="1">
-                    </form>
-				</td>
-			</tr>
-		</table> 
+    <!--<fieldset class="options" style="float: left; width: 25%;">
+        <legend><?php _e('Extended Live Archive info','ela');?> </legend>
+
 		<div class="submit" style="text-align:center; ">
 		<form method="post"><br />
-		<input type="hidden" name="ela_submit_option" value="1" /><input type="submit" name="switch_option_mode" value="<?php _e($option_mode_text) ?>" /></form></div>
+		<input type="hidden" name="ela_submit_option" value="1" />
+        <input type="submit" name="switch_option_mode" value="<?php _e($option_mode_text) ?>" />
+        </form></div>
 		
 		<div class="submit" style="text-align:center;display: <?php echo $advancedState; ?> ">
 		<form method="post"><br />
-		<input type="hidden" name="ela_submit_option" value="1" /><input type="submit" name="reset_option" value="<?php echo "Reset options to default" ?>" /></form></div>
+		<input type="hidden" name="ela_submit_option" value="1" />
+        <input type="submit" name="reset_option" value="<?php echo "Reset options to default" ?>" />
+        </form></div>
 		<tr valign="top" >
 
 		</tr>
 			
 			
-		</fieldset><?php
+		</fieldset>-->
+<?php
 }
 
-function af_ela_echo_fieldset_whattoshow($settings,$basicState, $current_mode) {
-	global $utw_is_present;
+// <editor-fold defaultstate="collapsed" desc="Print the ELA infomation section.">
+function better_ela_infomation(){
 ?>
-		<fieldset class="options"><legend>What to show ? </legend>
-		<table width="100%" cellspacing="2" cellpadding="5" class="editform">
-			<tr>
-				<th width="30%" valign="top" scope="row"><label for="newest_first"><?php _e('Show Newest First:','ela');?></label></th>
-				<td width="5%">
-					<input name="newest_first" id="newest_first" type="checkbox" value="<?php echo $settings['newest_first']; ?>" <?php checked('1', $settings['newest_first']); ?> />
-				</td>
-				<td><small><?php _e('Enabling this will show the newest post first in the listings.','ela');?></small></td>
-			</tr>
-			<tr>
-				<th width="30%" valign="top" scope="row"><label for="num_entries" ><?php _e('Show Number of Entries:','ela');?></label></th>
-				<td width="5%">
-					<input onchange="Javascript:disableDOM('number_text', 'num_entries');" name="num_entries" id="num_entries" type="checkbox" value="<?php echo $settings['num_entries']; ?>" <?php checked('1', $settings['num_entries']); ?> />
-				</td>
-				<td><small><?php _e('Sets whether the number of entries for each year, month, category should be shown.','ela');?></small></td>
-			</tr><?php if($utw_is_present) { ?>
-			<tr>
-				<th width="30%" valign="top" scope="row"><label for="num_entries_tagged"><?php _e('Show Number of Entries Per Tag:','ela');?></label></th>
-				<td width="5%">
-					<input onchange="Javascript:disableDOM('number_text_tagged', 'num_entries_tagged');" name="num_entries_tagged" id="num_entries_tagged" type="checkbox" value="<?php echo $settings['num_entries_tagged']; ?>" <?php checked('1', $settings['num_entries_tagged']); ?> /></td>
-				<td><small><?php _e('Sets whether the number of entries for each tags should be shown','ela');?></small></td>
-			</tr><?php } ?>
-			<tr>
-				<th width="30%" valign="top" scope="row"><label for="num_comments"><?php _e('Show Number of Comments:','ela');?></label></th>
-				<td width="5%">
-					<input onchange="Javascript:disableDOM('comment_text', 'num_comments');disableDOM('closed_comment_text', 'num_comments');disableDOM('hide_pingbacks_and_trackbacks', 'num_comments');" name="num_comments" id="num_comments" type="checkbox" value="<?php echo $settings['num_comments']; ?>" <?php checked('1', $settings['num_comments']); ?> /></td>
-                <td><small><?php _e('Sets whether the number of comments for each entry should be shown','ela');?></small></td>
-			</tr>
-			<tr>
-				<th width="30%" valign="top" scope="row"><label for="fade"><?php _e('Fade Anything Technique:','ela');?></label></th>
-				<td width="5%">
-					<input name="fade" id="fade" type="checkbox" value="<?php echo $settings['fade']; ?>" <?php checked('1', $settings['fade']); ?> />
-				</td>
-				<td><small><?php _e('Sets whether changes should fade using the Fade Anything ','ela');?></small></td>
-			</tr>
-			<tr>
-				<th width="30%" valign="top" scope="row"><label for="hide_pingbacks_and_trackbacks"><?php _e('Hide Ping- and Trackbacks:','ela');?></label></th>
-				<td width="5%">
-					<input name="hide_pingbacks_and_trackbacks" id="hide_pingbacks_and_trackbacks" type="checkbox" value="<?php echo $settings['hide_pingbacks_and_trackbacks']; ?>" <?php checked('1', $settings['hide_pingbacks_and_trackbacks']); ?> />
-				</td>
-				<td><small><?php _e('Sets whether ping- and trackbacks should influence the number of comments on an entry','ela');?></small></td>
-			</tr>
-			<tr>
-			<th width="30%" valign="top" scope="row"><label for="use_default_style"><?php _e('Use the default CSS stylesheet:','ela');?></label></th>
-				<td width="5%"><input name="use_default_style" id="use_default_style" type="checkbox" value="<?php echo $settings['use_default_style']; ?>" <?php checked('1', $settings['use_default_style']); ?> /></td><td><small><?php _e('If it exists, will link the <strong>ela.css</strong> stylesheet of your theme. If not present, will link the default stylesheet.','ela');?></small></td>
-			</tr>
-			<tr>
-			<th width="30%" valign="top" scope="row"><label for="paged_posts"><?php _e('Layout the posts link into pages:','ela');?></label></th>
-				<td width="5%"><input  onchange="hideDOM('fieldsetpagedposts', 'paged_posts');" name="paged_posts" id="paged_posts" type="checkbox" value="<?php echo $settings['paged_posts']; ?>" <?php checked('1', $settings['paged_posts']); ?> /></td><td><small><?php _e('Sets whether the posts list will be cut into several pages or just the complete list.','ela');?></small></td>
-			</tr>
-			<tr valign="top" style="display: <?php echo $basicState; ?>">
-				<th scope="row"><label for="cat_asides"><?php _e('Asides Category:','ela');?></label></th>
-				<td colspan="2"><?php
-                /* TODO need fixed!!! */
-				global $wpdb;
-				$asides_table = array();
-//				$asides_table = explode(',', $settings['excluded_categories']);
-//				if ($asides_table[0] != 0) {
-//					$id = $asides_table[0];
-//					$asides_title = $wpdb->get_var("SELECT cat_name from $wpdb->categories WHERE cat_ID = ${asides_table[0]}");
-//				} else {
-//					$asides_title='No Asides';
-//				}
-//				$asides_cats = $wpdb->get_results("SELECT * from $wpdb->categories");
-				 if ($current_mode == 0) {
-?>				<select name="excluded_categories[]" id="cat_asides" style="width: 10em;" >
-				<option value="<?php echo $asides_table[0]; ?>"><?php echo $asides_title; ?></option>
-				<option value="-----">----</option>
-				<option value="0"><?php _e('No Asides','ela');?></option>
-				<option value="-----">----</option><?php
-//				foreach ($asides_cats as $cat) {
-//					echo '<option value="' . $cat->cat_ID . '">' . $cat->cat_name . '</option>';
-//            	}?>
-				</select><small><?php _e('&nbsp;&nbsp;&nbsp;The category you are using for your asides.','ela');?></small></td><?php } ?>
-			</tr>		
-		</table>
-		</fieldset><?php
+    <div style="width:100%;clear:both;overflow:hidden">
+        <div style="width:38%;float:left;text-align:center;">
+            <p>Thanks for using Better Extended Live Archive! You can show your appreciation and support future development by donating!</p>
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
+            <input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+            <img alt="" border="0" src="https://www.paypal.com/zh_XC/i/scr/pixel.gif" width="1" height="1">
+            </form>
+        </div>
+        <div style="width:55%;float:right;padding:10px;border:1px solid #DDD;">
+            <table border="0" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td style="text-align:right;font-weight:900">Homepage:</td>
+                        <td style="padding-left:10px"><a href="http://sexywp.com/archives">Extended Live Archive</a></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;font-weight:900">Forum:</td>
+                        <td style="padding-left:10px"><a href="http://sexywp.com/forum/forum.php?id=8">Bugs and any other questions about ELA.</a></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;font-weight:900">Source Code:</td>
+                        <td style="padding-left:10px"><a href="http://github.com/charlestang/Better-Extended-Live-Archive">Git Hub Homepage</a></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right;font-weight:900">Blogroll Me:</td>
+                        <td style="padding-left:10px">Sexy WP&lt;<a href="http://sexywp.com">http://SexyWP.com</a>&gt; :)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="clear:both"></div>
+<?php
 }
+// </editor-fold>
 
-function af_ela_echo_fieldset_howtoshow($settings,$advancedState) {
-	global $utw_is_present;
-?>		<fieldset class="options" style="display: <?php echo $advancedState; ?>; float: left; width: 52%;" ><legend>How to show it ? </legend>
-		<table width="100%" cellspacing="2" cellpadding="5" class="editform" >
-			<tr valign="top">
-				<th width="180" scope="row"><label for="selected_text"><?php _e('Selected Text:','ela');?></label></th>
-				<td><input name="selected_text" id="selected_text" type="text" value="<?php echo $settings['selected_text']; ?>" size="30" /><br/>
-				<small><?php _e('The text that is shown after the currently selected year, month or category.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="selected_class"><?php _e('Selected Class:','ela');?></label></th>
-				<td ><input name="selected_class" id="selected_class" type="text" value="<?php echo $settings['selected_class']; ?>" size="30" /><br/>
-				<small><?php _e('The CSS class for the currently selected year, month or category.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="number_text"><?php _e('# of Entries Text:','ela');?></label></th>
-				<td><input name="number_text" id="number_text" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['number_text'])); ?>" size="30" /><br/>
-				<small><?php _e('The string to show for number of entries per year, month or category. Can contain HTML. % is replaced with number of entries.','ela');?></small></td>
-			</tr><?php if($utw_is_present) { ?>
-			<tr valign="top">
-				<th scope="row"><label for="number_text_tagged"><?php _e('# of Tagged-Entries Text:','ela');?></label></th>
-				<td><input name="number_text_tagged" id="number_text_tagged" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['number_text_tagged'])); ?>" size="30" /><br/>
-				<small><?php _e('The string to show for number of entries per tag. Can contain HTML. % is replaced with number of entries.','ela');?></small></td>
-			</tr><?php } ?>
-			<tr valign="top">
-				<th scope="row"><label for="comment_text"><?php _e('# of Comments Text:','ela');?></label></th>
-				<td><input name="comment_text" id="comment_text" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['comment_text'])); ?>" size="30" /><br/>
-				<small><?php _e('The string to show for comments. Can contain HTML. % is replaced with number of comments.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="closed_comment_text "><?php _e('Closed Comment Text:','ela');?></label></th>
-				<td><input name="closed_comment_text" id="closed_comment_text" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['closed_comment_text'])); ?>" size="30" /><br/>
-				<small><?php _e('The string to show if comments are closed on an entry. Can contain HTML.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="day_format"><?php _e('Day of Posting Format:','ela');?></label></th>
-				<td><input name="day_format" type="text" id="day_format" value="<?php echo $settings['day_format']; ?>" size="30" /><br/>
-				<small><?php _e('A date format string to show the day for each entry in the chronological tab only (\'jS\' to show 1st, 3rd, and 14th). Format string is in the <a href="http://www.php.net/date">php date format</a>. Reference to year and month in there will result in error : this intended for days only. Leave empty to show no date.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="error_class"><?php _e('Error Class:','ela');?></label></th>
-				<td><input name="error_class" type="text" id="error_class" value="<?php echo $settings['error_class']; ?>" size="30" /><br/>
-				<small><?php _e('The CSS class to put on paragraphs containing errors.','ela');?></small></td>
-			</tr>
-		</table>
-		</fieldset><?php
+// <editor-fold defaultstate="collapsed" desc="What to show section.">
+function better_ela_what_to_show_section($settings){
+    ?>
+    <h3 class="title"><?php _e('What to show?');?></h3>
+    <p><?php _e('Control the output infomation of ELA.');?></p>
+    <table class="form-table"><tbody>
+    <?php
+        better_ela_helper_chkbox(
+            __('Show Newest First:','ela'),
+            'newest_first',$settings['newest_first'],
+            __('Enabling this will show the newest post first in the listings.','ela'));
+        better_ela_helper_chkbox(
+            __('Show Number of Entries:','ela'),
+            "num_entries", $settings['num_entries'],
+            __('Sets whether the number of entries for each year, month, category should be shown.','ela'));
+        better_ela_helper_chkbox(
+            __('Show Number of Entries Per Tag:','ela'),
+            "num_entries_tagged", $settings['num_entries_tagged'],
+            __('Sets whether the number of entries for each tags should be shown','ela'));
+        better_ela_helper_chkbox(
+            __('Show Number of Comments:','ela'),
+            "num_comments", $settings["num_comments"],
+            __('Sets whether the number of comments for each entry should be shown','ela'));
+        better_ela_helper_chkbox(
+            __('Fade Anything Technique:','ela'),
+            'fade',
+            $settings['fade'],
+            __('Sets whether changes should fade using the Fade Anything ','ela'));
+        better_ela_helper_chkbox(
+            __('Hide Ping- and Trackbacks:','ela'),
+            'hide_pingbacks_and_trackbacks', $settings['hide_pingbacks_and_trackbacks'],
+            __('Sets whether ping- and trackbacks should influence the number of comments on an entry','ela'));
+        better_ela_helper_chkbox(
+            __('Use the default CSS stylesheet:','ela'),
+            'use_default_style', $settings['use_default_style'],
+            __('If it exists, will link the <strong>ela.css</strong> stylesheet of your theme. If not present, will link the default stylesheet.','ela'));
+        better_ela_helper_chkbox(
+            __('Layout the posts link into pages:','ela'),
+            'paged_posts', $settings['paged_posts'],
+            __('Sets whether the posts list will be cut into several pages or just the complete list.','ela'));
+    ?>
+    </tbody></table>
+    <?php
 }
+// </editor-fold>
 
-function af_ela_echo_fieldset_howtocut($settings,$advancedState) {
-	global $utw_is_present;
-?>
-		<fieldset class="options" style="display: <?php echo $advancedState; ?>;float: right; width: 40%;" ><legend>What to cut out ? </legend>
-		<table width="100%" cellspacing="2" cellpadding="5" class="editform">
-			<tr valign="top">
-				<th width="180" scope="row"><label for="truncate_title_length"><?php _e('Max Entry Title Length:','ela');?></label></th>
-				<td><input name="truncate_title_length" id="truncate_title_length" type="text" value="<?php echo $settings['truncate_title_length']; ?>" size="8" /><br/>
-				<small><?php _e('Length at which to truncate title of entries. Set to <strong>0</strong> to leave the titles not truncated.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="truncate_cat_length" ><?php _e('Max Cat. Title Length:','ela');?></label></th>
-				<td><input name="truncate_cat_length" id="truncate_cat_length" type="text" value="<?php echo $settings['truncate_cat_length']; ?>" size="8"  /><br/>
-				<small><?php _e('Length at which to truncate name of categories. Set to <strong>0</strong> to leave the category names not truncated','ela');?></small></td>
-			</tr> 
-			<tr valign="top"> 
-				<th scope="row"><label for="truncate_title_text"><?php _e('Truncated Text:','ela');?></label></th>
-				<td><input name="truncate_title_text" id="truncate_title_text" type="text" value="<?php echo $settings['truncate_title_text']; ?>" size="8" /><br/>
-				<small><?php _e('The text that will be written after the entries titles and the categories names that have been truncated. &#8230; (<strong>&amp;#8230;</strong>) is a common example.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="truncate_title_at_space"><?php _e('Truncate at space:','ela');?></label></th>
-				<td><input name="truncate_title_at_space" id="truncate_title_at_space" type="checkbox" value="<?php echo $settings['truncate_title_at_space']; ?>" <?php checked('1', $settings['truncate_title_at_space']); ?> /><br/>
-				<small><?php _e('Sets whether at title should be truncated at the last space before the length to be truncated to, or if words should be truncated mid-senten...','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="abbreviated_month"><?php _e('Abbreviate month names:','ela');?></label></th>
-				<td><input name="abbreviated_month" id="abbreviated_month" type="checkbox" value="<?php echo $settings['abbreviated_month']; ?>" <?php checked('1', $settings['abbreviated_month']); ?> /><br/>
-				<small><?php _e('Sets whether the month names will be abbreviated to three letters.','ela');?></small></td>
-			</tr><?php if ($utw_is_present) { ?>			
-			<tr valign="top">
-				<th scope="row"><label for="tag_soup_cut"><?php _e('Displayed tags:','ela');?></label></th>
-				<td><input name="tag_soup_cut" id="tag_soup_cut0" type="radio" value="0" onchange="Javascript:disableDOMinv('tag_soup_X', 'tag_soup_cut0');" <?php checked('0', $settings['tag_soup_cut']); ?> /><small><?php _e('Show all tags.','ela');?></small>
-				<br /><input name="tag_soup_cut" id="tag_soup_cut1" type="radio" value="1" onchange="Javascript:disableDOMinv('tag_soup_X', 'tag_soup_cut0');" <?php checked('1', $settings['tag_soup_cut']); ?> /><small><?php _e('Show the first <strong>X</strong> most-used tags.','ela');?></small>
-				<br /><input name="tag_soup_cut" id="tag_soup_cut2" type="radio" value="2" onchange="Javascript:disableDOMinv('tag_soup_X', 'tag_soup_cut0');" <?php checked('2', $settings['tag_soup_cut']); ?> /><small><?php _e('Show tags with more than <strong>X</strong> posts.','ela');?></small>
-				</td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="tag_soup_X"><?php _e('The X in the selected above description:','ela');?></label></th>
-				<td><input name="tag_soup_X" id="tag_soup_X" type="text" value="<?php echo $settings['tag_soup_X']; ?>" /><br/>
-				<small><?php _e('Sets depending on the selection made above the number of post per tag needed to display the tag or the number of most-used tags to display.','ela');?></small></td>
-			</tr><?php }?>
-		</table>
-		</fieldset><?php
+// <editor-fold defaultstate="collapsed" desc="How to show section.">
+function better_ela_how_to_show_section($settings){
+    ?>
+    <h3 class="title"><?php _e('How to show?');?></h3>
+    <p><?php _e('Control the output text tips of ELA.');?></p>
+    <table class="form-table"><tbody>
+    <?php
+    better_ela_helper_txtbox(
+        __('Selected Text:','ela'),
+        'selected_text', $settings['selected_text'],
+        __('The text that is shown after the currently selected year, month or category.','ela'));
+    better_ela_helper_txtbox(
+        __('Selected Class:','ela'),
+        'selected_class', $settings['selected_class'],
+        __('The CSS class for the currently selected year, month or category.','ela'));
+    better_ela_helper_txtbox(
+        __('# of Entries Text:','ela'),
+        'number_text', $settings['number_text'],
+        __('The string to show for number of entries per year, month or category. Can contain HTML. % is replaced with number of entries.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('# of Tagged-Entries Text:','ela'),
+        'number_text_tagged', $settings['number_text_tagged'],
+        __('The string to show for number of entries per tag. Can contain HTML. % is replaced with number of entries.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('# of Comments Text:','ela'),
+        'comment_text', $settings['comment_text'],
+        __('The string to show for comments. Can contain HTML. % is replaced with number of comments.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('Closed Comment Text:','ela'),
+        'closed_comment_text', $settings['closed_comment_text'],
+        __('The string to show if comments are closed on an entry. Can contain HTML.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('Day of Posting Format:','ela'),
+        'day_format', $settings['day_format'],
+        __('A date format string to show the day for each entry in the chronological tab only (\'jS\' to show 1st, 3rd, and 14th). Format string is in the <a href="http://www.php.net/date">php date format</a>. Reference to year and month in there will result in error : this intended for days only. Leave empty to show no date.','ela'));
+    better_ela_helper_txtbox(
+        __('Error Class:','ela'),
+        'error_class', $settings['error_class'],
+        __('The CSS class to put on paragraphs containing errors.','ela'));
+    ?>
+    </tbody></table>
+    <?php
 }
+// </editor-fold>
 
-function af_ela_echo_fieldset_whataboutthemenus($settings,$advancedState) {
-	if (!empty($settings['menu_order'])) {
-		$menu_table = preg_split('/[\s,]+/',$settings['menu_order']);
-	}
-	global $utw_is_present;
-?>		<fieldset class="options" style="display: <?php echo $advancedState; ?>; float: left; width: 52%" ><legend><?php _e('What about the menus ?','ela');?></legend>
-		<table width="100%" cellspacing="2" cellpadding="5" class="editform">
-			<tr valign="top">
-				<th width="180" scope="row"><label for="menu_order[]"><?php _e('Tab Order:','ela');?></label></th>
-				<td>
-				<select name="menu_order[]" id="menu_order_tab0" onchange="Javascript:disableTabs(1,0);" style="width: 10em;" >
-				<option value="none" <?php echo ($menu_table[0] == 'none') ? 'selected' : '' ?>>None</option>
-				<option value="chrono" <?php echo ($menu_table[0] == 'chrono') ? 'selected' : '' ?>>By date</option>
-				<option value="cats" <?php echo ($menu_table[0] == 'cats') ? 'selected' : '' ?>>By category</option><?php if($utw_is_present) { ?>
-				<option value="tags" <?php echo ($menu_table[0] == 'tags') ? 'selected' : '' ?>>By tag</option><?php } ?></select>
-				
-				<select name="menu_order[]" id="menu_order_tab1" onchange="Javascript:disableTabs(2,1);" style="width: 10em;" >
-				<option id="none1" value="none" <?php echo ($menu_table[1] == 'none') ? 'selected' : '' ?>>None</option>
-				<option id="chrono1" value="chrono" <?php echo ($menu_table[1] == 'chrono') ? 'selected' : '' ?>>By date</option>
-				<option id="cats1" value="cats" <?php echo ($menu_table[1] == 'cats') ? 'selected' : '' ?>>By category</option><?php if($utw_is_present) { ?>
-				<option id="tags1" value="tags" <?php echo ($menu_table[1] == 'tags') ? 'selected' : '' ?>>By tag</option><?php } ?></select>
-<?php if($utw_is_present) { ?>
-				<select name="menu_order[]" id="menu_order_tab2" style="width: 10em;" >
-				<option id="none2" value="none" <?php echo ($menu_table[2] == 'none') ? 'selected' : '' ?>>None</option>
-				<option id="chrono2" value="chrono" <?php echo ($menu_table[2] == 'chrono') ? 'selected' : '' ?>>By date</option>
-				<option id="cats2" value="cats" <?php echo ($menu_table[2] == 'cats') ? 'selected' : '' ?>>By category</option>
-				<option id="tags2" value="tags" <?php echo ($menu_table[2] == 'tags') ? 'selected' : '' ?>>By tag</option>
-				</select><?php } ?>
-				<br/><small><?php _e('The order of the tab to display.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th width="180" scope="row"><label for="menu_month"><?php _e('Chronological Tab Text:','ela');?></label></th>
-				<td><input name="menu_month" id="menu_month" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['menu_month'])); ?>" size="30" /><br/>
-				<small><?php _e('The text written in the chronological tab.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="menu_cat"><?php _e('By Category Tab Text:','ela');?></label></th>
-				<td><input name="menu_cat" id="menu_cat" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['menu_cat'])); ?>" size="30" /><br/>
-				<small><?php _e('The text written in the categories tab.','ela');?></small></td>
-			</tr><?php if($utw_is_present) { ?>
-			<tr valign="top">
-				<th scope="row"><label for="menu_tag"><?php _e('By Tag Tab Text:','ela');?></label></th>
-				<td><input name="menu_tag" id="menu_tag" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['menu_tag'])); ?>" size="30" /><br/>
-				<small><?php _e('The text written in the tags tab.','ela');?></small></td>
-			</tr><?php } ?>
-	
-			<tr valign="top">
-				<th scope="row"><label for="before_child"><?php _e('Before Child Text:','ela');?></label></th>
-				<td><input name="before_child" id="before_child" type="text" value="<?php echo htmlspecialchars($settings['before_child']); ?>" size="30" /><br/>
-				<small><?php _e('The text written before each category which is a child of another. This is recursive.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="after_child"><?php _e('After Child Text:','ela');?></label></th>
-				<td><input name="after_child" id="after_child" type="text" value="<?php echo $settings['after_child']; ?>" size="30" /><br/>
-				<small><?php _e('The text that after each category which is a child of another. This is recursive.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="loading_content"><?php _e('Loading Content:','ela');?></label></th>
-				<td><input name="loading_content" id="loading_content" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['loading_content'])); ?>" size="30" /><br/>
-				<small><?php _e('The text displayed when the data are being fetched from the server (basically when stuff is loading). Can contain HTML.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="idle_content"><?php _e('Idle Content:','ela');?></label></th>
-				<td><input name="idle_content" id="idle_content" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['idle_content'])); ?>" size="30" /><br/>
-				<small><?php _e('The text displayed when no data are being fetched from the server (basically when stuff is not loading). Can contain HTML.','ela');?></small></td>
-			</tr>
-		</table>
-		</fieldset><?php
+// <editor-fold defaultstate="collapsed" desc="How to cut section.">
+function better_ela_how_to_cut_section($settings){
+    ?>
+    <h3 class="title"><?php _e('How to cut?');?></h3>
+    <p><?php _e('Control the cut off of ELA.');?></p>
+    <table class="form-table"><tbody>
+    <?php
+    better_ela_helper_txtbox(
+        __('Max Entry Title Length:','ela'),
+        'truncate_title_length', $settings['truncate_title_length'],
+        __('Length at which to truncate title of entries. Set to <strong>0</strong> to leave the titles not truncated.','ela'));
+    better_ela_helper_txtbox(
+        __('Max Cat. Title Length:','ela'),
+        'truncate_cat_length', $settings['truncate_cat_length'],
+        __('Length at which to truncate name of categories. Set to <strong>0</strong> to leave the category names not truncated','ela'));
+    better_ela_helper_txtbox(
+        __('Truncated Text:','ela'),
+        'truncate_title_text', $settings['truncate_title_text'],
+        __('The text that will be written after the entries titles and the categories names that have been truncated. &#8230; (<strong>&amp;#8230;</strong>) is a common example.','ela'));
+    better_ela_helper_chkbox(
+        __('Truncate at space:','ela'),
+        'truncate_title_at_space', $settings['truncate_title_at_space'],
+        __('Sets whether at title should be truncated at the last space before the length to be truncated to, or if words should be truncated mid-senten...','ela'));
+    better_ela_helper_chkbox(
+        __('Abbreviate month names:','ela'),
+        'abbreviated_month', $settings['abbreviated_month'],
+        __('Sets whether the month names will be abbreviated to three letters.','ela'));
+    ?>
+    <tr>
+    <th scope="row"><?php _e('Displayed tags:','ela');?></th>
+    <td>
+        <fieldset><legend class="screen-reader-text"><span><?php _e('Displayed tags:','ela');?></span></legend>
+        <label title="tag_soup_cut0"><input type="radio" value="0" name="tag_soup_cut" id="tag_soup_cut0" <?php checked('0', $settings['tag_soup_cut']); ?> /> <?php _e('Show all tags.','ela');?></label><br>
+        <label title="tag_soup_cut1"><input type="radio" value="1" name="tag_soup_cut" id="tag_soup_cut1" <?php checked('1', $settings['tag_soup_cut']); ?> /> <?php _e('Show the first <strong>X</strong> most-used tags.','ela');?></label><br>
+        <label title="tag_soup_cut2"><input type="radio" value="2" name="tag_soup_cut" id="tag_soup_cut2" <?php checked('2', $settings['tag_soup_cut']); ?> /> <?php _e('Show tags with more than <strong>X</strong> posts.','ela');?></label><br>
+        </fieldset>
+    </td>
+    </tr>
+    <?php
+    better_ela_helper_txtbox(
+        __('The X in the selected above description:','ela'),
+        'tag_soup_X', $settings['tag_soup_X'],
+        __('Sets depending on the selection made above the number of post per tag needed to display the tag or the number of most-used tags to display.','ela'));
+    ?>
+    </tbody></table>
+    <?php
 }
+// </editor-fold>
 
-function af_ela_echo_fieldset_whatcategoriestoshow($settings,$advancedState) {
-?>		<fieldset class="options" style="display: <?php echo $advancedState; ?>; float: right; width: 40%" ><legend>What categories to show ?</legend><label for="cat_asides"><?php _e('The category you want to show in the categories tab.','ela');?></label>
-		<?php
+// <editor-fold defaultstate="collapsed" desc="What about the menu section.">
+function better_ela_what_about_menu_section($settings) {
+    ?>
+    <h3 class="title"><?php _e('What about the menu?');?></h3>
+    <p><?php _e('Customize the menu of ELA.');?></p>
+    <table class="form-table"><tbody>
+    <?php
+    if (!empty($settings['menu_order'])) {
+        $menu_table = preg_split('/[\s,]+/',$settings['menu_order']);
+    }
+    ?>
+    <tr valign="top">
+    <th scope="row"><label for="menu_order_tab0"><?php _e('Tab Order:','ela');?></label></th>
+    <td>
+    <?php for($i = 0; $i < 3; $i ++) :?>
+    <select id="menu_order_tab<?php echo $i;?>" name="menu_order[]">
+        <option value="none" <?php selected('none', $menu_table[$i])?>><?php _e('None','ela');?></option>
+        <option value="chrono" <?php selected('chrono', $menu_table[$i])?>><?php _e('By date','ela');?></option>
+        <option value="cats" <?php selected('cats', $menu_table[$i])?>><?php _e('By category','ela');?></option>
+        <option value="tags" <?php selected('tags', $menu_table[$i])?>><?php _e('By tag','ela');?></option></select>
+    <?php endfor;?>
+        <br/><?php _e('The order of the tab to display.','ela');?>
+    </td>
+    </tr>
+    <?php
+    better_ela_helper_txtbox(
+        __('Chronological Tab Text:','ela'),
+        'menu_month', $settings['menu_month'],
+        __('The text written in the chronological tab.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('By Category Tab Text:','ela'),
+        'menu_cat', $settings['menu_cat'],
+        __('The text written in the categories tab.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('By Tag Tab Text:','ela'),
+        'menu_tag', $settings['menu_tag'],
+        __('The text written in the tags tab.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('Before Child Text:','ela'),
+        'before_child', $settings['before_child'],
+        __('The text written before each category which is a child of another. This is recursive.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('After Child Text:','ela'),
+        'after_child', $settings['after_child'],
+        __('The text that after each category which is a child of another. This is recursive.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('Loading Content:','ela'),
+        'loading_content', $settings['loading_content'],
+        __('The text displayed when the data are being fetched from the server (basically when stuff is loading). Can contain HTML.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('Idle Content:','ela'),
+        'idle_content', $settings['idle_content'],
+        __('The text displayed when no data are being fetched from the server (basically when stuff is not loading). Can contain HTML.','ela'),
+        true);
+    ?>
+    </tbody></table>
+    <?php
+}
+// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="What to categories to show section.">
+function better_ela_what_categories_to_show_section($settings) {
+    ?>
+    <h3 class="title"><?php _e('What categories to show?');?></h3>
+    <?php //var_dump($settings['excluded_categories']); ?>
+    <p><?php _e('Check the categories you want to show in the category tab.');?></p>
+    <table class="form-table"><tbody>
+        <tr valign="top">
+            <th scope="row"><?php _e('Select categories:','ela');?></th>
+            <td><fieldset><legend class="screen-reader-text">
+                <span><?php _e('Select categories:','ela');?></span></legend>
+    <?php
 			global $wpdb;
 			$asides_table = array();
 			$asides_table = explode(',', $settings['excluded_categories']);
@@ -691,49 +669,134 @@ function af_ela_echo_fieldset_whatcategoriestoshow($settings,$advancedState) {
                       WHERE tt.taxonomy = 'category'
             ";
 			$asides_cats = $wpdb->get_results($query);
-			$asides_content = '<table width="100%" cellspacing="2" cellpadding="5" class="editform">';
+			$asides_content = '';
 			$asides_select = '';
 			foreach ($asides_cats as $cat) {
-				$checked = in_array($cat->cat_ID, $asides_table) ? '' : 'checked ';
+				$checked = in_array($cat->cat_ID, $asides_table) ? '' : 'checked="checked"';
 				$asides_select .= $cat->cat_ID.',';
-				$asides_content .= '
-			<tr valign="top">
-				<th scope="row"><label for="category-'.$cat->cat_ID.'">'.$cat->cat_name.'</label></th>
-				<td width="5%"><input value="'.$cat->cat_ID.'" type="checkbox" name="excluded_categories[]" id="category-'.$cat->cat_ID.'" '. $checked  . '/></td>
-			</tr>';
+				$asides_content .= '<label for="category-'.$cat->cat_ID.'">';
+                $asides_content .= '<input value="'.$cat->cat_ID.'" type="checkbox" name="excluded_categories[]" id="category-'.$cat->cat_ID.'" '. $checked  .'/>';
+                $asides_content .= $cat->cat_name.'</label><br/>';
 		   	}
-		   	$asides_content .= '</table>';
 			echo $asides_content;
-?>		<input type="button" onclick="javascript:selectAllCategories('<?php echo $asides_select;?>')" value="<?php _e('Select All Categories') ?>" />
-		<input type="button" onclick="javascript:unselectAllCategories('<?php echo $asides_select;?>')" value="<?php _e('Unselect All Categories') ?>" />
-		</fieldset><?php
+    ?>
+            </fieldset></td>
+        </tr>
+        <tr valign="top">
+            <th scope="row">&nbsp;</th>
+            <td>
+                <input type="button" onclick="javascript:selectAllCategories('<?php echo $asides_select;?>')" value="<?php _e('Select All Categories') ?>" />
+                <input type="button" onclick="javascript:unselectAllCategories('<?php echo $asides_select;?>')" value="<?php _e('Unselect All Categories') ?>" />
+            </td>
+        </tr>
+    </tbody></table>
+    <?php
 }
+// </editor-fold>
 
-function af_ela_echo_fieldset_whataboutthepagedposts($settings,$advancedState) {
+// <editor-fold defaultstate="collapsed" desc="What about paged posts section.">
+function better_ela_what_about_paged_posts_section($settings) {
+    ?>
+    <h3 class="title"><?php _e('What about paged posts?.','ela');?></h3>
+    <p><?php _e('The layout of the posts when using a paged list instead of complete list .','ela');?></p>
+    <table class="form-table paged-posts-section"><tbody>
+    <?php
+    better_ela_helper_txtbox(
+        __('Max # of Posts per page:','ela'),
+        'paged_post_num', $settings['paged_post_num'],
+        __('The max number of posts that will be listed per page.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('Next Page of Posts:','ela'),
+        'paged_post_next', $settings['paged_post_next'],
+        __('The text written as the link to the next page.','ela'),
+        true);
+    better_ela_helper_txtbox(
+        __('Previous Page of Posts:','ela'),
+        'paged_post_prev', $settings['paged_post_prev'],
+        __('The text written as the link to the previous page.','ela'),
+        true);
+    ?>
+    </tbody></table>
+    <?php
+}
+// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="HTML form helper functions.">
+function better_ela_helper_chkbox($caption, $id, $default, $description){
 ?>
-		<fieldset id="fieldsetpagedposts" class="options" style="display: <?php echo $advancedState; ?>; float: right; width: 40%" >
-        <legend><?php _e('What about the paged posts ?','ela');?></legend>
-        <label for="cat_asides"><?php _e('The layout of the posts when using a paged list instead of complete list .','ela');?></label>
-		<table width="100%" cellspacing="2" cellpadding="5" class="editform">
-			<tr valign="top">
-				<th scope="row"><label for="paged_post_num"><?php _e('Max # of Posts per page:','ela');?></label></th>
-				<td><input name="paged_post_num" id="paged_post_num" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['paged_post_num'])); ?>" size="30" /><br/>
-				<small><?php _e('The max number of posts that will be listed per page.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="paged_post_next"><?php _e('Next Page of Posts:','ela');?></label></th>
-				<td><input name="paged_post_next" id="paged_post_next" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['paged_post_next'])); ?>" size="30" /><br/>
-				<small><?php _e('The text written as the link to the next page.','ela');?></small></td>
-			</tr>
-			<tr valign="top">
-				<th scope="row"><label for="paged_post_prev"><?php _e('Previous Page of Posts:','ela');?></label></th>
-				<td><input name="paged_post_prev" id="paged_post_prev" type="text" value="<?php echo htmlspecialchars(stripslashes($settings['paged_post_prev'])); ?>" size="30" /><br/>
-				<small><?php _e('The text written as the link to the previous page.','ela');?></small></td>
-			</tr>
-		</table>
-		</fieldset>
+    <tr valign="top">
+    <th scope="row"><?php echo $caption;?></th>
+    <td><fieldset><legend class="screen-reader-text">
+        <span><?php echo $caption;?></span></legend><label for="<?php echo $id;?>">
+        <input type="checkbox" value="<?php echo $default;?>" id="<?php echo $id;?>" name="<?php echo $id;?>" <?php checked('1', $default);?>>
+    <?php echo $description;?></label>
+    </fieldset></td>
+    </tr>
 <?php
 }
 
-//af_ela_admin_page();
+function better_ela_helper_txtbox($caption, $id, $default, $description, $html = false){
+    if ($html) {
+        $default = htmlspecialchars(stripslashes($default));
+    }
 ?>
+<tr valign="top">
+    <th scope="row"><label for="<?php echo $id;?>"><?php echo $caption;?></label></th>
+    <td>
+        <input type="text" class="regular-text" style="width:12.5em;" value="<?php echo $default;?>" id="<?php echo $id;?>" name="<?php echo $id;?>">
+        <span class="description"><?php echo $description;?></span></td>
+</tr>
+<?php
+}
+// </editor-fold>
+
+// <editor-fold defaultstate="collapsed" desc="JS code in admin page.">
+function better_ela_js_code_in_admin_page(){
+?>
+<script type="text/javascript">
+//<![CDATA[
+(function($){
+    var disable_control = function(idx,ctrl){
+        $(ctrl).get(0).disabled = true;
+    };
+    var enable_control = function(idx,ctrl){
+        $(ctrl).get(0).disabled = false;
+    };
+    var set_status = function(item,targets){
+        var checked = $(item).get(0).checked;
+        if (arguments.length==3?!checked:checked){
+            $.each(targets,enable_control);
+        }else{
+            $.each(targets,disable_control);
+        }
+    };
+    function form_item_control(switcher, targets){ //表单项控制
+        var $switcher = $(switcher);
+        set_status($switcher.get(0), targets);
+        $switcher.bind('click',function(){
+            var that = this;
+            set_status(that, targets);
+        });
+    }
+    $(function(){
+        form_item_control('#paged_posts',$('table.paged-posts-section input'));
+        form_item_control('#num_entries',$('#number_text'));
+        form_item_control('#num_comments',$('#comment_text'));
+        form_item_control('#num_comments',$('#closed_comment_text'));
+        form_item_control('#num_comments',$('#hide_pingbacks_and_trackbacks'));
+        form_item_control('#num_entries_tagged', $('#number_text_tagged'));
+        set_status('#tag_soup_cut0',$('#tag_soup_X'),0);
+        var $radios = $('input[name="tag_soup_cut"]');
+        $radios.each(function(){
+            $(this).bind('click',function(){
+                set_status('#tag_soup_cut0',$('#tag_soup_X'),0);
+            });
+        });
+    });
+})(jQuery);
+//]]>
+</script>
+<?php
+}
+// </editor-fold>
