@@ -155,63 +155,63 @@ function af_ela_read_posts() {
 }
 
 function af_ela_generate_years() {
-	global $year, $years, $settings, $fade;
-	$year_list = '';
-	foreach( $years as $y => $p ) {
-        $num = '';
-		$current = '';
-		$current_text = '';
-		if( $y == $year ) {
-			$current = ' class="'.$settings['selected_class'].'"';
-			$current_text = $settings['selected_text'] == '' ? '' : ' ' . $settings['selected_text'];
-		}
-		
-		if( $settings['num_entries'] == 1 ) {
-			$num = ' ' . str_replace('%', $p, $settings['number_text']);
-		}
-			
-			$year_list .= <<<END_TEXT
-<li id="${settings['id']}-year-$y"$current>$y$num$current_text</li>
+    global $year, $years, $settings, $fade;
+    $year_list = '';
+    foreach ($years as $y => $p) {
+        $current = '';
+        $current_text = '';
+        if ($y == $year) {
+            $current = ' class="' . $settings['selected_class'] . '"';
+            $current_text = $settings['selected_text'] == '' ? '' : ' ' . $settings['selected_text'];
+        }
 
+        $num = '';
+        if ($settings['num_entries'] == 1) {
+            $num = ' ' . str_replace('%', $p, $settings['number_text']);
+        }
+
+        $year_list .= <<<END_TEXT
+            <li id="${settings['id']}-year-$y"$current>$y$num$current_text</li>
 END_TEXT;
-		}
-		$year_list = <<<END_LIST
-<ul id="${settings['id']}-year"${fade['year']}>
-$year_list</ul>
+    }
+    $year_list = <<<END_LIST
+        <ul id="${settings['id']}-year"${fade['year']}>
+        $year_list
+        </ul>
 END_LIST;
 
-	return $year_list;
+    return $year_list;
 }
 
 function af_ela_generate_months() {
-	global $month, $months, $month_names, $settings, $paged_post, $fade;
-	$month_list = '';
-	foreach( $months as $m => $p ) {
+    global $month, $months, $month_names, $settings, $paged_post, $fade;
+    $month_list = '';
+    foreach ($months as $m => $p) {
+        $current = '';
+        $current_text = '';
+        if ($m == $month) {
+            $paged_post = $p;
+            $current = ' class="' . $settings['selected_class'] . '"';
+            $current_text = $settings['selected_text'] == '' ? '' : ' ' . $settings['selected_text'];
+        }
+
         $num = '';
-		$current = '';
-		$current_text = '';
-		if( $m == $month ) {
-			$paged_post = $p;
-			$current = ' class="' . $settings['selected_class'] . '"';
-			$current_text = $settings['selected_text'] == '' ? '' : ' ' . $settings['selected_text'];
-		}
-		
-		if( $settings['num_entries'] == 1 ) {
-			$num = ' ' . str_replace('%', $p, $settings['number_text']);
-		}
-			
-			$n = $month_names[$m];
-			$month_list .= <<<END_TEXT
+        if ($settings['num_entries'] == 1) {
+            $num = ' ' . str_replace('%', $p, $settings['number_text']);
+        }
+
+        $n = $month_names[$m];
+        $month_list .= <<<END_TEXT
 <li id="${settings['id']}-month-$m"$current>$n$num$current_text</li>
 
 END_TEXT;
-		}
-		$month_list = <<<END_LIST
+    }
+    $month_list = <<<END_LIST
 <ul id="${settings['id']}-month"${fade['month']}>
 $month_list</ul>
 END_LIST;
 
-	return $month_list;
+    return $month_list;
 }
 
 function af_ela_generate_categories() {	
@@ -374,7 +374,6 @@ function af_ela_generate_posts() {
 	}
 	$processed_posts = 0;
 	foreach( $posts as $d => $p ) {
-        $cmt_text = '';
 		$processed_posts++;
 		if ($paged_offset!=-1 && $paged_offset >= $processed_posts) {
 			continue;
@@ -382,6 +381,7 @@ function af_ela_generate_posts() {
 		if($settings['paged_posts'] && ($processed_posts - $offset) > $settings['paged_post_num']) {
 			break;
 		}
+        $cmt_text = '';
 		if( $settings['num_comments'] == 1 ) {
 			if( $p[4] == 'closed' ) {
 				$cmt_text = ' ' . str_replace('%', $p[3], $settings['closed_comment_text']);
@@ -524,7 +524,6 @@ af_ela_get_tidy_settings($paged_post,
 
 
 af_ela_set_month_table($settings, $month_names);
-
 if ($paged_offset !=-1) {
 	switch($menu_table[$menu]) {
 	case 'chrono':
@@ -558,7 +557,7 @@ if ($paged_offset !=-1) {
 		break;
 			
 	case 'tags':	
-		$err = af_ela_read_tags();	
+		$err = af_ela_read_tags();
 		if ($err === false) die();
 		$err = af_ela_read_posts();
 		if ($err === false) die();
@@ -627,7 +626,7 @@ BEGIN_TEXT;
 		break;
 			
 	case 'tags':	
-		$err = af_ela_read_tags();	
+		$err = af_ela_read_tags();
 		if ($err === false) die();
 		$err = af_ela_read_posts();
 		if ($err === false) die();
