@@ -225,6 +225,7 @@ function af_ela_create_cache($settings) {
 	
 	if(!$settings['tag_soup_cut'] || empty($settings['tag_soup_X'])) { 
 		$order = false;
+        $orderparam = 0;
 	} else {
 		$order = $settings['tag_soup_cut'];
 		$orderparam = $settings['tag_soup_X'];
@@ -331,7 +332,9 @@ function better_ela_init(){
     add_shortcode('extended-live-archive', 'af_ela_shorcode');
     
     if (is_admin()){
-        add_action('admin_head', 'better_ela_js_code_in_admin_page');
+        if (isset($_GET['page']) && $_GET['page'] == 'extended-live-archive') {
+            add_action('admin_head', 'better_ela_js_code_in_admin_page');
+        }
         add_action('admin_menu', 'af_ela_admin_pages');
     }
 }
