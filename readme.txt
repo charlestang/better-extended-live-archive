@@ -1,10 +1,10 @@
 === Better Extended Live Archive ===
 Contributors: Charles
 Donate link: http://sexywp.com/archives
-Tags: template tags, archive, post
+Tags: template tags, archive, post, archives, BELA, ELA,
 Requires at least: 2.6
-Tested up to: 3.0
-Stable tag: 0.71
+Tested up to: 3.5.1
+Stable tag: 0.80
 
 Extended Live Archive(ELA) is a very cool WordPress plugin, which can generate a clean, structured archive page with fantastic visual effect.
 
@@ -51,7 +51,7 @@ none.
 == Changelog ==
 = 0.80 =
 * Remove the version check in the admin page, you can use WP Plugin directory now.
-* Exclude categories feature not worked, now it has been fixed.
+* Exclude categories feature was not working, now it has been fixed.
 * Error when tag list generating fixed.
 * Post new bug fixed.
 * SQL query optimized.
