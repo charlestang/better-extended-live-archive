@@ -101,7 +101,7 @@
 	padding-top: 0;
 	padding-bottom: 0;
 }
-#af-ela-year li.selected:first-child, #af-ela-month li.selected:first-child,#af-ela-post-chrono li:hover:first-child {
+#af-ela-year li.selected:first-child, #af-ela-month li.selected:first-child,#af-ela-category li.selected:first-child, #af-ela-post-chrono li:hover:first-child {
     border-top: none !important;
 }
 #af-ela-loading {
