@@ -89,13 +89,12 @@ function af_ela_super_archive($arguments = '') {
 		ORDER BY post_date DESC LIMIT 1");
 	
 		
-	if( !is_dir($ela_cache_root) || !is_file($ela_cache_root.'years.dat')
+	if( !is_dir($ela_cache_root) || !is_file($ela_cache_root.'/years.dat')
      || $num_posts != $options['num_posts'] || $last_post_id != $options['last_post_id'] ) {
 		$options['num_posts'] = $num_posts;
 		$options['last_post_id'] = $last_post_id;
 		update_option('af_ela_super_archive', $options);
 
-		
 		$res = af_ela_create_cache($settings);
 		
 		if( $res === false ) {
