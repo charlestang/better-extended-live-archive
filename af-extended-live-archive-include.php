@@ -414,7 +414,7 @@ class Better_ELA_Cache_Builder {
 			$this->catsTable[$category[0]][5] = $parentcount;
 		}
 		foreach( $this->catsTable as $category ) {
-			if ($category[6] == TRUE || intval($category[3]) > 0) {
+			if ( (isset($category[6]) && $category[6] == TRUE) || intval($category[3]) > 0) {
 				$this->catsTable[$category[0]][6] = TRUE;
 			} else {
 				$this->catsTable[$category[0]][6] = FALSE;
@@ -563,7 +563,7 @@ class Better_ELA_Cache_Builder {
                     }
                 }
 
-				if ($this->postsInCatsTable[$category[0]]) {
+				if (isset($this->postsInCatsTable[$category[0]])) {
                     $this->cache->set('cat-' . $category[0] . '.dat', $this->postsInCatsTable[$category[0]]);
 				}
 			}
