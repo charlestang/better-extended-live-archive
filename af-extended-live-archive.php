@@ -22,17 +22,32 @@ if ( !defined('WP_PLUGIN_DIR') )
 //the directory name of this plugin
 $ela_plugin_pathname = plugin_basename(__FILE__);
 $ela_plugin_basename = plugin_basename(dirname(__FILE__));
+$ela_plugin_basepath = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $ela_plugin_basename;
 
 //the path name of cache directory
-$ela_cache_root = WP_PLUGIN_DIR . '/' . $ela_plugin_basename . '/cache/';
+$ela_cache_root = $ela_plugin_basepath . '/cache';
+
 
 //the debug flag, if true, will create a log file
 $debug = false;
 $utw_is_present = true;
 
 
-require_once(dirname(__FILE__)."/af-extended-live-archive-include.php");
+require_once $ela_plugin_basepath ."/af-extended-live-archive-include.php";
+require_once $ela_plugin_basepath . '/classes/interface.php';
+require_once $ela_plugin_basepath . '/classes/exception.php';
+require_once $ela_plugin_basepath . '/classes/BelaFileCache.php';
 
+
+/**
+ * @return BelaCache 
+ */
+function bela_get_cache() {
+    global $ela_cache_root;
+    $cache = new BelaFileCache();
+    $cache->cacheFilePath = $ela_cache_root;
+    return $cache;
+}
 /***************************************
  * Main template function.
  **************************************/	 
@@ -209,6 +224,7 @@ function af_ela_post_change($id) {
 	return $id;
 }
 function af_ela_create_cache_dir(){
+    global $ela_cache_root;
     return mkdir($ela_cache_root);
 }
 /***************************************

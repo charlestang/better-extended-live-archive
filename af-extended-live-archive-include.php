@@ -68,13 +68,13 @@ function dlog($function = __FUNCTION__, $line = __LINE__){
 }
 
 class Better_ELA_Cache_Builder {
+
     /**
-     * Cache File
-     * @var object
+     * Cache
+     * @var BelaCache
      * @access private
-     * @since 0.8
      */
-    var $cache;
+    private $cache;
 
     /**
      * Exclude Posts IDs
@@ -110,7 +110,7 @@ class Better_ELA_Cache_Builder {
      * Constructor
      */
     function Better_ELA_Cache_Builder() {
-        $this->cache = new af_ela_classCacheFile('');
+        $this->cache = bela_get_cache();
     }
 
     /**
@@ -284,11 +284,10 @@ class Better_ELA_Cache_Builder {
         }
 		if (!empty($this->year_table)) {
             if (false !== $id){ //如果更新单篇文章
-                $this->cache->readFile('years.dat');
-                $diffyears = array_diff_assoc($this->year_table, $this->cache->readFileContent);                
+                $yearsTable = $this->cache->get('years.dat');
+                $diffyears = array_diff_assoc($this->year_table, $yearsTable);                
                 if (!empty($diffyears)){ //如果Year表发生变化，重写Year表cache
-                    $this->cache->contentIs($this->year_table);
-                    $this->cache->writeFile('years.dat');
+                    $this->cache->set('years.dat', $this->year_table);
                     dlog(__FUNCTION__,__LINE__,'Years Table Updated:',$this->year_table);
                     $this->year_table = $diffyears;
                     dlog(__FUNCTION__,__LINE__,'Different Years:',$diffyears);
@@ -296,8 +295,7 @@ class Better_ELA_Cache_Builder {
                     $this->year_table = array($this->postToGenerate['new_year'] => 0);
                 }
             } else {
-                $this->cache->contentIs($this->year_table);
-                $this->cache->writeFile('years.dat');
+                $this->cache->set('years.dat', $this->year_table);
                 dlog(__FUNCTION__,__LINE__,'Years Table:',$this->year_table);
             }		
 		}
@@ -330,11 +328,10 @@ class Better_ELA_Cache_Builder {
                 }
                 if (!empty($this->month_table[$year])) {
                     if ($id !== false){
-                        $this->cache->readFile($year . '.dat');
-                        $diffmonth = array_diff_assoc($this->month_table[$year], $this->cache->readFileContent);
+                        $monthTable = $this->cache->get($year . '.dat');
+                        $diffmonth = array_diff_assoc($this->month_table[$year], $monthTable);
                         if (!empty($diffmonth)){                            
-                            $this->cache->contentIs($this->month_table[$year]);
-                            $this->cache->writeFile($year . '.dat');
+                            $this->cache->set($year . '.dat', $this->month_table[$year]);
                             dlog(__FUNCTION__,__LINE__,'Year: ',$year,' Month Table Updated: ',$this->month_table[$year]);
                             $this->month_table[$year] = $diffmonth;
                             dlog(__FUNCTION__,__LINE__,'Different Months: ',$this->month_table[$year]);
@@ -342,8 +339,7 @@ class Better_ELA_Cache_Builder {
                             $this->month_table[$year] = array($this->postToGenerate['new_month'] => 0);
                         }
                     } else {
-                        $this->cache->contentIs($this->month_table[$year]);
-                        $this->cache->writeFile($year . '.dat');
+                        $this->cache->set($year . '.dat', $this->month_table[$year]);
                         dlog(__FUNCTION__,__LINE__,'Year: ',$year,' Month Table: ',$this->month_table[$year]);
                     }                   
                 }
@@ -393,8 +389,7 @@ class Better_ELA_Cache_Builder {
 					}
 				}
 				if (!empty($posts[$year][$month])) {
-					$this->cache->contentIs($posts[$year][$month]);
-					$this->cache->writeFile($year . '-' . $month . '.dat');
+                    $this->cache->set($year . '-' . $month . '.dat', $posts[$year][$month]);
                     dlog(__FUNCTION__,__LINE__,$year . '-' . $month . '.dat Updated. Content is: ',$posts[$year][$month]);
 				}
 			}
@@ -426,14 +421,13 @@ class Better_ELA_Cache_Builder {
 			}
 		}
 		if($id) {
-			if ($this->cache->readFile('categories.dat')) {
-				$diffTempo = array_diff_assoc($this->cache->readFileContent, $this->catsTable);
+            $categoryTable = $this->cache->get('categories.dat');
+			if ($categoryTable) {
+				$diffTempo = array_diff_assoc($categoryTable, $this->catsTable);
 				if(!empty($diffTempo)) $diffcats = $diffTempo;
 			}
 		}
-		$this->cache->contentIs($this->catsTable);
-        logthis(var_export($this->catsTable,true), __FUNCTION__, __LINE__);
-		$this->cache->writeFile('categories.dat');
+        $this->cache->set('categories.dat', $this->catsTable);
 		if($id) {			
 			if (!empty($diffcats)) {
 				$this->catsTable = $diffcats;
@@ -570,8 +564,7 @@ class Better_ELA_Cache_Builder {
                 }
 
 				if ($this->postsInCatsTable[$category[0]]) {
-					$this->cache->contentIs($this->postsInCatsTable[$category[0]]);
-					$this->cache->writeFile('cat-' . $category[0] . '.dat');
+                    $this->cache->set('cat-' . $category[0] . '.dat', $this->postsInCatsTable[$category[0]]);
 				}
 			}
 		}
@@ -622,14 +615,11 @@ class Better_ELA_Cache_Builder {
 				
 				$this->tagsTable[0] = array($tagged_posts, $posted_tags);
 				
-				$this->cache->contentIs($this->tagsTable);
-
-                dlog(__FUNCTION__,__LINE__,'Tags Table: ',$this->tagsTable);
-				$this->cache->writeFile('tags.dat');
+                $this->cache->set('tags.dat', $this->tagsTable);
 				
 				if($id) {
-					$this->cache->readFile('tags.dat');
-					$difftags = array_diff_assoc($this->cache->readFileContent, $this->tagsTable);
+                    $tagTable = $this->cache->get('tags.dat');
+					$difftags = array_diff_assoc($tagTable, $this->tagsTable);
 					if (!empty($difftags)) {
 						$this->tagsTable = $difftags;
 					} else {
@@ -675,17 +665,14 @@ class Better_ELA_Cache_Builder {
 						$this->postsInTagsTable[$tag[0]][$post_result->ID] = array($post_result->day, $post_result->post_title, get_permalink($post_result->ID), $post_result->comment_count, $post_result->comment_status);
 					}
 					if ($this->postsInTagsTable[$tag[0]]) {
-						$this->cache->contentIs($this->postsInTagsTable[$tag[0]]);
-						$this->cache->writeFile('tag-' . $tag[0] . '.dat');
+                        $this->cache->set('tag-' . $tag[0] . '.dat', $this->postsInTagsTable[$tag[0]]);
 					}
 				}else{
                     unset($this->tagsTable[$key]);
                     $this->tagsTable[0][0] = $this->tagsTable[0][0] - 1;
                 }
 			}
-            $this->cache->contentIs($this->tagsTable);
-            dlog(__FUNCTION__,__LINE__,'Tags Table Rewrite: ',$this->tagsTable);
-            $this->cache->writeFile('tags.dat');
+            $this->cache->set('tags.dat', $this->tagsTable);
 		
 	}
 	/******************************************
@@ -704,87 +691,3 @@ class Better_ELA_Cache_Builder {
 		return $sorted_arr;
 	}
 }
-
-/* ***********************************
-* Cache File Handling class
-* ***********************************/	
-class af_ela_classCacheFile {
-	var $fileContent = array();
-	var $readFileContent = array();
-	var $fileName;
-	var $dbResults = array();
-	/* ***********************************
-	 * Helper Function : class creator
-	 * ***********************************/	
-	function af_ela_classCacheFile($filename = false) {
-		if($filename===false) {
-			$this->fileName = "dummy.dat";
-		} else {
-			$this->fileName = $filename;
-		}
-		return true;
-	}
-	/* ***********************************
-	 * Helper Function : set fileContent 
-	 * 			property
-	 * ***********************************/	
-	function contentIs($content) {
-		$this->fileContent = $content;
-		return true;
-	}
-	/* ***********************************
-	 * Helper Function : read an existing 
-	 * 			file and set 
-	 * 			readFileContent property
-	 * ***********************************/	
-	function readFile($filename = false) {
-		global $ela_cache_root;
-		
-		if(!($filename===false)) $this->fileName = $filename;
-		
-		$handle = @fopen ($ela_cache_root.$this->fileName, "r");
-		if( $handle === false ) {
-			return false;
-		}
-		
-		$buf = fread($handle, filesize($ela_cache_root.$this->fileName));
-		$this->readFileContent = unserialize($buf);
-		
-		fclose ($handle);
-		return true;
-	}
-	/* ***********************************
-	 * Helper Function : actual flushing 
-	 * 			of fileContent to the file 
-	 * 			system
-	 * ***********************************/	
-	function writeFile($filename = false) {
-		global $ela_cache_root;
-		
-		if(!($filename===false)) $this->fileName = $filename;
-		
-		$handle = fopen($ela_cache_root . $this->fileName, 'w');
-		if( $handle === false ) {
-			return false;
-		}
-		fwrite($handle, serialize($this->fileContent));
-		fclose($handle);
-		return true;
-	}
-	/* ***********************************
-	 * Helper Function : deletes cache 
-	 * 			files
-	 * ***********************************/	
-	function deleteFile() {
-		global $wpdb, $ela_cache_root;
-		$del_cache_path = $ela_cache_root . "*.dat";
-		if ( ($filelist=glob($del_cache_path)) === false ) return false;
-		foreach ($filelist as $filename) {
-			if (!@unlink($filename)) return false;	// delete it
-		}
-		return true;
-	}
-}
- 
- 
-?>

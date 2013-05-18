@@ -47,8 +47,9 @@ function af_ela_option_init($reset = false) {
 			|| strstr(trim(af_ela_info('currentversion')), trim($is_initialized)) === false
 			|| strstr(trim($settings['installed_version']), trim($is_initialized)) === false
 			|| $reset) {
-		$cache = new af_ela_classCacheFile('');
-		$cache->deleteFile();
+
+        $cache = bela_get_cache();
+        $cache->clearAllCache();
 		$initSettings = array(
 	// These options is not accessible through the admin panel
 		'id' => 'af-ela',
@@ -242,8 +243,8 @@ function af_ela_option_update() {
 	
 	update_option('af_ela_options', $settings, 'Set of Options for Extended Live Archive',1);
 	
-	$cache = new af_ela_classCacheFile('');
-	$cache->deleteFile();
+    $cache = bela_get_cache();
+	$cache->clearAllCache();
 	
 }
 
@@ -251,8 +252,8 @@ function af_ela_admin_page() {
 	af_ela_option_init();
 	if (isset($_POST['ela_submit_option'])) {
 		if (isset($_POST['ela_clear_cache'])) {
-			$cache = new af_ela_classCacheFile('');
-			$reset_return= $cache->deleteFile();
+            $cache = bela_get_cache();
+			$reset_return= $cache->clearAllCache();
 			if ($reset_return) {
 				echo '<div class="updated"><p><strong>', __('Cache emptied','ela'), '</strong></p></div>';
 			} else {

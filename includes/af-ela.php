@@ -42,8 +42,8 @@ function af_ela_truncate_cat_title($title) {
 }
 
 function af_ela_read_years()  {
-	global $year, $years, $path, $settings; 	
-	$year_contents = @file_get_contents($path . 'years.dat');
+	global $year, $years, $ela_cache_root, $settings; 	
+	$year_contents = @file_get_contents($ela_cache_root. '/years.dat');
 	if( $year_contents === false ) $year_contents = '';
 	
 	$years = unserialize($year_contents);
@@ -64,8 +64,8 @@ function af_ela_read_years()  {
 }
 	
 function af_ela_read_months()  {
-	global $month, $months, $year, $years, $path, $settings; 	
-	$month_contents = @file_get_contents($path . $year . '.dat');
+	global $month, $months, $year, $years, $ela_cache_root, $settings; 	
+	$month_contents = @file_get_contents($ela_cache_root . '/' . $year . '.dat');
 	if( $month_contents === false ) $month_contents = '';
 	
 	$months = unserialize($month_contents);
@@ -86,8 +86,8 @@ function af_ela_read_months()  {
 }
 
 function af_ela_read_categories() {
-	global $category, $categories, $path, $settings;
-	$category_contents = @file_get_contents($path . 'categories.dat');
+	global $category, $categories, $ela_cache_root, $settings;
+	$category_contents = @file_get_contents($ela_cache_root. '/categories.dat');
 	if( $category_contents === false ) $category_contents = '';
 	
 	$categories = unserialize($category_contents);
@@ -99,8 +99,8 @@ function af_ela_read_categories() {
 }
 
 function af_ela_read_tags() {
-	global $tag, $tags, $path, $settings;
-	$tag_contents = @file_get_contents($path . 'tags.dat');
+	global $tag, $tags, $ela_cache_root, $settings;
+	$tag_contents = @file_get_contents($ela_cache_root. '/tags.dat');
 	if( $tag_contents === false ) $tag_contents = '';
 	
 	$tags = unserialize($tag_contents);
@@ -112,10 +112,10 @@ function af_ela_read_tags() {
 }
 
 function af_ela_read_posts() {
-	global $month, $months, $year, $years, $category, $categories, $tag, $tags, $posts, $path, $settings, $menu_table, $menu; 
+	global $month, $months, $year, $years, $category, $categories, $tag, $tags, $posts, $ela_cache_root, $settings, $menu_table, $menu; 
 	switch($menu_table[$menu]) {
 	case 'chrono':
-		$post_contents = @file_get_contents($path . $year . '-' . $month . '.dat');
+		$post_contents = @file_get_contents($ela_cache_root . '/'. $year . '-' . $month . '.dat');
 		$message = "${settings['id']}|<p class='${settings['error_class']}'>Could not open cache file '$year-$month.dat'</p>";
 		break;
 	case 'cats':
@@ -127,7 +127,7 @@ function af_ela_read_posts() {
 			}
 			$category = $categories[$keys[$i]][0];
 		}
-		$post_contents = @file_get_contents($path . 'cat-' . $category. '.dat');
+		$post_contents = @file_get_contents($ela_cache_root . '/cat-' . $category. '.dat');
 		
 		$message = "${settings['id']}|<p class='${settings['error_class']}'>Could not open cache file 'cat-$category.dat'</p>";
 		break;
@@ -136,7 +136,7 @@ function af_ela_read_posts() {
 			$keys = array_keys($tags);
 			$tag = $tags[$keys[0]][0];
 		}
-		$post_contents = @file_get_contents($path . 'tag-' . $tag . '.dat');
+		$post_contents = @file_get_contents($ela_cache_root. '/tag-' . $tag . '.dat');
 		
 		$message =  "${settings['id']}|<p class='${settings['error_class']}'>Could not open cache file 'tag-$tag.dat'</p>";
 	default:
