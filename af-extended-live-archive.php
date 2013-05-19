@@ -19,6 +19,8 @@ if ( !defined('WP_PLUGIN_URL') )
 if ( !defined('WP_PLUGIN_DIR') )
 	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
 
+define('BELA_DEBUG', false);
+
 //the directory name of this plugin
 $ela_plugin_pathname = plugin_basename(__FILE__);
 $ela_plugin_basename = plugin_basename(dirname(__FILE__));
@@ -34,6 +36,7 @@ $utw_is_present = true;
 
 
 require_once $ela_plugin_basepath ."/af-extended-live-archive-include.php";
+require_once $ela_plugin_basepath . '/classes/BelaLogger.php';
 require_once $ela_plugin_basepath . '/classes/interface.php';
 require_once $ela_plugin_basepath . '/classes/exception.php';
 require_once $ela_plugin_basepath . '/classes/BelaFileCache.php';
@@ -186,7 +189,7 @@ function af_ela_comment_change($id) {
  **************************************/	
 function af_ela_post_change($id) {
 	global $wpdb;
-    logthis('ID:'.$id, __FUNCTION__, __LINE__, __FILE__);
+    BelaLogger::log('ID:'.$id);
     $generator = new Better_ELA_Cache_Builder();
 	
 	$settings = get_option('af_ela_options');
@@ -309,7 +312,7 @@ function af_ela_set_config($config, $reset=false) {
 	}
 	$config['last_modified'] = gmdate("D, d M Y H:i:s",time());
 	if (!$reset) $config = array_merge($settings, $config);
-	logthis($config);
+	BelaLogger::log($config);
 	update_option('af_ela_options', $config, 'Set of Options for Extended Live Archive');
 	
 	return true;

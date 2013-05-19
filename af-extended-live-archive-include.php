@@ -6,67 +6,6 @@
 // +----------------------------------------------------------------------+
 */
 
-/* ***********************************
- * dirty little debug function
- * ***********************************/	
-function logthis($message,$function = __FUNCTION__ ,$line = __LINE__, $file = __FILE__, $info = false) {
-	global $debug;
-	
-	if ($debug) {
-		$handle = @fopen(ABSPATH ."wp-content/log.log", 'a');
-		if( $handle === false ) {
-			return false;
-		}
-		$now = current_time('mysql', 1);
-		$messageHeader = $now." - In ". basename($file) . " - In ".$function." at ".$line ." : \r\n";
-		fwrite($handle, $messageHeader);
-        if (is_array($message) || is_object($message)){
-            fwrite($handle, var_export($message,true));
-        }else{
-            fwrite($handle, $message);
-        }
-		fwrite($handle, "\r\n\r\n");
-		fclose($handle);
-	} else if($info) {
-		$handle = @fopen(ABSPATH."wp-content/log.log", 'a');
-		if( $handle === false ) {
-			return false;
-		}
-		$now = current_time('mysql', 1);
-		$messageHeader = $now." - In ". basename($file) . " - In ".$function." at ".$line ." : \r\n";
-		fwrite($handle, $messageHeader);
-		fwrite($handle, str_replace("\t", "", serialize($message)));
-		fwrite($handle, "\r\n\r\n");
-		fclose($handle);
-	}
-}
-
-function dlog($function = __FUNCTION__, $line = __LINE__){
-    global $debug;
-    if ($debug) {
-		$handle = @fopen(ABSPATH ."wp-content/ela-debug.log", 'a');
-		if( $handle === false ) {
-			return false;
-		}
-		$now = current_time('mysql', 1);
-		$messageHeader = '['.$now."][Func:".$function.":".$line ."] : \r\n";
-		fwrite($handle, $messageHeader);
-        $messages = func_get_args();
-        $num = func_num_args();
-        for ($idx = 2; $idx < $num; $idx ++){
-            $message = $messages[$idx];
-            if (is_array($message) || is_object($message)){
-                fwrite($handle, var_export($message,true));
-            }else{
-                fwrite($handle, $message);
-            }
-            fwrite($handle, "\r\n");
-        }
-		fwrite($handle, "\r\n");
-		fclose($handle);
-	}
-}
-
 class Better_ELA_Cache_Builder {
 
     /**
@@ -124,7 +63,7 @@ class Better_ELA_Cache_Builder {
         $page_ids = array();
         if (!$show_page){
             $sql = "SELECT ID FROM {$wpdb->posts} WHERE post_type='page' AND post_status='publish'";
-            dlog(__FUNCTION__,__LINE__,'SQL Query: ',$sql);
+            BelaLogger::log('SQL Query: ',$sql);
             $results = $wpdb->get_results($sql);
             foreach ($results as $page){
                 $page_ids[] = $page->ID;
@@ -142,16 +81,16 @@ class Better_ELA_Cache_Builder {
               ."INNER JOIN {$wpdb->term_taxonomy} tt ON ( tr.term_taxonomy_id=tt.term_taxonomy_id ) "
               .'WHERE tt.taxonomy=\'category\' '
               ."AND tt.term_id IN {$exclusion}";
-        dlog(__FUNCTION__,__LINE__,'SQL Query: ',$sql);
+        BelaLogger::log('SQL Query: ' , $sql);
         $results = $wpdb->get_results($sql);
-        dlog(__FUNCTION__,__LINE__,'Posts In Excluded Categories: ',$results);
+        BelaLogger::log('Posts In Excluded Categories: ' , $results);
         $exclude_ids = array();
         foreach ($results as $post){
             $exclude_ids[] = $post->ID;
         }
         $this->excluded_posts = array_merge($this->excluded_posts, $exclude_ids);
         $this->excluded_posts = array_unique($this->excluded_posts);
-        dlog(__FUNCTION__,__LINE__,'Posts to Exclude: ',$this->excluded_posts);
+        BelaLogger::log('Posts to Exclude: ',$this->excluded_posts);
     }
 	/* ***********************************
 	 * Helper Function : Find info about 
@@ -183,7 +122,7 @@ class Better_ELA_Cache_Builder {
                 GROUP BY tr.object_id
 				ORDER By post_date DESC";
 			$results = $wpdb->get_results($query);
-            logthis('SQL Query:' . "Result Count:" . count($results) .$query, __FUNCTION__, __LINE__);
+            BelaLogger::log('SQL Query:' . "Result Count:" . count($results) .$query);
 			if ($results) {
 				foreach($results as $result) {
 					$this->postToGenerate['category_id'][] = $result->category_id;
@@ -205,7 +144,7 @@ class Better_ELA_Cache_Builder {
                       $dojustid2
                     ";
             $results = $wpdb->get_results($query);
-            logthis('SQL Query:' . "Result Count:" . count($results).$query, __FUNCTION__, __LINE__);
+            BelaLogger::log('SQL Query:' . "Result Count:" . count($results).$query);
             if ($results) {
                 foreach($results as $result) {
                     $this->postToGenerate['tag_id'][] = $result->tag_id;
@@ -219,7 +158,7 @@ class Better_ELA_Cache_Builder {
 				WHERE comment_ID = $id AND comment_approved = '1'";
 			
 			$result = $wpdb->get_var($query);
-            logthis('SQL Query:' . "Result Count:" . count($result).$query, __FUNCTION__, __LINE__);
+            BelaLogger::log('SQL Query:' . "Result Count:" . count($result).$query);
 			if ($result) {
 				$id = $result;
 				if($id) {
@@ -241,7 +180,7 @@ class Better_ELA_Cache_Builder {
                           ORDER By post_date DESC";
 				
 				$results = $wpdb->get_results($query);
-                logthis('SQL Query:' . "Result Count:" . count($results).$query ."\n". var_export($this->postToGenerate,true), __FUNCTION__, __LINE__);
+                BelaLogger::log('SQL Query:' . "Result Count:" . count($results).$query ."\n". var_export($this->postToGenerate,true));
 				if($results) {
 					foreach($results as $result) {
 						$this->postToGenerate['category_id'][]=$result->category_id;
@@ -274,7 +213,7 @@ class Better_ELA_Cache_Builder {
                 .$exclusions
                 .'GROUP BY `year` ORDER By `post_date` DESC';		
 		$year_results = $wpdb->get_results($sql);
-        dlog(__FUNCTION__, __LINE__, 'SQL Query:'.$sql, 'Results Count:'.count($year_results));
+        BelaLogger::log('SQL Query:'.$sql, 'Results Count:'.count($year_results));
 
         if ($year_results) {
             foreach ($year_results as $year_result) {
@@ -288,15 +227,15 @@ class Better_ELA_Cache_Builder {
                 $diffyears = array_diff_assoc($this->year_table, $yearsTable);                
                 if (!empty($diffyears)){ //如果Year表发生变化，重写Year表cache
                     $this->cache->set('years.dat', $this->year_table);
-                    dlog(__FUNCTION__,__LINE__,'Years Table Updated:',$this->year_table);
+                    BelaLogger::log('Years Table Updated:',$this->year_table);
                     $this->year_table = $diffyears;
-                    dlog(__FUNCTION__,__LINE__,'Different Years:',$diffyears);
+                    BelaLogger::log('Different Years:',$diffyears);
                 } else {
                     $this->year_table = array($this->postToGenerate['new_year'] => 0);
                 }
             } else {
                 $this->cache->set('years.dat', $this->year_table);
-                dlog(__FUNCTION__,__LINE__,'Years Table:',$this->year_table);
+                BelaLogger::log('Years Table:',$this->year_table);
             }		
 		}
 	}
@@ -318,7 +257,7 @@ class Better_ELA_Cache_Builder {
                   .'AND `post_status`=\'publish\' '
                   .'GROUP BY `month` ORDER By `post_date` DESC';
 			$month_results = $wpdb->get_results($sql);
-            dlog(__FUNCTION__,__LINE__,'SQL Query: '.$sql,'Results Count: '.count($month_results));
+            BelaLogger::log('SQL Query: '.$sql,'Results Count: '.count($month_results));
 
             if (!empty($month_results)) {
                 foreach ($month_results as $month_result) {
@@ -332,15 +271,15 @@ class Better_ELA_Cache_Builder {
                         $diffmonth = array_diff_assoc($this->month_table[$year], $monthTable);
                         if (!empty($diffmonth)){                            
                             $this->cache->set($year . '.dat', $this->month_table[$year]);
-                            dlog(__FUNCTION__,__LINE__,'Year: ',$year,' Month Table Updated: ',$this->month_table[$year]);
+                            BelaLogger::log('Year: ',$year,' Month Table Updated: ',$this->month_table[$year]);
                             $this->month_table[$year] = $diffmonth;
-                            dlog(__FUNCTION__,__LINE__,'Different Months: ',$this->month_table[$year]);
+                            BelaLogger::log('Different Months: ',$this->month_table[$year]);
                         }else{
                             $this->month_table[$year] = array($this->postToGenerate['new_month'] => 0);
                         }
                     } else {
                         $this->cache->set($year . '.dat', $this->month_table[$year]);
-                        dlog(__FUNCTION__,__LINE__,'Year: ',$year,' Month Table: ',$this->month_table[$year]);
+                        BelaLogger::log('Year: ',$year,' Month Table: ',$this->month_table[$year]);
                     }                   
                 }
             }
@@ -365,10 +304,10 @@ class Better_ELA_Cache_Builder {
         
 		foreach( $this->year_table as $year => $y ) {
 			$posts[$year] = array();
-            dlog(__FUNCTION__,__LINE__,'Now Processing Year: ',$year);
+            BelaLogger::log('Now Processing Year: ',$year);
 			foreach( $this->month_table[$year] as $month =>$m ) {
 				$posts[$year][$month] = array();
-                dlog(__FUNCTION__,__LINE__,'Now Processing Month: ',$month);
+                BelaLogger::log('Now Processing Month: ',$month);
                 $sql = 'SELECT `ID`,`post_title`,DAYOFMONTH(`post_date`) `day`,`comment_status`,`comment_count` '
                       ."FROM {$wpdb->posts} WHERE YEAR(`post_date`)={$year} "
 					  ."AND MONTH(`post_date`)={$month} "
@@ -376,7 +315,7 @@ class Better_ELA_Cache_Builder {
                       .$exclusions
 					  .'ORDER By `post_date` DESC';
 				$post_results = $wpdb->get_results($sql);
-                dlog(__FUNCTION__,__LINE__,'SQL Query: ',$sql,"\nResult Count: ",count($post_results));
+                BelaLogger::log('SQL Query: ',$sql,"\nResult Count: ",count($post_results));
 				if( $post_results ) {
 					foreach( $post_results as $post_result ) {
 							$posts[$year][$month][$post_result->ID] = array(
@@ -390,7 +329,7 @@ class Better_ELA_Cache_Builder {
 				}
 				if (!empty($posts[$year][$month])) {
                     $this->cache->set($year . '-' . $month . '.dat', $posts[$year][$month]);
-                    dlog(__FUNCTION__,__LINE__,$year . '-' . $month . '.dat Updated. Content is: ',$posts[$year][$month]);
+                    BelaLogger::log($year . '-' . $month . '.dat Updated. Content is: ',$posts[$year][$month]);
 				}
 			}
 		}
@@ -400,7 +339,7 @@ class Better_ELA_Cache_Builder {
 	 * ***********************************/	
 	function buildCatsTable($exclude='', $id = false) {
 		$this->buildCatsList('ID', 'asc', FALSE, TRUE, '0', 0, $exclude, TRUE);
-        dlog(__FUNCTION__,__LINE__,"Category Table: ",$this->catsTable);
+        BelaLogger::log("Category Table: ",$this->catsTable);
 		foreach( $this->catsTable as $category ) {
 			$parentcount = 0;
 			if(($parentkey = $category[4])) {
@@ -469,7 +408,7 @@ class Better_ELA_Cache_Builder {
                       ORDER BY $sort_column $sort_order";
 			
 			$categories = $wpdb->get_results($query);
-            logthis("SQL Query : Categories: ".count($categories) . $query, __FUNCTION__, __LINE__);
+            BelaLogger::log("SQL Query : Categories: ".count($categories) . $query);
 		}
 
 		if (!count($category_posts)) {
@@ -482,7 +421,7 @@ class Better_ELA_Cache_Builder {
 
 			
 			$cat_counts = $wpdb->get_results($query);
-            logthis("SQL Query : Categories Counts: " . count($cat_counts) .$query, __FUNCTION__, __LINE__);
+            BelaLogger::log("SQL Query : Categories Counts: " . count($cat_counts) .$query);
 	        if (! empty($cat_counts)) {
 	            foreach ($cat_counts as $cat_count) {
 	                if (1 != intval($hide_empty) || $cat_count > 0) {
@@ -522,7 +461,7 @@ class Better_ELA_Cache_Builder {
             $exclusions = ' AND p.ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
 		}
 		$now = current_time('mysql', 1);
-		logthis($this->catsTable);
+		BelaLogger::log($this->catsTable);
         //TODO 这里foreach也可能遍历空对象，调查原因
         if (empty($this->catsTable)) return;
 		foreach( $this->catsTable as $category ) {
@@ -539,7 +478,7 @@ class Better_ELA_Cache_Builder {
             ";
 			
 			$posts_in_cat_results = $wpdb->get_results($query);
-            logthis("SQL Query :Posts in Cat:" . count($posts_in_cat_results) .$query, __FUNCTION__, __LINE__);
+            BelaLogger::log("SQL Query :Posts in Cat:" . count($posts_in_cat_results) .$query);
 			if( $posts_in_cat_results ) {
 				$posts_in_cat_results = array_reverse($posts_in_cat_results);
 				$post_id_set = array();
@@ -556,7 +495,7 @@ class Better_ELA_Cache_Builder {
                     ORDER By post_date";
 
                 $post_results = $wpdb->get_results($query);
-                logthis("SQL Query :Post Results". count($post_results) .$query, __FUNCTION__, __LINE__);
+                BelaLogger::log("SQL Query :Post Results". count($post_results) .$query);
                 if( $post_results ) {
                     foreach( $post_results as $post_result ) {
                         $this->postsInCatsTable[$category[0]][$post_result->ID] = array($post_result->day, $post_result->post_title, get_permalink($post_result->ID), $post_result->comment_count, $post_result->comment_status);
@@ -598,7 +537,7 @@ class Better_ELA_Cache_Builder {
                       ";
 
 			$tagsSet = $wpdb->get_results($query);			
-            dlog(__FUNCTION__,__LINE__,'SQL Query: ',$query,'Result Count: ',count($tagsSet));
+            BelaLogger::log('SQL Query: ',$query,'Result Count: ',count($tagsSet));
 			$tagged_posts = 0;
 			$posted_tags = 0;
 			if( !empty($tagsSet) ) {
@@ -658,7 +597,7 @@ class Better_ELA_Cache_Builder {
                           ORDER BY post_date";
 
 				$posts_in_tag_results = $wpdb->get_results($query);
-                dlog(__FUNCTION__,__LINE__,'SQL Query: ',$query,'Result Count: ',count($posts_in_tag_results));
+                BelaLogger::log('SQL Query: ',$query,'Result Count: ',count($posts_in_tag_results));
 				if( $posts_in_tag_results ) {
 
 					foreach( $posts_in_tag_results as $post_result ) {
