@@ -80,16 +80,9 @@ function af_ela_super_archive($arguments = '') {
 		$options['last_post_id'] = 0;
 	}
 	
-	$num_posts = $wpdb->get_var("
-		SELECT COUNT(ID) 
-		FROM $wpdb->posts 
-		WHERE post_status = 'publish'");
+	$num_posts = $wpdb->get_var("SELECT COUNT(ID) FROM $wpdb->posts WHERE post_status = 'publish'");
 		
-	$last_post_id = $wpdb->get_var("
-		SELECT ID 
-		FROM $wpdb->posts 
-		WHERE post_status = 'publish' 
-		ORDER BY post_date DESC LIMIT 1");
+	$last_post_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_date DESC LIMIT 1");
 	
 		
 	if( !is_dir($ela_cache_root) || !is_file($ela_cache_root.'/years.dat')
@@ -119,14 +112,14 @@ function af_ela_super_archive($arguments = '') {
     }else{
 	$text = <<<TEXT
 <script type="text/javascript">
-var af_elaProcessURI = '${process_uri}';
-var af_elaResultID = '${settings['id']}';
-var af_elaLoadingContent = '${settings['loading_content']}';
-var af_elaIdleContent = '${settings['idle_content']}';
-var af_elaPageOffset = '${settings['paged_post_num']}';
+var af_elaProcessURI = '$process_uri';
+var af_elaResultID = '{$settings['id']}';
+var af_elaLoadingContent = '{$settings['loading_content']}';
+var af_elaIdleContent = '{$settings['idle_content']}';
+var af_elaPageOffset = '{$settings['paged_post_num']}';
 </script>
-<script src="$plugin_path/includes/af-extended-live-archive.js.php?v=${ela_js_version}" type="text/javascript"></script>
-<div id="${settings['id']}"></div>
+<script src="$plugin_path/includes/af-extended-live-archive.js.php?v={$ela_js_version}" type="text/javascript"></script>
+<div id="{$settings['id']}"></div>
 
 TEXT;
 

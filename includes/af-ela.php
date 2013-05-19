@@ -263,6 +263,7 @@ END_LIST;
 
 	return $category_list;
 }
+
 class UltimateTagWarriorCore{
 	function GetColorForWeight($weight) {
 		$maxtagcolour = "#0000FF";
@@ -647,4 +648,3 @@ BEGIN_TEXT;
 header("Content-Type: text/html; charset=${settings['charset']}");
 echo $layer;
 echo $text;
-?>
