@@ -64,12 +64,13 @@ class Better_ELA_Cache_Builder {
         if (!$show_page){
             $sql = "SELECT ID FROM {$wpdb->posts} WHERE post_type='page' AND post_status='publish'";
             BelaLogger::log('SQL Query: ',$sql);
-            $results = $wpdb->get_results($sql);
-            foreach ($results as $page){
-                $page_ids[] = $page->ID;
-            }
+            $page_ids = $wpdb->get_col($sql);
         }
         $this->excluded_posts = $page_ids;
+
+        $sql = "SELECT ID FROM {$wpdb->posts} WHERE post_type<>'post' AND post_type<>'page' ";
+        $ids = $wpdb->get_col($sql);
+        $this->excluded_posts = array_merge($this->excluded_posts, $ids);
 
         $exclude = trim($args['excluded_categories'], ', ');
         if (empty($exclude)) return;
