@@ -1,13 +1,13 @@
 // In a will to reduce the size of downloadable code, licenses for the 
 // files that are part of the package of 'Extended Live Archive' plugin 
-// for Wordpress are grouped thereafter.
+// for WordPress are grouped thereafter.
 //
 // +----------------------------------------------------------------------+
 // |            License for af-extended-live-archive.js.php               |
 // +----------------------------------------------------------------------+
 // | Most of the code is :                                                |
 // +----------------------------------------------------------------------+
-// | Orginial Code Care Of:                                               |
+// | Original Code Care Of:                                               |
 // +----------------------------------------------------------------------+
 // | Copyright (c) 2004 Bitflux GmbH                                      |
 // +----------------------------------------------------------------------+
@@ -62,7 +62,7 @@
 // +----------------------------------------------------------------------+
 // | This CSS is primarily a rework based on the style sheet Michael      |
 // | Heilemann put together to support an earlier revision of this plugin |
-// | withing his little-more-than-just-a-theme-for-wordpress, K2.         |
+// | with in his little-more-than-just-a-theme-for-wordpress, K2.         |
 // | [http://binarybonsai.com/wordpress/k2/]                              |
 // +----------------------------------------------------------------------+
 //
