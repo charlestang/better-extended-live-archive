@@ -5,7 +5,7 @@ defined('BELA_DEBUG') or define('BELA_DEBUG', false);
 /**
  * Logger for the debug use
  *
- * @author charles
+ * @author Charles Tang<charlestang@foxmail.com>
  */
 class BelaLogger {
 

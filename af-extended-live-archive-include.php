@@ -202,7 +202,7 @@ class Better_ELA_Cache_Builder {
 	 * Helper Function : build Years.
 	 * ***********************************/	
     function build_years_table($id = false) {
-        global $debug, $wpdb;
+        global $wpdb;
 
         if (!empty($this->excluded_posts)) {
             $exclusions = ' AND `ID` NOT IN(' . implode(',', $this->excluded_posts) . ') ';
@@ -456,7 +456,7 @@ class Better_ELA_Cache_Builder {
 	 * 			Categories
 	 * ***********************************/	
 	function buildPostsInCatsTable() {
-		global $wpdb, $category_posts;
+		global $wpdb;
 
 		if (!empty($this->excluded_posts)) {
             $exclusions = ' AND p.ID NOT IN(' . implode(',', $this->excluded_posts) . ') ';
@@ -466,7 +466,6 @@ class Better_ELA_Cache_Builder {
         //TODO 这里foreach也可能遍历空对象，调查原因
         if (empty($this->catsTable)) return;
 		foreach( $this->catsTable as $category ) {
-			$posts_in_cat[$category[0]] = array();
             $query = "SELECT p.ID AS `post_id`
                       FROM $wpdb->posts AS p
                         INNER JOIN {$wpdb->term_relationships} AS tr
