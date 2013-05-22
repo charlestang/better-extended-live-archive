@@ -9,7 +9,8 @@ class BelaOptions {
 
     const OPT_KEY = 'better-extended-live-archive-options';
 
-    public static $defaultOptions = array(
+    public $defaultOptions = array(
+        BelaKey::CACHE_INITIALIZED => false,
         /**
          * Plugin meta info.
          */
@@ -38,7 +39,7 @@ class BelaOptions {
         /**
          * Truncate options.
          */
-        BelaKey::MAX_ENTRY_TITLE_LENGTH => 0,  // 0 means no truncate
+        BelaKey::MAX_ENTRY_TITLE_LENGTH => 0, // 0 means no truncate
         BelaKey::MAX_CATEGORY_NAME_LENGTH => 0,
         BelaKey::TRUNCATED_TEXT => '...',
         BelaKey::TRUNCATE_BREAK_WORD => false,
@@ -48,28 +49,95 @@ class BelaOptions {
         /**
          * Navigate options.
          */
-        
-        
+        BelaKey::NAVIGATION_TABS_ORDER => '27,28', //BelaKey::ORDER_KEY_BY_DATE, BelaKey::ORDER_KEY_BY_CATEGORY
+        BelaKey::BY_DATE_TEXT => 'By Date',
+        BelaKey::BY_CATEGORY_TEXT => 'By Category',
+        BelaKey::BY_TAGS_TEXT => 'By Tag',
+        BelaKey::TEXT_BEFORE_CHILD_CATEGORY => '&nbsp;&nbsp;',
+        BelaKey::TEXT_AFTER_CHILD_CATEGORY => '',
+        BelaKey::TEXT_WHEN_CONTENT_LOADING => 'Loading ...',
+        BelaKey::TEXT_WHEN_BLANK_CONTENT => '',
+        /**
+         * Exclude items
+         */
+        BelaKey::EXCLUDE_CATEGORY_LIST => '',
+        /**
+         * Pagination
+         */
+        BelaKey::PAGE_OPT_NUMBER_PER_PAGE => 15,
+        BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT => '&lt;-- Previous',
+        BelaKey::PAGE_OPT_NEXT_PAGE_TEXT => 'Next --&gt;',
     );
 
-}
+    /**
+     * The options of the plugin
+     * @var array 
+     */
+    public $options = null;
 
+    /**
+     * Constructor to retrieve the option from db.
+     */
+    public function __construct() {
+        $this->options = get_option(self::OPT_KEY);
+        if (false === $this->options) {
+            $this->options = $this->defaultOptions;
+            $this->save();
+        }
+    }
+
+    /**
+     * @return boolean the cache is initialized or not
+     */
+    public function isCacheInitialized() {
+        return $this->options[BelaKey::CACHE_INITIALIZED];
+    }
+
+    /**
+     * Retrieve the option value
+     * @param int $key
+     * @return mixed the option value
+     */
+    public function get($key) {
+        return $this->options[$key];
+    }
+
+    /**
+     * Set the options
+     * @param int $key
+     * @param mixed $value
+     */
+    public function set($key, $value) {
+        $this->options[$key] = $value;
+    }
+
+    /**
+     * Save the options to db.
+     */
+    public function save() {
+        update_option(self::OPT_KEY, $this->options);
+    }
+
+}
 
 /**
  * Constants define
  */
 class BelaKey {
-    const OFFICIAL_PAGE = 1;
-    const PROJECT_PAGE  = 2;
-    const ISSUE_TRACKER = 3;
 
+    const CACHE_INITIALIZED = 1000; //<-- whether the cache is initialized
+    //meta
+    const OFFICIAL_PAGE = 1;
+    const PROJECT_PAGE = 2;
+    const ISSUE_TRACKER = 3;
+    //stitchs
     const SHOW_NEWEST_FIRST = 4;
     const SHOW_NUMBER_OF_ENTRIES = 5;
     const SHOW_NUMBER_OF_ENTRIES_PER_TAG = 6;
     const SHOW_NUMBER_OF_COMMENTS = 7;
     const INCLUDE_TRACKBACKS = 8;
     const PAGINATE_THE_LIST = 9;
-
+    //display options
     const SELECTED_SIGN = 10;
     const SELECTED_CLASS = 11;
     const TEMPLATE_NUMBER_OF_ENTRIES = 12;
@@ -77,7 +145,7 @@ class BelaKey {
     const TEMPLATE_NUMBER_OF_COMMENTS = 14;
     const COMMENTS_CLOSED_SIGN = 15;
     const POST_DATE_FORMAT_STRING = 16;
-    
+    //truncate
     const MAX_ENTRY_TITLE_LENGTH = 17;
     const MAX_CATEGORY_NAME_LENGTH = 18;
     const TRUNCATED_TEXT = 19;
@@ -85,13 +153,27 @@ class BelaKey {
     const ABBREVIATE_MONTH_NAME = 21;
     const TAGS_PICK_STRATEGY = 22;
     const STRATEGY_THRESHOLD = 23;
-
+    //option constants
     const STRATEGY_SHOW_ALL = 24;
     const STRATEGY_SHOW_MOST_USED = 25;
     const STRATEGY_SHOW_MOST_POST = 26;
-
-    
-
-    
+    //option constants
+    const ORDER_KEY_BY_DATE = 27;
+    const ORDER_KEY_BY_CATEGORY = 28;
+    const ORDER_KEY_BY_TAGS = 29;
+    //navigate
+    const NAVIGATION_TABS_ORDER = 30;
+    const BY_DATE_TEXT = 31;
+    const BY_CATEGORY_TEXT = 32;
+    const BY_TAGS_TEXT = 33;
+    const TEXT_BEFORE_CHILD_CATEGORY = 34;
+    const TEXT_AFTER_CHILD_CATEGORY = 35;
+    const TEXT_WHEN_CONTENT_LOADING = 36;
+    const TEXT_WHEN_BLANK_CONTENT = 37;
+    const EXCLUDE_CATEGORY_LIST = 38;
+    //pagination
+    const PAGE_OPT_NUMBER_PER_PAGE = 39;
+    const PAGE_OPT_NEXT_PAGE_TEXT = 40;
+    const PAGE_OPT_PREVIOUS_PAGE_TEXT = 41;
 
 }
