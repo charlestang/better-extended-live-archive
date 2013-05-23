@@ -1,7 +1,5 @@
 <?php
 
-defined('BELA_DEBUG') or define('BELA_DEBUG', false);
-
 /**
  * Logger for the debug use
  *
@@ -10,7 +8,7 @@ defined('BELA_DEBUG') or define('BELA_DEBUG', false);
 class BelaLogger {
 
     public static function log() {
-        if (!BELA_DEBUG) {
+        if (!defined('BELA_DEBUG') || !BELA_DEBUG) {
             return;
         }
 
