@@ -74,6 +74,7 @@ class BelaOptions {
      * @var array 
      */
     public $options = null;
+    public $meta = null;
 
     /**
      * Constructor to retrieve the option from db.
@@ -91,6 +92,23 @@ class BelaOptions {
      */
     public function isCacheInitialized() {
         return $this->options[BelaKey::CACHE_INITIALIZED];
+    }
+
+    /**
+     * Get the version of this plugin
+     * @param string $key The key of the meta info.
+     * @return string the version the this plugin
+     */
+    public function getPluginMeta($key) {
+        if (is_null($this->meta)) {
+            $this->meta = get_plugin_data(BELA_ENTRY_FILE, false, false);
+        }
+
+        if (!is_array($this->meta) || !isset($this->meta[$key])) {
+            return '';
+        }
+
+        return $this->meta[$key];
     }
 
     /**

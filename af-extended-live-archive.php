@@ -1,4 +1,5 @@
 <?php 
+
 /* 
  Plugin Name: Better Extended Live Archives
  Plugin URI: http://extended-live-archive.googlecode.com/
@@ -8,18 +9,20 @@
  Author URI: http://sexywp.com
  */
 
+$bela_path = dirname(__FILE__);
+require_once $bela_path . '/define-constants.php';
+require_once $bela_path . '/af-extended-live-archive-include.php';
+require_once $bela_path . '/classes/BelaLogger.php';
+require_once $bela_path . '/classes/interface.php';
+require_once $bela_path . '/classes/exception.php';
+require_once $bela_path . '/classes/BelaFileCache.php';
+
+/**
+ * The entry file path of this plugin.
+ */
+define('BELA_ENTRY_FILE', __FILE__);
+
 $ela_js_version = "0.80";
-if ( !defined('WP_CONTENT_URL') )
-	define( 'WP_CONTENT_URL', get_option('siteurl') . '/wp-content');
-if ( !defined('WP_CONTENT_DIR') )
-	define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' );
-
-if ( !defined('WP_PLUGIN_URL') )
-	define( 'WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins' );
-if ( !defined('WP_PLUGIN_DIR') )
-	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
-
-define('BELA_DEBUG', false);
 
 //the directory name of this plugin
 $ela_plugin_pathname = plugin_basename(__FILE__);
@@ -34,12 +37,6 @@ $ela_cache_root = $ela_plugin_basepath . '/cache';
 $debug = false;
 $utw_is_present = true;
 
-
-require_once $ela_plugin_basepath ."/af-extended-live-archive-include.php";
-require_once $ela_plugin_basepath . '/classes/BelaLogger.php';
-require_once $ela_plugin_basepath . '/classes/interface.php';
-require_once $ela_plugin_basepath . '/classes/exception.php';
-require_once $ela_plugin_basepath . '/classes/BelaFileCache.php';
 
 
 /**
@@ -56,7 +53,7 @@ function bela_get_cache() {
  **************************************/	 
 function af_ela_super_archive($arguments = '') {
 	global $wpdb, $ela_cache_root,$ela_plugin_basename;
-	
+
 	$settings = get_option('af_ela_options');
 	$is_initialized = get_option('af_ela_is_initialized');
 	if (!$settings || !$is_initialized || strstr($settings['installed_version'], $is_initialized) === false ) {
