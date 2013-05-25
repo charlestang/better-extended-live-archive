@@ -2,6 +2,8 @@
 
 /**
  * Cache implementation with file api.
+ * 
+ * @author Charles Tang <charlestang@foxmail.com>
  */
 class BelaFileCache implements BelaCache {
 
@@ -44,6 +46,13 @@ class BelaFileCache implements BelaCache {
     }
     
 
+    /**
+     * Write the content to file.
+     * @param string $fileName
+     * @param string $content
+     * @return void
+     * @throws BelaIoException
+     */
     private function writeFile($fileName, $content) {
         if (empty($content)) {
             return;
@@ -64,6 +73,10 @@ class BelaFileCache implements BelaCache {
         fclose($fd);
     }
 
+    /**
+     * Check the path is writable.
+     * @throws BelaIoException
+     */
     private function checkPath() {
         if (!is_dir($this->cacheFilePath) && !mkdir($this->cacheFilePath)) {
             throw new BelaIoException('Cache file path does not exist, and cannot be created.');
@@ -74,6 +87,12 @@ class BelaFileCache implements BelaCache {
         }
     }
 
+    /**
+     * Read from file.
+     * @param string $fileName
+     * @return string
+     * @throws BelaIoException
+     */
     private function readFile($fileName) {
         $this->checkPath();
 
@@ -96,6 +115,11 @@ class BelaFileCache implements BelaCache {
         return '';
     }
 
+    /**
+     * Remove file from disk.
+     * @param string $fileName
+     * @throws BelaIoException
+     */
     private function delFile($fileName) {
         $this->checkPath();
 
