@@ -76,7 +76,7 @@ abstract class BelaIndex {
         return $this->_cache;
     }
 
-    public function build();
+    abstract public function build();
 
-    public function update($postId, $post = null);
+    abstract public function update($postId, $post = null);
 }
