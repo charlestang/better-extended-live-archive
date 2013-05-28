@@ -60,13 +60,17 @@ class BelaOptions {
         /**
          * Exclude items
          */
-        BelaKey::EXCLUDE_CATEGORY_LIST => '',
+        BelaKey::EXCLUDE_CATEGORY_LIST => array(),
+        BelaKey::EXCLUDE_PAGE => true,
+        BelaKey::EXCLUDE_POST_TYPE_LIST => array(),
         /**
          * Pagination
          */
         BelaKey::PAGE_OPT_NUMBER_PER_PAGE => 15,
         BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT => '&lt;-- Previous',
         BelaKey::PAGE_OPT_NEXT_PAGE_TEXT => 'Next --&gt;',
+
+        BelaKey::EXCLUDED_POST_IDS => array(),
     );
 
     /**
@@ -188,10 +192,16 @@ class BelaKey {
     const TEXT_AFTER_CHILD_CATEGORY = 35;
     const TEXT_WHEN_CONTENT_LOADING = 36;
     const TEXT_WHEN_BLANK_CONTENT = 37;
+    //exclude category
     const EXCLUDE_CATEGORY_LIST = 38;
+    const EXCLUDE_PAGE = 39;
+    const EXCLUDE_POST_TYPE_LIST = 40;
     //pagination
-    const PAGE_OPT_NUMBER_PER_PAGE = 39;
-    const PAGE_OPT_NEXT_PAGE_TEXT = 40;
-    const PAGE_OPT_PREVIOUS_PAGE_TEXT = 41;
+    const PAGE_OPT_NUMBER_PER_PAGE = 41;
+    const PAGE_OPT_NEXT_PAGE_TEXT = 42;
+    const PAGE_OPT_PREVIOUS_PAGE_TEXT = 43;
+
+    //excluded result cache
+    const EXCLUDED_POST_IDS = 44;
 
 }

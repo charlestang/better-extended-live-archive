@@ -50,8 +50,22 @@ abstract class BelaIndex {
         }
     }
 
+    /**
+     * Get the BelaOptions object.
+     * @return BelaOptions
+     */
     public function getOptions() {
         return $this->_options;
+    }
+
+    /**
+     * Get the wpdb reference
+     * @global wpdb $wpdb
+     * @return wpdb
+     */
+    public function getDb() {
+        global $wpdb;
+        return $wpdb;
     }
 
     /**

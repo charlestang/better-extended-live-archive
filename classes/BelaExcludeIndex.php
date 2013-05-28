@@ -16,7 +16,8 @@ class BelaExcludeIndex extends BelaIndex {
     }
 
     public function update($postId, $post = null) {
-        
+        //@todo to be optimized
+        $this->build();
     }
 
     /**
