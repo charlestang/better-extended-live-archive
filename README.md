@@ -21,9 +21,11 @@ Better Extended Live Archive(BELA) is a WordPress plugin, with which blogger can
 ## Screenshots
 
 ![Chronological Index](/screenshot-1.png)
+
 Archive list by date:
 
 ![Category Index](/screenshot-2.png)
+
 Archive list by category:
 
 ## Changelog
