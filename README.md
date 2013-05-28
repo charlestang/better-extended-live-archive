@@ -1,4 +1,18 @@
 Better Extended Live Archive
-============================
+----------------------------
+Better Extended Live Archive(BELA) is a WordPress plugin, with which blogger can generate a multidimensional archive of all posts in his or her blog. 
 
-This is a WordPress plugin helps you to build a interactive archives of your blog.
+Description
+===========
+
+Installation
+============
+
+Screenshots
+===========
+
+Changelog
+=========
+
+Upgrade Notice
+==============
