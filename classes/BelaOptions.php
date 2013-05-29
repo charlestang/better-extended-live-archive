@@ -60,7 +60,7 @@ class BelaOptions {
         /**
          * Exclude items
          */
-        BelaKey::EXCLUDE_CATEGORY_LIST => array(),
+        BelaKey::EXCLUDE_CATEGORY_LIST => array(),  //term_taxonomy_id's array
         BelaKey::EXCLUDE_PAGE => true,
         BelaKey::EXCLUDE_POST_TYPE_LIST => array(),
         /**

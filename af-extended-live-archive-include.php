@@ -413,7 +413,6 @@ class Better_ELA_Cache_Builder {
 		}
 
 		if (!count($category_posts)) {
-			$now = current_time('mysql', 1);	
 
             $query = "SELECT `term_id` AS `cat_ID`, `count` AS `cat_count`
                       FROM {$wpdb->term_taxonomy} AS t
