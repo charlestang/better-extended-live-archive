@@ -27,8 +27,12 @@ class BelaTimeIndex extends BelaIndex {
         }
     }
 
+    /**
+     * Update the chronological index.
+     * @param int $postId
+     * @param WP_Post $post
+     */
     public function update($postId, $post = null) {
-        //@todo update time index
     }
 
     /**
