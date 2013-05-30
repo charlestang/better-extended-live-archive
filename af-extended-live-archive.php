@@ -16,6 +16,9 @@ require_once $bela_path . '/classes/BelaLogger.php';
 require_once $bela_path . '/classes/interface.php';
 require_once $bela_path . '/classes/exception.php';
 require_once $bela_path . '/classes/BelaFileCache.php';
+require_once $bela_path . '/classes/BelaTimeIndex.php';
+require_once $bela_path . '/classes/BelaCategoryIndex.php';
+require_once $bela_path . '/classes/BelaTagIndex.php';
 
 /**
  * The entry file path of this plugin.
