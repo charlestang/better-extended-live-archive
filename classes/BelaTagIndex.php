@@ -12,5 +12,13 @@ class BelaTagIndex extends BelaIndex{
     public function update($postId, $post = null) {
         
     }
+
+    public function buildTagTable() {
+
+    }
+
+    public function buildPostInTagTable() {
+
+    }
 }
 
