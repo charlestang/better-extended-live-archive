@@ -44,8 +44,8 @@ class BelaOptions {
         BelaKey::TRUNCATED_TEXT => '...',
         BelaKey::TRUNCATE_BREAK_WORD => false,
         BelaKey::ABBREVIATE_MONTH_NAME => false,
-        BelaKey::TAGS_PICK_STRATEGY => BelaKey::STRATEGY_SHOW_ALL,
-        BelaKey::STRATEGY_THRESHOLD => 5,
+        BelaKey::TAGS_PICK_STRATEGY => BelaKey::TAG_STRATEGY_SHOW_ALL,
+        BelaKey::TAG_STRATEGY_THRESHOLD => 5,
         /**
          * Navigate options.
          */
@@ -174,11 +174,11 @@ class BelaKey {
     const TRUNCATE_BREAK_WORD = 20;
     const ABBREVIATE_MONTH_NAME = 21;
     const TAGS_PICK_STRATEGY = 22;
-    const STRATEGY_THRESHOLD = 23;
+    const TAG_STRATEGY_THRESHOLD = 23;
     //option constants
-    const STRATEGY_SHOW_ALL = 24;
-    const STRATEGY_SHOW_MOST_USED = 25;
-    const STRATEGY_SHOW_MOST_POST = 26;
+    const TAG_STRATEGY_SHOW_ALL = 24;
+    const TAG_STRATEGY_FIRST_X_MOST_USED = 25;
+    const TAG_STRATEGY_TAG_AT_LEAST_X_POST = 26;
     //option constants
     const ORDER_KEY_BY_DATE = 27;
     const ORDER_KEY_BY_CATEGORY = 28;
