@@ -12,8 +12,9 @@ function af_ela_info($show='') {
     global $ela_plugin_pathname;
 	switch($show) {
 	case 'currentversion' :
-		$plugins= get_plugins();
-    	$info = $plugins[$ela_plugin_pathname]['Version'];
+		//$plugins= get_plugins();
+    	//$info = $plugins[$ela_plugin_pathname]['Version'];
+        $info = '0.80';
         break;
     case 'born_on' :
     	$info = 'June 22, 2006'; //This is my birthday. ^-^

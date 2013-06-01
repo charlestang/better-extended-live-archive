@@ -8,7 +8,10 @@
 class BelaTagIndex extends BelaIndex {
 
     public function build() {
-        
+        $tags = $this->buildTagTable();
+        foreach ($tags as $id => $tag) {
+            $this->buildPostInTagTable($id);
+        }
     }
 
     public function update($postId, $post = null) {
@@ -38,11 +41,63 @@ class BelaTagIndex extends BelaIndex {
                 . "WHERE tt.taxonomy='post_tag' "
                 . $strategySubstatement;
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        $tagsTable = array_map(array($this, 'getTagTableEntry'), $results);
+        $this->getCache()->set('tags.dat', $tagsTable);
 
+        return $tagsTable;
     }
 
-    public function buildPostInTagTable() {
-        
+    private function getTagTableEntry($tag) {
+        return array(
+            $tag->term_taxonomy_id,
+            $tag->name,
+            $tag->count,
+        );
+    }
+
+    public function buildPostInTagTable($tagId) {
+        $excludedPostIds = $this->getOptions()->get(BelaKey::EXCLUDED_POST_IDS);
+        $exclusions = "";
+        if (!empty($excludedPostIds)) {
+            $exclusions = "AND p.ID NOT IN (" . implode(',', $excludedPostIds) . ") ";
+        }
+
+        $sql = "SELECT p.ID, p.post_title, p.post_date "
+                . "FROM {$this->getDb()->posts} p "
+                . "INNER JOIN {$this->getDb()->term_relationships} tr "
+                . "ON p.ID=tr.term_taxonomy_id "
+                . "WHERE tr.term_taxonomy_id={$tagId} "
+                . $exclusions
+                . "ORDER BY p.post_date DESC";
+        $results = $this->getDb()->get_results($sql, OBJECT_K);
+
+        $postTable = array_map(array($this, 'getPostTableEntry'), $results);
+        $postIds = array_keys($results);
+
+        $sql2 = "SELECT p.ID, COUNT(c.comment_ID) count"
+                . "FROM {$this->getDb()->posts} p "
+                . "INNER JOIN {$this->getDb()->comments} c ON p.ID=c.comment_post_ID "
+                . "WHERE p.ID IN (" . implode(',', $postIds) . ") "
+                . "GROUP BY p.ID ";
+
+
+        $results2 = $this->getDb()->get_results($sql, OBJECT_K);
+        foreach ($postTable as $k => $post) {
+            if (isset($results2[$k])) {
+                $postTable[$k][3] = $results2[$k]->count;
+            }
+        }
+
+        $this->getCache()->set('tag-' . $tagId. '.dat', $postTable);
+    }
+
+    private function getPostTableEntry($post) {
+        return array(
+            $post->post_date,
+            $post->post_title,
+            get_permalink($post->ID),
+            0,
+        );
     }
 
 }

@@ -60,7 +60,7 @@ function af_ela_super_archive($arguments = '') {
 	$settings = get_option('af_ela_options');
 	$is_initialized = get_option('af_ela_is_initialized');
 	if (!$settings || !$is_initialized || strstr($settings['installed_version'], $is_initialized) === false ) {
-		echo '<div id="af-ela"><p class="alert">Plugin is not initialized. Admin or blog owner, <a href="' . get_settings('siteurl') . '/wp-admin/options-general.php?page=af-extended-live-archive/af-extended-live-archive-options.php">visit the ELA option panel</a> in your admin section.</p></div>';
+		echo '<div id="af-ela"><p class="alert">Plugin is not initialized. Admin or blog owner, <a href="/wp-admin/options-general.php?page=af-extended-live-archive/af-extended-live-archive-options.php">visit the ELA option panel</a> in your admin section.</p></div>';
 		return false;
 	}
 	
