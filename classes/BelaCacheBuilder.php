@@ -1,15 +1,48 @@
 <?php
+
 /**
  * This object is used to generate the archive cache.
  *
- * @todo a good idea is that, to use BelaOptions to save the excluded posts.
- *       because all options about the posts to exclude are saved in the options.
- *       so, the very natrally idea is to save the exclued ids in options, too.
- *       We can also look the exclued posts as one kind of index and use a 
- *       Index builder to generate it, and save the result to BelaOptions.
  * @author Charles Tang<charlestang@foxmail.com>
  */
 class BelaIndicesBuilder {
-    public function __construct() {
+
+    /**
+     * @var BelaOptions 
+     */
+    private $_options = null;
+    /**
+     * @var BelaCache 
+     */
+    private $_cache = null;
+
+    public function __construct($options, $cache) {
+        global $ela_cache_root;
+        if ($options instanceof BelaOptions) {
+            $this->_options = $options;
+        } else {
+            throw new BelaIndexException("Please initialize the BelaOptions object first.");
+        }
+
+        if (!in_array($cache, arary('file' /* , 'db' */))) {
+            throw new BelaIndexException("Dose not support this kind of cache now");
+        }
+        switch ($cache) {
+            case 'file':
+                $this->_cache = new BelaFileCache();
+                $this->_cache->cacheFilePath = $ela_cache_root;
+                break;
+            default:
+                break;
+        }
     }
+
+    public function initializeIndexCache() {
+        $typesStr = trim($this->_options->get(BelaKey::NAVIGATION_TABS_ORDER));
+        if (empty($typesStr)) {
+            return true;
+        }
+
+    }
+
 }
