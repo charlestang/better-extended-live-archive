@@ -25,7 +25,7 @@ class BelaIndicesBuilder {
             throw new BelaIndexException("Please initialize the BelaOptions object first.");
         }
 
-        if (!in_array($cache, arary('file' /* , 'db' */))) {
+        if (!in_array($cache, array('file' /* , 'db' */))) {
             throw new BelaIndexException("Dose not support this kind of cache now");
         }
         switch ($cache) {

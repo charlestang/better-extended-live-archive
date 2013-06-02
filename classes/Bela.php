@@ -13,22 +13,16 @@ class Bela {
     public $options = null;
 
     /**
-     * @var BelaCacheBuilder 
+     * @var BelaIndicesBuilder 
      */
     public $builder = null;
-
-    /**
-     * @var BelaCache 
-     */
-    public $cache = null;
 
     /**
      * The constructor of the plugin object
      */
     public function __construct() {
         $this->options = new BelaOptions();
-        $this->cache = new BelaFileCache();
-        $this->builder = new BelaCacheBuilder($this->options, $this->cache);
+        $this->builder = new BelaIndicesBuilder($this->options, 'file');
     }
 
     /**

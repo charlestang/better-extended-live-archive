@@ -19,6 +19,9 @@ require_once $bela_path . '/classes/BelaFileCache.php';
 require_once $bela_path . '/classes/BelaTimeIndex.php';
 require_once $bela_path . '/classes/BelaCategoryIndex.php';
 require_once $bela_path . '/classes/BelaTagIndex.php';
+require_once $bela_path . '/classes/BelaIndicesBuilder.php';
+require_once $bela_path . '/classes/BelaOptions.php';
+require_once $bela_path . '/classes/Bela.php';
 
 /**
  * The entry file path of this plugin.
@@ -131,27 +134,7 @@ TEXT;
  * loading stuff in the header.
  **************************************/	
 function af_ela_header() {
-    global $ela_plugin_basename;
-	// loading stuff
-	$settings = get_option('af_ela_options');
-	$plugin_path = WP_PLUGIN_URL . '/'. $ela_plugin_basename;
-	if ($settings['use_default_style']) {
-		if (file_exists(ABSPATH . 'wp-content/themes/' . get_template() . '/ela.css')) {
-			$csspath = get_bloginfo('template_url')."/ela.css";
-		} else {
-			$csspath =$plugin_path."/includes/af-ela-style.css";
-		}
-	
-		$text = <<<TEXT
 
-	<link rel="stylesheet" href="$csspath" type="text/css" media="screen" />
-
-TEXT;
-	} else { 
-		$text ='';
-	}
-
-	echo $text;
 }
 
 
@@ -328,24 +311,5 @@ function af_ela_shorcode(){
     return $ela;
 }
 
-add_action('plugins_loaded', 'better_ela_init');
-function better_ela_init(){
-    // insert javascript in headers
-    add_action('wp_head', 'af_ela_header');
-    // make sure the cache is rebuilt when post changes
-    add_action('publish_post', 'af_ela_post_change');
-    add_action('deleted_post', 'af_ela_post_change');
-    // make sure the cache is rebuilt when comments change
-    add_action('comment_post', 'af_ela_comment_change');
-    add_action('trackback_post', 'af_ela_comment_change');
-    add_action('pingback_post', 'af_ela_comment_change');
-    add_action('delete_comment', 'af_ela_comment_change');
-    add_shortcode('extended-live-archive', 'af_ela_shorcode');
-    
-    if (is_admin()){
-        if (isset($_GET['page']) && $_GET['page'] == 'extended-live-archive') {
-            add_action('admin_head', 'better_ela_js_code_in_admin_page');
-        }
-        add_action('admin_menu', 'af_ela_admin_pages');
-    }
-}
+$belaObj = new Bela();
+$belaObj->run();
