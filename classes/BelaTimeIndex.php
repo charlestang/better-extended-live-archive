@@ -120,4 +120,8 @@ class BelaTimeIndex extends BelaIndex {
         );
     }
 
+    public function initialized() {
+        return $this->getCache()->exists('years.dat');
+    }
+
 }

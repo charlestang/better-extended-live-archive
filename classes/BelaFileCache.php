@@ -44,7 +44,6 @@ class BelaFileCache implements BelaCache {
     public function set($key, $value) {
         $this->writeFile($key, serialize($value));
     }
-    
 
     /**
      * Write the content to file.
@@ -131,20 +130,39 @@ class BelaFileCache implements BelaCache {
     }
 
     /**
+     * Check if the file is exists
+     * @param string $fileName
+     * @return boolean
+     */
+    private function fileExists($fileName) {
+        $this->checkPath();
+        $fileName = $this->cacheFilePath . DIRECTORY_SEPARATOR . $fileName;
+        return file_exists($fileName);
+    }
+
+    /**
      * @todo this method should be optimized.
      * @return boolean
      */
     public function clearAllCache() {
         $this->checkPath();
-		$del_cache_path = $this->cacheFilePath . DIRECTORY_SEPARATOR . "*.dat";
-		if ( ($filelist=glob($del_cache_path)) === false ) {
+        $del_cache_path = $this->cacheFilePath . DIRECTORY_SEPARATOR . "*.dat";
+        if (($filelist = glob($del_cache_path)) === false) {
             return false;
         }
-		foreach ($filelist as $filename) {
-			if (!@unlink($filename)) return false;	// delete it
-		}
-		return true;
-        
+        foreach ($filelist as $filename) {
+            if (!@unlink($filename))
+                return false; // delete it
+        }
+        return true;
+    }
+
+    /**
+     * Check if the $key is exists.
+     * @param string $key
+     */
+    public function exists($key) {
+        $this->fileExists($key);
     }
 
 }

@@ -72,4 +72,13 @@ class BelaIndicesBuilder {
 
     }
 
+    /**
+     * Check the indices are initialized or not
+     */
+    public function isInitialized() {
+        $initialized = $this->_options->get(BelaKey::CACHE_INITIALIZED);
+        
+
+    }
+
 }

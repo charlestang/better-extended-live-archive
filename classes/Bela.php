@@ -65,6 +65,10 @@ class Bela {
         }
     }
 
+    /**
+     * Inject static files of this plugin to target pages
+     * @global type $ela_plugin_basename
+     */
     public function injectStaticFiles() {
         global $ela_plugin_basename;
         // loading stuff

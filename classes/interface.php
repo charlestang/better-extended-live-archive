@@ -16,6 +16,8 @@ interface BelaCache {
     public function del($key);
 
     public function clearAllCache();
+
+    public function exists($key);
 }
 
 /**
@@ -93,4 +95,6 @@ abstract class BelaIndex {
     abstract public function build();
 
     abstract public function update($postId, $post = null);
+
+    abstract public function initialized();
 }

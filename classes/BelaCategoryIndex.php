@@ -120,5 +120,10 @@ class BelaCategoryIndex extends BelaIndex {
         
     }
 
+    public function initialized() {
+        
+        return $this->getCache()->exists('categories.dat');
+    }
+
 }
 

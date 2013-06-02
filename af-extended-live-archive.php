@@ -2,10 +2,10 @@
 
 /* 
  Plugin Name: Better Extended Live Archives
- Plugin URI: http://extended-live-archive.googlecode.com/
- Description: The famous ELA for WP 2.7+. It's work for WP 3.0.
- Version: 0.80
- Author: Charles
+ Plugin URI: https://github.com/charlestang/better-extended-live-archive 
+ Description: Bloggers can generate a multidimensional archive of all posts in his or her blog with this plugin.
+ Version: 1.0.0
+ Author: Charles Tang
  Author URI: http://sexywp.com
  */
 
