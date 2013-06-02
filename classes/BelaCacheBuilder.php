@@ -11,6 +11,7 @@ class BelaIndicesBuilder {
      * @var BelaOptions 
      */
     private $_options = null;
+
     /**
      * @var BelaCache 
      */
@@ -42,6 +43,32 @@ class BelaIndicesBuilder {
         if (empty($typesStr)) {
             return true;
         }
+
+        $types = explode(',', $typesStr);
+
+        foreach ($types as $type) {
+            switch ($type) {
+                case BelaKey::ORDER_KEY_BY_DATE:
+                    $indexr = new BelaTimeIndex($this->_options, $this->_cache);
+                    $indexr->build();
+                    break;
+                case BelaKey::ORDER_KEY_BY_CATEGORY:
+                    $indexr = new BelaCategoryIndex($this->_options, $this->_cache);
+                    $indexr->build();
+                    break;
+                case BelaKey::ORDER_KEY_BY_TAGS:
+                    $indexr = new BelaTagIndex($this->_options, $this->_cache);
+                    $indexr->build();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        $this->_options->set(BelaKey::CACHE_INITIALIZED, false);
+    }
+
+    public function updateIndexCache() {
 
     }
 
