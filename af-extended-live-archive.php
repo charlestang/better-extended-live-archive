@@ -1,12 +1,12 @@
-<?php 
+<?php
 
-/* 
- Plugin Name: Better Extended Live Archives
- Plugin URI: https://github.com/charlestang/better-extended-live-archive 
- Description: Bloggers can generate a multidimensional archive of all posts in his or her blog with this plugin.
- Version: 1.0.0
- Author: Charles Tang
- Author URI: http://sexywp.com
+/*
+  Plugin Name: Better Extended Live Archives
+  Plugin URI: https://github.com/charlestang/better-extended-live-archive
+  Description: Bloggers can generate a multidimensional archive of all posts in his or her blog with this plugin.
+  Version: 1.0.0
+  Author: Charles Tang
+  Author URI: http://sexywp.com
  */
 
 $bela_path = dirname(__FILE__);
@@ -43,8 +43,6 @@ $ela_cache_root = $ela_plugin_basepath . '/cache';
 $debug = false;
 $utw_is_present = true;
 
-
-
 /**
  * @return BelaCache 
  */
@@ -54,66 +52,66 @@ function bela_get_cache() {
     $cache->cacheFilePath = $ela_cache_root;
     return $cache;
 }
-/***************************************
+
+/* * *************************************
  * Main template function.
- **************************************/	 
+ * ************************************ */
+
 function af_ela_super_archive($arguments = '') {
-	global $wpdb, $ela_cache_root,$ela_plugin_basename;
+    global $wpdb, $ela_cache_root, $ela_plugin_basename;
 
-	$settings = get_option('af_ela_options');
-	$is_initialized = get_option('af_ela_is_initialized');
-	if (!$settings || !$is_initialized || strstr($settings['installed_version'], $is_initialized) === false ) {
-		echo '<div id="af-ela"><p class="alert">Plugin is not initialized. Admin or blog owner, <a href="/wp-admin/options-general.php?page=af-extended-live-archive/af-extended-live-archive-options.php">visit the ELA option panel</a> in your admin section.</p></div>';
-		return false;
-	}
-	
-	$settings['loading_content'] = urldecode($settings['loading_content']);
-	$settings['idle_content'] = urldecode($settings['idle_content']);
-	$settings['selected_text'] = urldecode($settings['selected_text']);
-	$settings['truncate_title_text'] = urldecode($settings['truncate_title_text']);
-	$settings['paged_post_next'] = urldecode($settings['paged_post_next']);
-	$settings['paged_post_prev'] = urldecode($settings['paged_post_prev']);
-	
-	$options = get_option('af_ela_super_archive');
-	
-	if( $options === false ) {
-		// create and store default options
-		$options = array();
-		$options['num_posts'] = 0;
-		$options['last_post_id'] = 0;
-	}
-	
-	$num_posts = $wpdb->get_var("SELECT COUNT(ID) FROM $wpdb->posts WHERE post_status = 'publish'");
-		
-	$last_post_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_date DESC LIMIT 1");
-	
-		
-	if( !is_dir($ela_cache_root) || !is_file($ela_cache_root.'/years.dat')
-     || $num_posts != $options['num_posts'] || $last_post_id != $options['last_post_id'] ) {
-		$options['num_posts'] = $num_posts;
-		$options['last_post_id'] = $last_post_id;
-		update_option('af_ela_super_archive', $options);
+    $settings = get_option('af_ela_options');
+    $is_initialized = get_option('af_ela_is_initialized');
+    if (!$settings || !$is_initialized || strstr($settings['installed_version'], $is_initialized) === false) {
+        echo '<div id="af-ela"><p class="alert">Plugin is not initialized. Admin or blog owner, <a href="/wp-admin/options-general.php?page=af-extended-live-archive/af-extended-live-archive-options.php">visit the ELA option panel</a> in your admin section.</p></div>';
+        return false;
+    }
 
-		$res = af_ela_create_cache($settings);
-		
-		if( $res === false ) {
-			// we could not create the cache, bail with error message
-			echo '<div id="'.$settings['id'].'"><p class="'.$settings['error_class'].'">Could not create cache. Make sure the wp-content folder is writable by the web server. If you have doubts, set the permission on wp-content to 0777</p></div>';
-			return false;
-		}
-	
-	}
-	
-	$year = date('Y');
-	$plugin_path = WP_PLUGIN_URL . '/' . $ela_plugin_basename;
-	global $ela_js_version;
+    $settings['loading_content'] = urldecode($settings['loading_content']);
+    $settings['idle_content'] = urldecode($settings['idle_content']);
+    $settings['selected_text'] = urldecode($settings['selected_text']);
+    $settings['truncate_title_text'] = urldecode($settings['truncate_title_text']);
+    $settings['paged_post_next'] = urldecode($settings['paged_post_next']);
+    $settings['paged_post_prev'] = urldecode($settings['paged_post_prev']);
+
+    $options = get_option('af_ela_super_archive');
+
+    if ($options === false) {
+        // create and store default options
+        $options = array();
+        $options['num_posts'] = 0;
+        $options['last_post_id'] = 0;
+    }
+
+    $num_posts = $wpdb->get_var("SELECT COUNT(ID) FROM $wpdb->posts WHERE post_status = 'publish'");
+
+    $last_post_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' ORDER BY post_date DESC LIMIT 1");
+
+
+    if (!is_dir($ela_cache_root) || !is_file($ela_cache_root . '/years.dat') || $num_posts != $options['num_posts'] || $last_post_id != $options['last_post_id']) {
+        $options['num_posts'] = $num_posts;
+        $options['last_post_id'] = $last_post_id;
+        update_option('af_ela_super_archive', $options);
+
+        $res = af_ela_create_cache($settings);
+
+        if ($res === false) {
+            // we could not create the cache, bail with error message
+            echo '<div id="' . $settings['id'] . '"><p class="' . $settings['error_class'] . '">Could not create cache. Make sure the wp-content folder is writable by the web server. If you have doubts, set the permission on wp-content to 0777</p></div>';
+            return false;
+        }
+    }
+
+    $year = date('Y');
+    $plugin_path = WP_PLUGIN_URL . '/' . $ela_plugin_basename;
+    global $ela_js_version;
     $process_uri = $plugin_path . '/includes/af-ela.php';
-    if (!$settings){
+    if (!$settings) {
         echo '<script type="text/javascript">';
         echo "document.write('<div id=\"af-ela\"><p class=\"alert\">Plugin is not initialized. Admin or blog owner, visit the ELA option panel in your admin section.</p></div>')";
         echo '</script>';
-    }else{
-	$text = <<<TEXT
+    } else {
+        $text = <<<TEXT
 <script type="text/javascript">
 var af_elaProcessURI = '$process_uri';
 var af_elaResultID = '{$settings['id']}';
@@ -126,189 +124,214 @@ var af_elaPageOffset = '{$settings['paged_post_num']}';
 
 TEXT;
 
-	echo $text;
+        echo $text;
     }
 }
 
-/***************************************
+/* * *************************************
  * loading stuff in the header.
- **************************************/	
-function af_ela_header() {
+ * ************************************ */
 
+function af_ela_header() {
+    
 }
 
-
-/***************************************
+/* * *************************************
  * actions when a comment changes.	
- **************************************/ 
+ * ************************************ */
+
 function af_ela_comment_change($id) {
-	global $wpdb;
-	$generator = new Better_ELA_Cache_Builder();
-	
-	$settings = get_option('af_ela_options');
-	
-	if ($id) {
+    global $wpdb;
+    $generator = new Better_ELA_Cache_Builder();
+
+    $settings = get_option('af_ela_options');
+
+    if ($id) {
         $generator->find_exclude_posts(array('excluded_categories' => $settings['excluded_categories'], 'show_page' => false));
         $generator->buildPostToGenerateTable($settings['excluded_categories'], $id, true);
-        if (empty($generator->postToGenerate)) return $id;
+        if (empty($generator->postToGenerate))
+            return $id;
     }
-	
-	$generator->build_posts_in_months_table();
-		
-	$generator->buildPostsInCatsTable($settings['excluded_categories'],$settings['hide_pingbacks_and_trackbacks'], $generator->postToGenerate['post_id'] );
 
-	return $id;
+    $generator->build_posts_in_months_table();
+
+    $generator->buildPostsInCatsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks'], $generator->postToGenerate['post_id']);
+
+    return $id;
 }
 
-/***************************************
+/* * *************************************
  * actions when a post changes.
- **************************************/	
+ * ************************************ */
+
 function af_ela_post_change($id) {
-	global $wpdb;
-    BelaLogger::log('ID:'.$id);
+    global $wpdb;
+    BelaLogger::log('ID:' . $id);
     $generator = new Better_ELA_Cache_Builder();
-	
-	$settings = get_option('af_ela_options');
-	
-	if ($id) {
+
+    $settings = get_option('af_ela_options');
+
+    if ($id) {
         $generator->find_exclude_posts(array('excluded_categories' => $settings['excluded_categories'], 'show_page' => false));
-		$generator->buildPostToGenerateTable($settings['excluded_categories'], $id);
-        if (empty($generator->postToGenerate)) return $id;
-	}
-					
-	if(!$settings['tag_soup_cut'] || empty($settings['tag_soup_X'])) { 
-		$order = false;
-		$idTags = $id;
-	} else {
-		$order = $settings['tag_soup_cut'];
-		$orderparam = $settings['tag_soup_X'];
-		$idTags = false;
-	}
-	
-	$generator->build_years_table($id);
-	
-	$generator->build_months_table($id);
-	
-	$generator->build_posts_in_months_table();
-		
-	$generator->buildCatsTable($settings['excluded_categories'], $id);
-	
-	$generator->buildPostsInCatsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
-	
+        $generator->buildPostToGenerateTable($settings['excluded_categories'], $id);
+        if (empty($generator->postToGenerate))
+            return $id;
+    }
+
+    if (!$settings['tag_soup_cut'] || empty($settings['tag_soup_X'])) {
+        $order = false;
+        $idTags = $id;
+    } else {
+        $order = $settings['tag_soup_cut'];
+        $orderparam = $settings['tag_soup_X'];
+        $idTags = false;
+    }
+
+    $generator->build_years_table($id);
+
+    $generator->build_months_table($id);
+
+    $generator->build_posts_in_months_table();
+
+    $generator->buildCatsTable($settings['excluded_categories'], $id);
+
+    $generator->buildPostsInCatsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
+
     $ret = $generator->build_tags_table($idTags, $order, $orderparam);
-		
-	if($ret) $generator->buildPostsInTagsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
-	
-	return $id;
+
+    if ($ret)
+        $generator->buildPostsInTagsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
+
+    return $id;
 }
-function af_ela_create_cache_dir(){
+
+function af_ela_create_cache_dir() {
     global $ela_cache_root;
     return mkdir($ela_cache_root);
 }
-/***************************************
- * creation of the cache
- **************************************/	
-function af_ela_create_cache($settings) {
-	global $wpdb, $ela_cache_root;
 
-	if( !is_dir($ela_cache_root) ) {
-		if(!af_ela_create_cache_dir()) return false;
-	}
-	
-	$generator = new Better_ELA_Cache_Builder();
-	
-	if(!$settings['tag_soup_cut'] || empty($settings['tag_soup_X'])) { 
-		$order = false;
+/* * *************************************
+ * creation of the cache
+ * ************************************ */
+
+function af_ela_create_cache($settings) {
+    global $wpdb, $ela_cache_root;
+
+    if (!is_dir($ela_cache_root)) {
+        if (!af_ela_create_cache_dir())
+            return false;
+    }
+
+    $generator = new Better_ELA_Cache_Builder();
+
+    if (!$settings['tag_soup_cut'] || empty($settings['tag_soup_X'])) {
+        $order = false;
         $orderparam = 0;
-	} else {
-		$order = $settings['tag_soup_cut'];
-		$orderparam = $settings['tag_soup_X'];
-	}
+    } else {
+        $order = $settings['tag_soup_cut'];
+        $orderparam = $settings['tag_soup_X'];
+    }
 
     $generator->find_exclude_posts(array('excluded_categories' => $settings['excluded_categories'], 'show_page' => false));
-	
-	$generator->build_years_table();
 
-	$generator->build_months_table();
+    $generator->build_years_table();
 
-	$generator->build_posts_in_months_table();
+    $generator->build_months_table();
 
-	$generator->buildCatsTable($settings['excluded_categories']);
+    $generator->build_posts_in_months_table();
 
-	$generator->buildPostsInCatsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
-	
-	$ret = $generator->build_tags_table(false, $order, $orderparam);
-	
-	if($ret) $generator->buildPostsInTagsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
-	
-	return true;
+    $generator->buildCatsTable($settings['excluded_categories']);
+
+    $generator->buildPostsInCatsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
+
+    $ret = $generator->build_tags_table(false, $order, $orderparam);
+
+    if ($ret)
+        $generator->buildPostsInTagsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
+
+    return true;
 }
 
-
-/***************************************
+/* * *************************************
  * Force settings from external plugin.
  * TODO  need to do some more checks 
- **************************************/
-function af_ela_set_config($config, $reset=false) {
-	global $wpdb;
+ * ************************************ */
 
-	$settings = get_option('af_ela_options');
-	
-	foreach($config as $optionKey => $optionValue) {
-		switch($optionKey) {
-		case 'newest_first':
-		case 'num_entries' :
-		case 'num_entries_tagged' :
-		case 'num_comments':
-		case 'fade':
-		case 'hide_pingbacks_and_trackbacks':
-		case 'use_default_style':
-		case 'paged_posts':
-		case 'truncate_title_at_space':
-		case 'abbreviated_month':
-			if($optionValue != 0 && $optionValue != 1) return -1;	
-			break;
-		case 'tag_soup_cut':
-		case 'tag_soup_X':
-		case 'truncate_title_length':
-		case 'truncate_cat_length' :
-		case 'excluded_categories' :
-		case 'paged_post_num' :
-			//if(!is_numeric($optionValue)) return -2;	
-			break;
-		case 'menu_order' : 
-			$table = split(',',$optionValue);
-			foreach($table as $content) {
-				if ($content != 'chrono' && $content != 'cats' && $content != 'tags' && !empty($content)) return -3;
-			}
-			break;
-		default :
-			break;
-		}
-	}
-	$config['last_modified'] = gmdate("D, d M Y H:i:s",time());
-	if (!$reset) $config = array_merge($settings, $config);
-	BelaLogger::log($config);
-	update_option('af_ela_options', $config, 'Set of Options for Extended Live Archive');
-	
-	return true;
+function af_ela_set_config($config, $reset = false) {
+    global $wpdb;
+
+    $settings = get_option('af_ela_options');
+
+    foreach ($config as $optionKey => $optionValue) {
+        switch ($optionKey) {
+            case 'newest_first':
+            case 'num_entries' :
+            case 'num_entries_tagged' :
+            case 'num_comments':
+            case 'fade':
+            case 'hide_pingbacks_and_trackbacks':
+            case 'use_default_style':
+            case 'paged_posts':
+            case 'truncate_title_at_space':
+            case 'abbreviated_month':
+                if ($optionValue != 0 && $optionValue != 1)
+                    return -1;
+                break;
+            case 'tag_soup_cut':
+            case 'tag_soup_X':
+            case 'truncate_title_length':
+            case 'truncate_cat_length' :
+            case 'excluded_categories' :
+            case 'paged_post_num' :
+                //if(!is_numeric($optionValue)) return -2;	
+                break;
+            case 'menu_order' :
+                $table = split(',', $optionValue);
+                foreach ($table as $content) {
+                    if ($content != 'chrono' && $content != 'cats' && $content != 'tags' && !empty($content))
+                        return -3;
+                }
+                break;
+            default :
+                break;
+        }
+    }
+    $config['last_modified'] = gmdate("D, d M Y H:i:s", time());
+    if (!$reset)
+        $config = array_merge($settings, $config);
+    BelaLogger::log($config);
+    update_option('af_ela_options', $config, 'Set of Options for Extended Live Archive');
+
+    return true;
 }
 
-/***************************************
+/* * *************************************
  * bound admin page.
- **************************************/
+ * ************************************ */
 include_once('af-extended-live-archive-options.php');
+
 function af_ela_admin_pages() {
-	if (function_exists('add_options_page')) add_options_page('Ext. Live Archive Options', 'Ext. Live Archive', 'activate_plugins', 'extended-live-archive','af_ela_admin_page');
+    if (function_exists('add_options_page'))
+        add_options_page('Ext. Live Archive Options', 'Ext. Live Archive', 'activate_plugins', 'extended-live-archive', 'af_ela_admin_page');
 }
 
-
-function af_ela_shorcode(){
+function af_ela_shorcode() {
     ob_start();
     af_ela_super_archive();
     $ela = ob_get_contents();
     ob_end_clean();
     return $ela;
+}
+
+/**
+ * This is a template tag offered by this plugin,
+ * call this function in your theme will output a 
+ * BELA component on your page.
+ * @return void 
+ */
+function better_extended_live_archive() {
+    global $belaObj;
+    echo $belaObj->getBelaComponent();
 }
 
 $belaObj = new Bela();

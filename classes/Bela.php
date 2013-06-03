@@ -93,5 +93,15 @@ TEXT;
         echo $text;
     }
 
+    /**
+     * the Bela component on the web page
+     * @return string
+     */
+    public function getBelaComponent() {
+        if (!$this->builder->isIndicesInitialized()) {
+            $this->builder->initializeIndexCache();
+        }
+    }
+
 }
 
