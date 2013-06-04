@@ -59,6 +59,7 @@ function bela_get_cache() {
 
 function af_ela_super_archive($arguments = '') {
     global $wpdb, $ela_cache_root, $ela_plugin_basename;
+    global $belaObj;
 
     $settings = get_option('af_ela_options');
     $is_initialized = get_option('af_ela_is_initialized');
@@ -93,9 +94,10 @@ function af_ela_super_archive($arguments = '') {
         $options['last_post_id'] = $last_post_id;
         update_option('af_ela_super_archive', $options);
 
-        $res = af_ela_create_cache($settings);
+        //$res = af_ela_create_cache($settings);
+        $belaObj->builder->initializeIndexCache();
 
-        if ($res === false) {
+        if (false && $res === false) {
             // we could not create the cache, bail with error message
             echo '<div id="' . $settings['id'] . '"><p class="' . $settings['error_class'] . '">Could not create cache. Make sure the wp-content folder is writable by the web server. If you have doubts, set the permission on wp-content to 0777</p></div>';
             return false;

@@ -79,7 +79,7 @@ class BelaTimeIndex extends BelaIndex {
                 . $exclusions
                 . "AND post_status='publish' "
                 . "GROUP BY month ORDER By post_date DESC";
-        $results = $this->getDb()->ge_results($sql, OBJECT_K);
+        $results = $this->getDb()->get_results($sql, OBJECT_K);
         if (!empty($results)) {
             $monthTable = array_map(create_function('$entry', 'return $entry->count;'), $results);
             $this->getCache()->set($year . '.dat', $monthTable);
@@ -96,13 +96,16 @@ class BelaTimeIndex extends BelaIndex {
         if (!empty($excludedPostIds)) {
             $exclusions = "ID NOT IN (" . implode(',', $excludedPostIds) . ") ";
         }
-        $sql = "SELECT ID, DAYOFMONTH(post_date) day, post_title, comment_count, comment_status"
+        $sql = "SELECT ID, DAYOFMONTH(post_date) day, post_title, comment_count, comment_status "
                 . "FROM {$this->getDb()->posts} WHERE YEAR(post_date)={$year} "
                 . "AND MONTH(post_date)={$month} "
                 . "AND post_status='publish' "
                 . $exclusions
                 . "ORDER By post_date DESC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        if ($year == '2013') {
+            var_dump($sql);
+        }
 
         if (!empty($results)) {
             $postsInMonth = array_map(array($this, 'generateEntryInPostsTable'), $results);

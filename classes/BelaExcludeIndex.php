@@ -69,4 +69,8 @@ class BelaExcludeIndex extends BelaIndex {
         return $pageIds;
     }
 
+    public function initialized() {
+        
+    }
+
 }

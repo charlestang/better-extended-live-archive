@@ -18,7 +18,7 @@ class BelaCategoryIndex extends BelaIndex {
             $exclusion = "AND tt.term_taxonomy_id NOT IN (" . implode(',', $excludedCategoryIds) . ") ";
         }
 
-        $sql = "SELECT tt.term_taxonomy_id ID, t.name, t.slug, tt.parent, 0 as count"
+        $sql = "SELECT tt.term_taxonomy_id ID, t.name, t.slug, tt.parent, 0 as count "
                 . "FROM {$this->getDb()->terms} t "
                 . "INNER JOIN {$this->getDb()->term_taxonomy}  tt ON (t.term_id=tt.term_id) "
                 . "WHERE tt.taxonomy = 'category' AND t.term_id > 0 "
@@ -72,31 +72,33 @@ class BelaCategoryIndex extends BelaIndex {
         }
 
         $sql = "SELECT p.ID, p.post_title, p.post_date "
-                . "FROM {$this->getDb()->posts} p"
+                . "FROM {$this->getDb()->posts} p "
                 . "INNER JOIN {$this->getDb()->term_relationships} tr ON p.ID=tr.term_taxonomy_id "
                 . "WHERE tr.term_taxonomy_id={$categoryId} "
                 . "AND p.post_status='publish' "
                 . $exclusions
                 . "ORDER BY p.post_date DESC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
-        $postTable = array_map(array($this, 'getPostTableEntry'), $results);
+        if (!empty($results)) {
+            $postTable = array_map(array($this, 'getPostTableEntry'), $results);
 
-        $postIds = array_keys($postTable);
-        $sql2 = "SELECT p.ID, COUNT(c.comment_ID) count"
-                . "FROM {$this->getDb()->posts} p "
-                . "INNER JOIN {$this->getDb()->comments} c ON p.ID=c.comment_post_ID "
-                . "WHERE p.ID IN (" . implode(',', $postIds) . ") "
-                . "GROUP BY p.ID ";
+            $postIds = array_keys($postTable);
+            $sql2 = "SELECT p.ID, COUNT(c.comment_ID) count "
+                    . "FROM {$this->getDb()->posts} p "
+                    . "INNER JOIN {$this->getDb()->comments} c ON p.ID=c.comment_post_ID "
+                    . "WHERE p.ID IN (" . implode(',', $postIds) . ") "
+                    . "GROUP BY p.ID";
 
 
-        $results2 = $this->getDb()->get_results($sql, OBJECT_K);
-        foreach ($postTable as $k => $post) {
-            if (isset($results2[$k])) {
-                $postTable[$k][3] = $results2[$k]->count;
+            $results2 = $this->getDb()->get_results($sql2, OBJECT_K);
+            foreach ($postTable as $k => $post) {
+                if (isset($results2[$k])) {
+                    $postTable[$k][3] = $results2[$k]->count;
+                }
             }
-        }
 
-        $this->getCache()->set('cat-' . $categoryId . '.dat', $postTable);
+            $this->getCache()->set('cat-' . $categoryId . '.dat', $postTable);
+        }
     }
 
     private function getPostTableEntry($post) {
@@ -121,7 +123,7 @@ class BelaCategoryIndex extends BelaIndex {
     }
 
     public function initialized() {
-        
+
         return $this->getCache()->exists('categories.dat');
     }
 
