@@ -19,3 +19,7 @@ class BelaDbException extends Exception {
 class BelaIndexException extends Exception {
     
 }
+
+class BelaAdminException extends Exception {
+    
+}
