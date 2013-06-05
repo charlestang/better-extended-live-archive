@@ -21,6 +21,7 @@ require_once $bela_path . '/classes/BelaCategoryIndex.php';
 require_once $bela_path . '/classes/BelaTagIndex.php';
 require_once $bela_path . '/classes/BelaIndicesBuilder.php';
 require_once $bela_path . '/classes/BelaOptions.php';
+require_once $bela_path . '/classes/BelaHtml.php';
 require_once $bela_path . '/classes/BelaAdmin.php';
 require_once $bela_path . '/classes/Bela.php';
 

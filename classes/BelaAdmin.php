@@ -14,7 +14,7 @@ class BelaAdmin {
     const VIEWS_DIR = 'views';
 
     public $options = null;
-    public $defaultAction = '';
+    public $defaultAction = 'basicOptions';
     public $viewPath = '';
 
     public function __construct($options) {
@@ -48,20 +48,36 @@ class BelaAdmin {
      */
     public function run() {
         if (is_admin()) {
-            if (is_admin() && $_GET['page'] == self::PAGE_SLUG) {
+            if (is_admin() && self::getParam('page') == self::PAGE_SLUG) {
                 add_action('admin_head', array($this, 'injectAdminStylesAndScripts'));
             }
             add_action('admin_menu', array($this, 'registerAdminPage'));
         }
     }
 
+    public static function getParam($key, $default = null) {
+        if (isset($_GET[$key])) {
+            return $_GET[$key];
+        }
+
+        return $default;
+    }
+
+    public static function postParam($key, $default = null) {
+        if (isset($_POST[$key])) {
+            return $_POST[$key];
+        }
+
+        return $default;
+    }
+
     /**
      * Admin pages dispatcher
      */
     public function adminPanelEntryPoint() {
-        $belaAction = $_GET[self::SUBPAGE_VAR];
+        $belaAction = self::getParam(self::SUBPAGE_VAR);
         $methodName = $this->parseRoute($belaAction);
-        call_user_func(array($this, $methodName), $_GET, $_POST);
+        call_user_func(array($this, $methodName));
     }
 
     /**
@@ -120,6 +136,11 @@ class BelaAdmin {
         }
 
         include $filename;
+    }
+
+    public function actionBasicOptions() {
+        $options = $this->options;
+        $this->render('how-to-show', compact('options'));
     }
 
 }
