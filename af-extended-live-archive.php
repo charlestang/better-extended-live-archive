@@ -21,12 +21,16 @@ require_once $bela_path . '/classes/BelaCategoryIndex.php';
 require_once $bela_path . '/classes/BelaTagIndex.php';
 require_once $bela_path . '/classes/BelaIndicesBuilder.php';
 require_once $bela_path . '/classes/BelaOptions.php';
+require_once $bela_path . '/classes/BelaAdmin.php';
 require_once $bela_path . '/classes/Bela.php';
 
 /**
  * The entry file path of this plugin.
  */
 define('BELA_ENTRY_FILE', __FILE__);
+$directory_name = plugin_basename(dirname(BELA_ENTRY_FILE));
+define('BELA_BASE_PATH', WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $directory_name);
+define('BELA_BASE_URL', WP_PLUGIN_URL . DIRECTORY_SEPARATOR . $directory_name);
 
 $ela_js_version = "0.80";
 

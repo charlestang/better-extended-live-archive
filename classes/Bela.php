@@ -63,6 +63,9 @@ class Bela {
             }
             add_action('admin_menu', 'af_ela_admin_pages');
         }
+
+        $belaAdmin = new BelaAdmin($this->options);
+        $belaAdmin->run();
     }
 
     /**
