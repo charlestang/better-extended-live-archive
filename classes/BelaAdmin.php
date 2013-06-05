@@ -11,12 +11,15 @@ class BelaAdmin {
     const PAGE_TITLE = 'Better Extended Live Archive Options';
     const MENU_CAPTION = 'Ext. Live Archive';
     const SUBPAGE_VAR = 'bela_a';
+    const VIEWS_DIR = 'views';
 
     public $options = null;
     public $defaultAction = '';
+    public $viewPath = '';
 
     public function __construct($options) {
         $this->options = $options;
+        $this->viewPath = BELA_BASE_PATH . DIRECTORY_SEPARATOR . self::VIEWS_DIR;
     }
 
     /**
@@ -95,6 +98,28 @@ class BelaAdmin {
         }
 
         return $methodName;
+    }
+
+    /**
+     * Render the view page 
+     * @param string $viewName
+     */
+    public function render($viewName) {
+        $filename = $this->viewPath . DIRECTORY_SEPARATOR . $viewName . '.php';
+        if (!file_exists($filename)) {
+            throw new BelaAdminException('Cannot find the view file: ' . $filename);
+        }
+
+        if (func_num_args() > 1) {
+            $arg1 = func_get_arg(1);
+            if (!is_array($arg1)) {
+                throw new BelaAdminException('The seconde param of render method should be an array. Given: ' . var_export($arg1, true));
+            }
+
+            extract($arg1);
+        }
+
+        include $filename;
     }
 
 }
