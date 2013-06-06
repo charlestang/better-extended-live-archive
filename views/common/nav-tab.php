@@ -1,9 +1,23 @@
 <div class="icon32" id="icon-bela"><br></div>
 <h2>Better Extended Live Archive Options</h2>
 <ul class="subsubsub">
-    <li><a href="">What to show </a> |</li>
-    <li><a class="current" href="">How to show </a> |</li>
-    <li><a href="">How to cut </a> |</li>
-    <li><a href="">What about menu </a></li>
+    <li>
+        <a <?php echo $this->isCurr('whatToShow') ? 'class="current"' : ''; ?> 
+            href="<?php echo BelaAdmin::URL('whatToShow'); ?>">What to show </a> |</li>
+    <li>
+        <a <?php echo $this->isCurr('howToShow') ? 'class="current"' : ''; ?> 
+            href="<?php echo BelaAdmin::URL('howToShow'); ?>">How to show </a> |</li>
+    <li>
+        <a <?php echo $this->isCurr('howToCut') ? 'class="current"' : ''; ?> 
+            href="<?php echo BelaAdmin::URL('howToCut'); ?>">How to cut</a> |</li>
+    <li>
+        <a <?php echo $this->isCurr('menuSettings') ? 'class="current"' : ''; ?> 
+            href="<?php echo BelaAdmin::URL('menuSettings'); ?>">Menu settings</a> |</li>
+    <li>
+        <a <?php echo $this->isCurr('categoryExclusion') ? 'class="current"' : ''; ?> 
+            href="<?php echo BelaAdmin::URL('categoryExclusion'); ?>">Category exclusion</a> |</li>
+    <li>
+        <a <?php echo $this->isCurr('pagination') ? 'class="current"' : ''; ?> 
+            href="<?php echo BelaAdmin::URL('pagination'); ?>">Pagination</a></li>
 </ul>
 <div class="clear"></div>

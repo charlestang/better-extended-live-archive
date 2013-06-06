@@ -14,7 +14,7 @@ class BelaAdmin {
     const VIEWS_DIR = 'views';
 
     public $options = null;
-    public $defaultAction = 'basicOptions';
+    public $defaultAction = 'whatToShow';
     public $viewPath = '';
 
     public function __construct($options) {
@@ -88,7 +88,12 @@ class BelaAdmin {
     public static function URL($action) {
         $names = preg_split('~(?=[A-Z])~', $action);
         $param = implode('-', array_map('lcfirst', $names));
-        return menu_page_url(self::PAGE_SLUG) . '&' . self::SUBPAGE_VAR . '=' . $param;
+        return menu_page_url(self::PAGE_SLUG, false) . '&' . self::SUBPAGE_VAR . '=' . $param;
+    }
+
+    public function isCurr($action) {
+        $belaAction = self::getParam(self::SUBPAGE_VAR);
+        return $this->parseRoute($belaAction) == ('action' . ucfirst($action));
     }
 
     /**
@@ -138,9 +143,27 @@ class BelaAdmin {
         include $filename;
     }
 
-    public function actionBasicOptions() {
-        $options = $this->options;
-        $this->render('how-to-show', compact('options'));
+    public function actionWhatToShow() {
+        $this->render('what-to-show', array('options' => $this->options));
     }
 
+    public function actionHowToShow() {
+        $this->render('how-to-show', array('options' => $this->options));
+    }
+
+    public function actionHowToCut() {
+        $this->render('how-to-cut', array('options' => $this->options));
+    }
+
+    public function actionMenuSettings() {
+        $this->render('menu-settings', array('options' => $this->options));
+    }
+
+    public function actionCategoryExclusion() {
+        $this->render('category-exclusion', array('options' => $this->options));
+    }
+
+    public function actionPagination() {
+        $this->render('pagination', array('options' => $this->options));
+    }
 }
