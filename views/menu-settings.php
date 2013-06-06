@@ -1,4 +1,4 @@
-<?php $this->render('common/nav-tab'); ?>
+<?php $this->renderPartial('common/nav-tab'); ?>
 <h3 class="title"><?php _e('What about the menu?'); ?></h3>
 <p><?php _e('Customize the menu of ELA.'); ?></p>
 <table class="form-table"><tbody>

@@ -16,6 +16,7 @@ class BelaAdmin {
     public $options = null;
     public $defaultAction = 'whatToShow';
     public $viewPath = '';
+    public $layout = '/common/layout';
 
     public function __construct($options) {
         $this->options = $options;
@@ -125,7 +126,7 @@ class BelaAdmin {
      * Render the view page 
      * @param string $viewName
      */
-    public function render($viewName) {
+    public function renderPartial($viewName) {
         $filename = $this->viewPath . DIRECTORY_SEPARATOR . $viewName . '.php';
         if (!file_exists($filename)) {
             throw new BelaAdminException('Cannot find the view file: ' . $filename);
@@ -141,6 +142,20 @@ class BelaAdmin {
         }
 
         include $filename;
+    }
+
+    /**
+     * Render the view file with the layout file
+     * @param stirng $viewName the name of the view
+     * @param mixed $... Any other parameters passed to the view
+     */
+    public function render() {
+        ob_start();
+        call_user_func_array(array($this, 'renderPartial'), func_get_args());
+        $pagecontent = ob_get_contents();
+        ob_end_clean();
+
+        include $this->viewPath . $this->layout . '.php';
     }
 
     public function actionWhatToShow() {

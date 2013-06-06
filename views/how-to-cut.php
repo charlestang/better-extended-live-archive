@@ -1,4 +1,4 @@
-<?php $this->render('common/nav-tab');?>
+<?php $this->renderPartial('common/nav-tab');?>
 <h3 class="title"><?php _e('How to cut?'); ?></h3>
 <p><?php _e('Control the cut off of ELA.'); ?></p>
 <table class="form-table">

@@ -1,4 +1,4 @@
-<?php $this->render('common/nav-tab'); ?>
+<?php $this->renderPartial('common/nav-tab'); ?>
 <h3 class="title"><?php _e('What categories to show?'); ?></h3>
 <?php //var_dump($settings['excluded_categories']); ?>
 <p><?php _e('Check the categories you want to show in the category tab.'); ?></p>
