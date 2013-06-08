@@ -24,8 +24,9 @@ class BelaOptions {
         BelaKey::SHOW_NUMBER_OF_ENTRIES => true,
         BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG => true,
         BelaKey::SHOW_NUMBER_OF_COMMENTS => true,
-        BelaKey::INCLUDE_TRACKBACKS => true,
+        BelaKey::EXCLUDE_TRACKBACKS => false,
         BelaKey::PAGINATE_THE_LIST => true,
+        BelaKey::FADE_EVERYTHING => true,
         /**
          * Display options.
          */
@@ -72,6 +73,22 @@ class BelaOptions {
 
         BelaKey::EXCLUDED_POST_IDS => array(),
     );
+
+    /**
+     * Attribute label
+     * @return array
+     */
+    public function getLabels() {
+        return array(
+            BelaKey::SHOW_NEWEST_FIRST => __('Show Newest First:', 'bela'),   
+            BelaKey::SHOW_NUMBER_OF_ENTRIES => __('Show Number of Entries:', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG => __('Show Number of Entries Per Tag:', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_COMMENTS => __('Show Number of Comments:', 'bela'),
+            BelaKey::FADE_EVERYTHING => __('Fade Anything Technique:', 'bela'),
+            BelaKey::EXCLUDE_TRACKBACKS => __('Hide Ping- and Trackbacks:', 'bela'),
+            BelaKey::PAGINATE_THE_LIST => __('Layout the posts link into pages:', 'bela'),
+        );
+    }
 
     /**
      * The options of the plugin
@@ -157,7 +174,7 @@ class BelaKey {
     const SHOW_NUMBER_OF_ENTRIES = 5;
     const SHOW_NUMBER_OF_ENTRIES_PER_TAG = 6;
     const SHOW_NUMBER_OF_COMMENTS = 7;
-    const INCLUDE_TRACKBACKS = 8;
+    const EXCLUDE_TRACKBACKS = 8;
     const PAGINATE_THE_LIST = 9;
     //display options
     const SELECTED_SIGN = 10;
@@ -203,5 +220,6 @@ class BelaKey {
 
     //excluded result cache
     const EXCLUDED_POST_IDS = 44;
+    const FADE_EVERYTHING = 45;
 
 }
