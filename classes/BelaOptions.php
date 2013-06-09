@@ -10,68 +10,67 @@ class BelaOptions {
     const OPT_KEY = 'better-extended-live-archive-options';
 
     public $defaultOptions = array(
-        BelaKey::CACHE_INITIALIZED => false,
+        BelaKey::CACHE_INITIALIZED                  => false,
         /**
          * Plugin meta info.
          */
-        BelaKey::OFFICIAL_PAGE => 'http://wordpress.org/plugins/better-extended-live-archive/',
-        BelaKey::PROJECT_PAGE => 'https://github.com/charlestang/Better-Extended-Live-Archive',
-        BelaKey::ISSUE_TRACKER => 'https://github.com/charlestang/Better-Extended-Live-Archive/issues?state=open',
+        BelaKey::OFFICIAL_PAGE                      => 'http://wordpress.org/plugins/better-extended-live-archive/',
+        BelaKey::PROJECT_PAGE                       => 'https://github.com/charlestang/Better-Extended-Live-Archive',
+        BelaKey::ISSUE_TRACKER                      => 'https://github.com/charlestang/Better-Extended-Live-Archive/issues?state=open',
         /**
          * Display switches.
          */
-        BelaKey::SHOW_NEWEST_FIRST => true,
-        BelaKey::SHOW_NUMBER_OF_ENTRIES => true,
-        BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG => true,
-        BelaKey::SHOW_NUMBER_OF_COMMENTS => true,
-        BelaKey::EXCLUDE_TRACKBACKS => false,
-        BelaKey::PAGINATE_THE_LIST => true,
-        BelaKey::FADE_EVERYTHING => true,
+        BelaKey::SHOW_NEWEST_FIRST                  => true,
+        BelaKey::SHOW_NUMBER_OF_ENTRIES             => true,
+        BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG     => true,
+        BelaKey::SHOW_NUMBER_OF_COMMENTS            => true,
+        BelaKey::EXCLUDE_TRACKBACKS                 => false,
+        BelaKey::PAGINATE_THE_LIST                  => true,
+        BelaKey::FADE_EVERYTHING                    => true,
         /**
          * Display options.
          */
-        BelaKey::SELECTED_SIGN => '',
-        BelaKey::SELECTED_CLASS => 'selected',
-        BelaKey::TEMPLATE_NUMBER_OF_ENTRIES => '(%)',
+        BelaKey::SELECTED_SIGN                      => '',
+        BelaKey::SELECTED_CLASS                     => 'selected',
+        BelaKey::TEMPLATE_NUMBER_OF_ENTRIES         => '(%)',
         BelaKey::TEMPLATE_NUMBER_OF_ENTRIES_PER_TAG => '(%)',
-        BelaKey::TEMPLATE_NUMBER_OF_COMMENTS => '(%)',
-        BelaKey::COMMENTS_CLOSED_SIGN => '',
-        BelaKey::POST_DATE_FORMAT_STRING => '', //suggest:m-d,jS,d: etc.
+        BelaKey::TEMPLATE_NUMBER_OF_COMMENTS        => '(%)',
+        BelaKey::COMMENTS_CLOSED_SIGN               => '',
+        BelaKey::POST_DATE_FORMAT_STRING            => '', //suggest:m-d,jS,d: etc.
         /**
          * Truncate options.
          */
-        BelaKey::MAX_ENTRY_TITLE_LENGTH => 0, // 0 means no truncate
-        BelaKey::MAX_CATEGORY_NAME_LENGTH => 0,
-        BelaKey::TRUNCATED_TEXT => '...',
-        BelaKey::TRUNCATE_BREAK_WORD => false,
-        BelaKey::ABBREVIATE_MONTH_NAME => false,
-        BelaKey::TAGS_PICK_STRATEGY => BelaKey::TAG_STRATEGY_SHOW_ALL,
-        BelaKey::TAG_STRATEGY_THRESHOLD => 5,
+        BelaKey::MAX_ENTRY_TITLE_LENGTH             => 0, // 0 means no truncate
+        BelaKey::MAX_CATEGORY_NAME_LENGTH           => 0,
+        BelaKey::TRUNCATED_TEXT                     => '...',
+        BelaKey::TRUNCATE_BREAK_WORD                => false,
+        BelaKey::ABBREVIATE_MONTH_NAME              => false,
+        BelaKey::TAGS_PICK_STRATEGY                 => BelaKey::TAG_STRATEGY_SHOW_ALL,
+        BelaKey::TAG_STRATEGY_THRESHOLD             => 5,
         /**
          * Navigate options.
          */
-        BelaKey::NAVIGATION_TABS_ORDER => '27,28', //BelaKey::ORDER_KEY_BY_DATE, BelaKey::ORDER_KEY_BY_CATEGORY
-        BelaKey::BY_DATE_TEXT => 'By Date',
-        BelaKey::BY_CATEGORY_TEXT => 'By Category',
-        BelaKey::BY_TAGS_TEXT => 'By Tag',
-        BelaKey::TEXT_BEFORE_CHILD_CATEGORY => '&nbsp;&nbsp;',
-        BelaKey::TEXT_AFTER_CHILD_CATEGORY => '',
-        BelaKey::TEXT_WHEN_CONTENT_LOADING => 'Loading ...',
-        BelaKey::TEXT_WHEN_BLANK_CONTENT => '',
+        BelaKey::NAVIGATION_TABS_ORDER              => '27,28', //BelaKey::ORDER_KEY_BY_DATE, BelaKey::ORDER_KEY_BY_CATEGORY
+        BelaKey::BY_DATE_TEXT                       => 'By Date',
+        BelaKey::BY_CATEGORY_TEXT                   => 'By Category',
+        BelaKey::BY_TAGS_TEXT                       => 'By Tag',
+        BelaKey::TEXT_BEFORE_CHILD_CATEGORY         => '&nbsp;&nbsp;',
+        BelaKey::TEXT_AFTER_CHILD_CATEGORY          => '',
+        BelaKey::TEXT_WHEN_CONTENT_LOADING          => 'Loading ...',
+        BelaKey::TEXT_WHEN_BLANK_CONTENT            => '',
         /**
          * Exclude items
          */
-        BelaKey::EXCLUDE_CATEGORY_LIST => array(),  //term_taxonomy_id's array
-        BelaKey::EXCLUDE_PAGE => true,
-        BelaKey::EXCLUDE_POST_TYPE_LIST => array(),
+        BelaKey::EXCLUDE_CATEGORY_LIST              => array(), //term_taxonomy_id's array
+        BelaKey::EXCLUDE_PAGE                       => true,
+        BelaKey::EXCLUDE_POST_TYPE_LIST             => array(),
         /**
          * Pagination
          */
-        BelaKey::PAGE_OPT_NUMBER_PER_PAGE => 15,
-        BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT => '&lt;-- Previous',
-        BelaKey::PAGE_OPT_NEXT_PAGE_TEXT => 'Next --&gt;',
-
-        BelaKey::EXCLUDED_POST_IDS => array(),
+        BelaKey::PAGE_OPT_NUMBER_PER_PAGE           => 15,
+        BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT        => '&lt;-- Previous',
+        BelaKey::PAGE_OPT_NEXT_PAGE_TEXT            => 'Next --&gt;',
+        BelaKey::EXCLUDED_POST_IDS                  => array(),
     );
 
     /**
@@ -80,13 +79,18 @@ class BelaOptions {
      */
     public function getLabels() {
         return array(
-            BelaKey::SHOW_NEWEST_FIRST => __('Show Newest First:', 'bela'),   
-            BelaKey::SHOW_NUMBER_OF_ENTRIES => __('Show Number of Entries:', 'bela'),
+            BelaKey::SHOW_NEWEST_FIRST              => __('Show Newest First:', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_ENTRIES         => __('Show Number of Entries:', 'bela'),
             BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG => __('Show Number of Entries Per Tag:', 'bela'),
-            BelaKey::SHOW_NUMBER_OF_COMMENTS => __('Show Number of Comments:', 'bela'),
-            BelaKey::FADE_EVERYTHING => __('Fade Anything Technique:', 'bela'),
-            BelaKey::EXCLUDE_TRACKBACKS => __('Hide Ping- and Trackbacks:', 'bela'),
-            BelaKey::PAGINATE_THE_LIST => __('Layout the posts link into pages:', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_COMMENTS        => __('Show Number of Comments:', 'bela'),
+            BelaKey::FADE_EVERYTHING                => __('Fade Anything Technique:', 'bela'),
+            BelaKey::EXCLUDE_TRACKBACKS             => __('Hide Ping- and Trackbacks:', 'bela'),
+            BelaKey::PAGINATE_THE_LIST              => __('Layout the posts link into pages:', 'bela'),
+        );
+    }
+
+    public function getDescription() {
+        return array(
         );
     }
 
