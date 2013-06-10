@@ -89,9 +89,30 @@ class BelaOptions {
         );
     }
 
-    public function getDescription() {
+    public function getDescriptions() {
         return array(
+            BelaKey::SHOW_NEWEST_FIRST              => __('The latest posts should be shown on top of the listings.', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_ENTRIES         => __('The number of entries for each year/month/category should be shown.', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG => __('The number of entries for each tags should be shown.', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_COMMENTS        => __('The number of comments for each entry should be shown.', 'bela'),
+            BelaKey::FADE_EVERYTHING                => __('Changes should fade using the Fade Anything.', 'bela'),
+            BelaKey::EXCLUDE_TRACKBACKS             => __('Trackbacks should influence the number of comments on an entry.', 'bela'),
+            BelaKey::PAGINATE_THE_LIST              => __('The posts list should be cut into several pages or a chunk.', 'bela'),
         );
+    }
+
+    public function getLabel($key) {
+        $labels = $this->getLabels();
+        return $labels[$key];
+    }
+
+    public function getDescription($key) {
+        $descriptions = $this->getDescriptions();
+        return $descriptions[$key];
+    }
+
+    public function getNameAttr($key) {
+        return __CLASS__ . '[' . $key . ']';
     }
 
     /**

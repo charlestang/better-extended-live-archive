@@ -3,9 +3,22 @@
 /**
  * Html helper
  *
- * @author charles
+ * @author Charles Tang<charlestang@foxmail.com>
  */
 class BelaHtml {
+
+    /**
+     * Generate a check box for options item.
+     * @param BelaOptions $options
+     * @param int $key
+     */
+    public static function optionCheckbox($options, $key) {
+        $label = $options->getLabel($key);
+        $id = $options->getNameAttr($key);
+        $value = $options->get($key) ? 1 : 0;
+        $description = $options->getDescription($key);
+        self::adminCheckbox($label, $id, $value, $description);
+    }
 
     public static function adminCheckbox($caption, $id, $default, $description) {
         ?>
