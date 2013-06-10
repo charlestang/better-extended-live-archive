@@ -163,6 +163,9 @@ class BelaOptions {
      * @return mixed the option value
      */
     public function get($key) {
+        if (!isset($this->options[$key])) {
+            $this->options[$key] = $this->defaultOptions[$key];
+        }
         return $this->options[$key];
     }
 
