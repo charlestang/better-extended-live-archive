@@ -1,6 +1,7 @@
 <?php $this->renderPartial('common/nav-tab'); ?>
 <h3 class="title"><?php _e('What to show?'); ?></h3>
 <p><?php _e('Control the output infomation of ELA.'); ?></p>
+<form method="post" actions="<?php echo BelaAdmin::URL('whatToShow');?>">
 <table class="form-table">
     <tbody>
         <?php
@@ -11,8 +12,10 @@
         BelaHtml::optionCheckbox($options, BelaKey::FADE_EVERYTHING);
         BelaHtml::optionCheckbox($options, BelaKey::EXCLUDE_TRACKBACKS);
         BelaHtml::optionCheckbox($options, BelaKey::PAGINATE_THE_LIST);
-        //BelaHtml::adminCheckbox(
-        //        __('Use the default CSS stylesheet:', 'ela'), 'use_default_style', $settings['use_default_style'], __('If it exists, will link the <strong>ela.css</strong> stylesheet of your theme. If not present, will link the default stylesheet.', 'ela'));
         ?>
     </tbody>
 </table>
+<p class="submit">
+    <input type="submit" value="<?php _e("Save Changes", 'bela');?>" class="button button-primary" id="submit" name="submit">
+</p>
+</form>
