@@ -1,3 +1,4 @@
+<?php /* @var $options BelaOptions */ ?>
 <?php $this->renderPartial('common/nav-tab'); ?>
 <h3 class="title"><?php _e('What to show?'); ?></h3>
 <p><?php _e('Control the output infomation of ELA.'); ?></p>

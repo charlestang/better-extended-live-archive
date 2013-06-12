@@ -179,6 +179,19 @@ class BelaOptions {
     }
 
     /**
+     * Set options array to the options
+     * @param array $optionsArr
+     */
+    public function setOptions($optionsArr) {
+        $optionKeys = array_keys($this->defaultOptions);
+        foreach ($optionsArr as $optKey => $optVal) {
+            if (in_array($optKey, $optionKeys)) {
+                $this->set($optKey, $optVal);
+            }
+        }
+    }
+
+    /**
      * Save the options to db.
      */
     public function save() {

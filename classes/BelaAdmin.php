@@ -13,6 +13,9 @@ class BelaAdmin {
     const SUBPAGE_VAR = 'bela_a';
     const VIEWS_DIR = 'views';
 
+    /**
+     * @var BelaOptions 
+     */
     public $options = null;
     public $defaultAction = 'whatToShow';
     public $viewPath = '';
@@ -159,6 +162,10 @@ class BelaAdmin {
     }
 
     public function actionWhatToShow() {
+        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
+            $this->options->setOptions($_POST['BelaOptions']);
+            $this->options->save();
+        }
         $this->render('what-to-show', array('options' => $this->options));
     }
 

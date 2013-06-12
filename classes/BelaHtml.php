@@ -30,10 +30,13 @@ class BelaHtml {
                         <span><?php echo $caption; ?></span>
                     </legend>
                     <label for="<?php echo $id; ?>">
+                        <input type="hidden" 
+                               value="0" 
+                               name="<?php echo $id; ?>" />
                         <input type="checkbox" 
                                value="<?php echo $default; ?>" 
                                id="<?php echo $id; ?>" 
-                               name="<?php echo $id; ?>" <?php checked('1', $default); ?>>
+                               name="<?php echo $id; ?>" <?php checked('1', $default); ?> />
                                <?php echo $description; ?>
                     </label>
                 </fieldset>
