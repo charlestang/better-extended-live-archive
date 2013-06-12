@@ -188,4 +188,5 @@ class BelaAdmin {
     public function actionPagination() {
         $this->render('pagination', array('options' => $this->options));
     }
+
 }

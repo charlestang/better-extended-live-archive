@@ -34,7 +34,7 @@ class BelaHtml {
                                value="0" 
                                name="<?php echo $id; ?>" />
                         <input type="checkbox" 
-                               value="<?php echo $default; ?>" 
+                               value="1" 
                                id="<?php echo $id; ?>" 
                                name="<?php echo $id; ?>" <?php checked('1', $default); ?> />
                                <?php echo $description; ?>
