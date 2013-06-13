@@ -29,7 +29,7 @@ class BelaHtml {
     public static function optionTextInput($options, $key, $html = false) {
         $label = $options->getLabel($key);
         $id = $options->getNameAttr($key);
-        $value = $options->get($key) ? 1 : 0;
+        $value = $options->get($key);
         $description = $options->getDescription($key);
         self::adminTextInput($label, $id, $value, $description, $html);
     }
