@@ -79,25 +79,51 @@ class BelaOptions {
      */
     public function getLabels() {
         return array(
-            BelaKey::SHOW_NEWEST_FIRST              => __('Show Newest First:', 'bela'),
-            BelaKey::SHOW_NUMBER_OF_ENTRIES         => __('Show Number of Entries:', 'bela'),
-            BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG => __('Show Number of Entries Per Tag:', 'bela'),
-            BelaKey::SHOW_NUMBER_OF_COMMENTS        => __('Show Number of Comments:', 'bela'),
-            BelaKey::FADE_EVERYTHING                => __('Fade Anything Technique:', 'bela'),
-            BelaKey::EXCLUDE_TRACKBACKS             => __('Hide Ping- and Trackbacks:', 'bela'),
-            BelaKey::PAGINATE_THE_LIST              => __('Layout the posts link into pages:', 'bela'),
+            //what to show
+            BelaKey::SHOW_NEWEST_FIRST                  => __('Show Newest First:', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_ENTRIES             => __('Show Number of Entries:', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG     => __('Show Number of Entries Per Tag:', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_COMMENTS            => __('Show Number of Comments:', 'bela'),
+            BelaKey::FADE_EVERYTHING                    => __('Fade Anything Technique:', 'bela'),
+            BelaKey::EXCLUDE_TRACKBACKS                 => __('Hide Ping- and Trackbacks:', 'bela'),
+            BelaKey::PAGINATE_THE_LIST                  => __('Layout the posts link into pages:', 'bela'),
+            //how to show
+            BelaKey::SELECTED_SIGN                      => __('Selected Text:', 'bela'),
+            BelaKey::SELECTED_CLASS                     => __('Selected Class:', 'bela'),
+            BelaKey::TEMPLATE_NUMBER_OF_ENTRIES         => __('# of Entries Text:', 'bela'),
+            BelaKey::TEMPLATE_NUMBER_OF_ENTRIES_PER_TAG => __('# of Tagged-Entries Text:', 'bela'),
+            BelaKey::TEMPLATE_NUMBER_OF_COMMENTS        => __('# of Comments Text:', 'bela'),
+            BelaKey::COMMENTS_CLOSED_SIGN               => __('Closed Comment Text:', 'bela'),
+            BelaKey::POST_DATE_FORMAT_STRING            => __('Day of Posting Format:', 'bela'),
         );
     }
 
     public function getDescriptions() {
         return array(
-            BelaKey::SHOW_NEWEST_FIRST              => __('The latest posts should be shown on top of the listings.', 'bela'),
-            BelaKey::SHOW_NUMBER_OF_ENTRIES         => __('The number of entries for each year/month/category should be shown.', 'bela'),
-            BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG => __('The number of entries for each tags should be shown.', 'bela'),
-            BelaKey::SHOW_NUMBER_OF_COMMENTS        => __('The number of comments for each entry should be shown.', 'bela'),
-            BelaKey::FADE_EVERYTHING                => __('Changes should fade using the Fade Anything.', 'bela'),
-            BelaKey::EXCLUDE_TRACKBACKS             => __('Trackbacks should influence the number of comments on an entry.', 'bela'),
-            BelaKey::PAGINATE_THE_LIST              => __('The posts list should be cut into several pages or a chunk.', 'bela'),
+            //what to show
+            BelaKey::SHOW_NEWEST_FIRST                  => __('The latest posts should be shown on top of the listings.', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_ENTRIES             => __('The number of entries for each year/month/category should be shown.', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG     => __('The number of entries for each tags should be shown.', 'bela'),
+            BelaKey::SHOW_NUMBER_OF_COMMENTS            => __('The number of comments for each entry should be shown.', 'bela'),
+            BelaKey::FADE_EVERYTHING                    => __('Changes should fade using the Fade Anything.', 'bela'),
+            BelaKey::EXCLUDE_TRACKBACKS                 => __('Trackbacks should influence the number of comments on an entry.', 'bela'),
+            BelaKey::PAGINATE_THE_LIST                  => __('The posts list should be cut into several pages or a chunk.', 'bela'),
+            //how to show
+            BelaKey::SELECTED_SIGN                      => __('The text shown after the selected year, month or category.', 'bela'),
+            BelaKey::SELECTED_CLASS                     => __('The CSS class for the selected year, month or category.', 'bela'),
+            BelaKey::TEMPLATE_NUMBER_OF_ENTRIES         => __('The string to show for number of entries per year, month or category. 
+                                                                    Can contain HTML. % is replaced with number of entries.', 'bela'),
+            BelaKey::TEMPLATE_NUMBER_OF_ENTRIES_PER_TAG => __('The string to show for number of entries per tag. Can contain HTML. 
+                                                                    % is replaced with number of entries.', 'bela'),
+            BelaKey::TEMPLATE_NUMBER_OF_COMMENTS        => __('The string to show for comments. Can contain HTML. 
+                                                                    % is replaced with number of comments.', 'bela'),
+            BelaKey::COMMENTS_CLOSED_SIGN               => __('The string to show if comments are closed on an entry. 
+                                                                    Can contain HTML.', 'bela'),
+            BelaKey::POST_DATE_FORMAT_STRING            => __('A date format string to show the day for each entry in the chronological 
+                                                                    tab only (\'jS\' to show 1st, 3rd, and 14th). Format string is in 
+                                                                    the <a href="http://www.php.net/date">php date format</a>. Reference 
+                                                                    to year and month in there will result in error : this intended for 
+                                                                    days only. Leave empty to show no date.', 'bela'),
         );
     }
 

@@ -20,6 +20,20 @@ class BelaHtml {
         self::adminCheckbox($label, $id, $value, $description);
     }
 
+    /**
+     * Generate a text box for options item.
+     * @param BelaOptions $options
+     * @param int $key
+     * @param string $html
+     */
+    public static function optionTextInput($options, $key, $html = false) {
+        $label = $options->getLabel($key);
+        $id = $options->getNameAttr($key);
+        $value = $options->get($key) ? 1 : 0;
+        $description = $options->getDescription($key);
+        self::adminTextInput($label, $id, $value, $description, $html);
+    }
+
     public static function adminCheckbox($caption, $id, $default, $description) {
         ?>
         <tr valign="top">
