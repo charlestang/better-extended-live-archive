@@ -95,6 +95,14 @@ class BelaOptions {
             BelaKey::TEMPLATE_NUMBER_OF_COMMENTS        => __('# of Comments Text:', 'bela'),
             BelaKey::COMMENTS_CLOSED_SIGN               => __('Closed Comment Text:', 'bela'),
             BelaKey::POST_DATE_FORMAT_STRING            => __('Day of Posting Format:', 'bela'),
+            //how to cut
+            BelaKey::MAX_ENTRY_TITLE_LENGTH             => __('Max Entry Title Length:', 'bela'),
+            BelaKey::MAX_CATEGORY_NAME_LENGTH           => __('Max Cat. Title Length:', 'bela'),
+            BelaKey::TRUNCATED_TEXT                     => __('Truncated Text:', 'bela'),
+            BelaKey::TRUNCATE_BREAK_WORD                => __('Truncate at space:', 'bela'),
+            BelaKey::ABBREVIATE_MONTH_NAME              => __('Abbreviate month names:', 'bela'),
+            BelaKey::TAGS_PICK_STRATEGY                 => __('Displayed tags:', 'bela'),
+            BelaKey::TAG_STRATEGY_THRESHOLD             => __('The X in the selected above description:', 'bela'),
         );
     }
 
@@ -124,6 +132,22 @@ class BelaOptions {
                                                                     the <a href="http://www.php.net/date">php date format</a>. Reference 
                                                                     to year and month in there will result in error : this intended for 
                                                                     days only. Leave empty to show no date.', 'bela'),
+            //how to cut
+            BelaKey::MAX_ENTRY_TITLE_LENGTH             => __('Length at which to truncate title of entries. Set to 
+                                                                    <strong>0</strong> to leave the titles not truncated.', 'bela'),
+            BelaKey::MAX_CATEGORY_NAME_LENGTH           => __('Length at which to truncate name of categories. Set to 
+                                                                    <strong>0</strong> to leave the category names not truncated', 'bela'),
+            BelaKey::TRUNCATED_TEXT                     => __('The text that will be written after the entries titles and the categories 
+                                                                    names that have been truncated. &#8230; (<strong>&amp;#8230;</strong>) 
+                                                                    is a common example.', 'bela'),
+            BelaKey::TRUNCATE_BREAK_WORD                => __('Sets whether at title should be truncated at the last space before the 
+                                                                    length to be truncated to, or if words should be truncated 
+                                                                    mid-senten...', 'bela'),
+            BelaKey::ABBREVIATE_MONTH_NAME              => __('Sets whether the month names will be abbreviated to three letters.', 'bela'),
+            BelaKey::TAGS_PICK_STRATEGY                 => '',
+            BelaKey::TAG_STRATEGY_THRESHOLD             => __('Sets depending on the selection made above the number of post per 
+                                                                    tag needed to display the tag or the number of most-used tags 
+                                                                    to display.', 'bela'),
         );
     }
 
