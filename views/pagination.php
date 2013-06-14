@@ -1,22 +1,17 @@
 <?php $this->renderPartial('common/nav-tab'); ?>
-    <h3 class="title"><?php _e('What about paged posts?.','ela');?></h3>
-    <p><?php _e('The layout of the posts when using a paged list instead of complete list .','ela');?></p>
-    <table class="form-table paged-posts-section"><tbody>
-    <?php
-    better_ela_helper_txtbox(
-        __('Max # of Posts per page:','ela'),
-        'paged_post_num', $settings['paged_post_num'],
-        __('The max number of posts that will be listed per page.','ela'),
-        true);
-    better_ela_helper_txtbox(
-        __('Next Page of Posts:','ela'),
-        'paged_post_next', $settings['paged_post_next'],
-        __('The text written as the link to the next page.','ela'),
-        true);
-    better_ela_helper_txtbox(
-        __('Previous Page of Posts:','ela'),
-        'paged_post_prev', $settings['paged_post_prev'],
-        __('The text written as the link to the previous page.','ela'),
-        true);
-    ?>
-    </tbody></table>
+<h3 class="title"><?php _e('What about paged posts?.', 'ela'); ?></h3>
+<p><?php _e('The layout of the posts when using a paged list instead of complete list .', 'ela'); ?></p>
+<form method="post" actions="<?php echo BelaAdmin::URL('pagination');?>">
+<table class="form-table paged-posts-section">
+    <tbody>
+        <?php
+        BelaHtml::optionTextInput($options, BelaKey::PAGE_OPT_NUMBER_PER_PAGE, true);
+        BelaHtml::optionTextInput($options, BelaKey::PAGE_OPT_NEXT_PAGE_TEXT, true);
+        BelaHtml::optionTextInput($options, BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT, true);
+        ?>
+    </tbody>
+</table>
+<p class="submit">
+    <input type="submit" value="<?php _e("Save Changes", 'bela');?>" class="button button-primary" id="submit" name="submit">
+</p>
+</form>

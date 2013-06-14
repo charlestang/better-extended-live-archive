@@ -79,4 +79,10 @@ class BelaHtml {
         <?php
     }
 
+    public static function adminRadio($name, $value, $current, $label) {
+        ?>
+        <label title="tag_soup_cut0"><input type="radio" value="<?php echo $value;?>" name="<?php echo $name;?>" <?php checked($value, $current); ?> /> <?php _e('Show all tags.', 'ela'); ?></label>
+        <?php
+    }
+
 }
