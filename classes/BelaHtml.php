@@ -34,6 +34,35 @@ class BelaHtml {
         self::adminTextInput($label, $id, $value, $description, $html);
     }
 
+    /**
+     * Show a radio group on the admin page
+     * @param BelaOptions $options
+     * @param int $key
+     * @param array $group
+     */
+    public static function optionRadioGroup($options, $key, $group) {
+        $label = $options->getLabel($key);
+        $name = $options->getNameAttr($key);
+        $current = $options->get($key);
+        ?>
+        <tr>
+            <th scope="row"><?php echo $label; ?></th>
+            <td>
+                <fieldset>
+                    <legend class="screen-reader-text">
+                        <span><?php echo $label; ?></span>
+                    </legend>
+                    <?php 
+                    foreach ($group as $value) {
+                        self::adminRadio($name, $value, $current, $options->getLabel($value));
+                    }
+                    ?>
+                </fieldset>
+            </td>
+        </tr>
+        <?php
+    }
+
     public static function adminCheckbox($caption, $id, $default, $description) {
         ?>
         <tr valign="top">
@@ -80,8 +109,16 @@ class BelaHtml {
     }
 
     public static function adminRadio($name, $value, $current, $label) {
+        $id = 'radio-id-' . $name . '-' . $value;
         ?>
-        <label title="tag_soup_cut0"><input type="radio" value="<?php echo $value;?>" name="<?php echo $name;?>" <?php checked($value, $current); ?> /> <?php _e('Show all tags.', 'ela'); ?></label>
+        <label title="<?php echo $id;?>">
+            <input type="radio" 
+                   id="<?php echo $id;?>"
+                   name="<?php echo $name; ?>" 
+                   value="<?php echo $value; ?>" 
+                   <?php checked($value, $current); ?> /> 
+                   <?php echo $label; ?>
+        </label><br/>
         <?php
     }
 

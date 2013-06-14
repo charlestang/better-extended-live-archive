@@ -103,27 +103,33 @@ class BelaOptions {
             BelaKey::ABBREVIATE_MONTH_NAME              => __('Abbreviate month names:', 'bela'),
             BelaKey::TAGS_PICK_STRATEGY                 => __('Displayed tags:', 'bela'),
             BelaKey::TAG_STRATEGY_THRESHOLD             => __('The X in the selected above description:', 'bela'),
-
-            BelaKey::NAVIGATION_TABS_ORDER              => __('Tab Order:', 'bela'),
-            BelaKey::BY_DATE_TEXT                       => __('Chronological Tab Text:', 'bela'),
-            BelaKey::BY_CATEGORY_TEXT                   => __('By Category Tab Text:', 'bela'),
-            BelaKey::BY_TAGS_TEXT                       => __('By Tag Tab Text:', 'bela'),
-            BelaKey::TEXT_BEFORE_CHILD_CATEGORY         => __('Before Child Text:', 'bela'),
-            BelaKey::TEXT_AFTER_CHILD_CATEGORY          => __('After Child Text:', 'bela'),
-            BelaKey::TEXT_WHEN_CONTENT_LOADING          => __('Loading Content:', 'bela'),
-            BelaKey::TEXT_WHEN_BLANK_CONTENT            => __('Idle Content:', 'bela'),
+            BelaKey::NAVIGATION_TABS_ORDER            => __('Tab Order:', 'bela'),
+            BelaKey::BY_DATE_TEXT                     => __('Chronological Tab Text:', 'bela'),
+            BelaKey::BY_CATEGORY_TEXT                 => __('By Category Tab Text:', 'bela'),
+            BelaKey::BY_TAGS_TEXT                     => __('By Tag Tab Text:', 'bela'),
+            BelaKey::TEXT_BEFORE_CHILD_CATEGORY       => __('Before Child Text:', 'bela'),
+            BelaKey::TEXT_AFTER_CHILD_CATEGORY        => __('After Child Text:', 'bela'),
+            BelaKey::TEXT_WHEN_CONTENT_LOADING        => __('Loading Content:', 'bela'),
+            BelaKey::TEXT_WHEN_BLANK_CONTENT          => __('Idle Content:', 'bela'),
             /**
              * Exclude items
              */
-            BelaKey::EXCLUDE_CATEGORY_LIST              => __('Select categories:', 'ela'),
-            BelaKey::EXCLUDE_PAGE                       => '',
-            BelaKey::EXCLUDE_POST_TYPE_LIST             => '',
+            BelaKey::EXCLUDE_CATEGORY_LIST            => __('Select categories:', 'ela'),
+            BelaKey::EXCLUDE_PAGE                     => '',
+            BelaKey::EXCLUDE_POST_TYPE_LIST           => '',
             /**
              * Pagination
              */
-            BelaKey::PAGE_OPT_NUMBER_PER_PAGE           => __('Max # of Posts per page:','bela'),
-            BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT        => __('Previous Page of Posts:','bela'),
-            BelaKey::PAGE_OPT_NEXT_PAGE_TEXT            =>  __('Next Page of Posts:','bela'),
+            BelaKey::PAGE_OPT_NUMBER_PER_PAGE         => __('Max # of Posts per page:', 'bela'),
+            BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT      => __('Previous Page of Posts:', 'bela'),
+            BelaKey::PAGE_OPT_NEXT_PAGE_TEXT          => __('Next Page of Posts:', 'bela'),
+            /**
+             * Tag Strategy
+             */
+            BelaKey::TAGS_PICK_STRATEGY               => __('Displayed tags:', 'bela'),
+            BelaKey::TAG_STRATEGY_SHOW_ALL            => __('Show all tags.', 'bela'),
+            BelaKey::TAG_STRATEGY_FIRST_X_MOST_USED   => __('Show the first <strong>X</strong> most-used tags.', 'bela'),
+            BelaKey::TAG_STRATEGY_TAG_AT_LEAST_X_POST => __('Show tags with more than <strong>X</strong> posts.', 'bela'),
         );
     }
 
@@ -190,9 +196,9 @@ class BelaOptions {
             /**
              * Pagination
              */
-            BelaKey::PAGE_OPT_NUMBER_PER_PAGE           => __('The max number of posts that will be listed per page.','bela'),
-            BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT        => __('The text written as the link to the previous page.','bela'),
-            BelaKey::PAGE_OPT_NEXT_PAGE_TEXT            => __('The text written as the link to the next page.','bela'),
+            BelaKey::PAGE_OPT_NUMBER_PER_PAGE           => __('The max number of posts that will be listed per page.', 'bela'),
+            BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT        => __('The text written as the link to the previous page.', 'bela'),
+            BelaKey::PAGE_OPT_NEXT_PAGE_TEXT            => __('The text written as the link to the next page.', 'bela'),
         );
     }
 
