@@ -21,13 +21,6 @@
                         ?>
                     </fieldset></td>
             </tr>
-            <tr valign="top">
-                <th scope="row">&nbsp;</th>
-                <td>
-                    <input type="button" onclick="javascript:selectAllCategories('<?php echo $asides_select; ?>')" value="<?php _e('Select All Categories') ?>" />
-                    <input type="button" onclick="javascript:unselectAllCategories('<?php echo $asides_select; ?>')" value="<?php _e('Unselect All Categories') ?>" />
-                </td>
-            </tr>
         </tbody>
     </table>
     <p class="submit">
