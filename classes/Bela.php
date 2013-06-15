@@ -57,8 +57,18 @@ class Bela {
          */
         add_shortcode('extended-live-archive', 'af_ela_shorcode');
 
+        /**
+         * BELA admin panels
+         */
         $belaAdmin = new BelaAdmin($this->options);
         $belaAdmin->run();
+
+        /**
+         * BELA AJAX processor
+         */
+        $belaAjax = new BelaAjax($this->options);
+        add_action('wp_ajax_nopriv_' . BelaAjax::BELA_AJAX_VAR, array($belaAjax, 'entry'));
+        add_action('wp_ajax_' . BelaAjax::BELA_AJAX_VAR, array($belaAjax, 'entry'));
     }
 
     /**
@@ -66,6 +76,7 @@ class Bela {
      * @global type $ela_plugin_basename
      */
     public function injectStaticFiles() {
+        $this->echoAjaxEntry();
         global $ela_plugin_basename;
         // loading stuff
         $settings = get_option('af_ela_options');
@@ -97,6 +108,10 @@ TEXT;
         if (!$this->builder->isIndicesInitialized()) {
             $this->builder->initializeIndexCache();
         }
+    }
+
+    public function echoAjaxEntry() {
+        echo '<script type="text/javascript">var belaAjaxUrl="', admin_url('admin_ajax.php', 'relative'), '";</script>';
     }
 
 }
