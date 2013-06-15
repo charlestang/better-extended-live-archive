@@ -57,13 +57,6 @@ class Bela {
          */
         add_shortcode('extended-live-archive', 'af_ela_shorcode');
 
-        if (is_admin()) {
-            if (isset($_GET['page']) && $_GET['page'] == 'extended-live-archive') {
-                add_action('admin_head', 'better_ela_js_code_in_admin_page');
-            }
-            add_action('admin_menu', 'af_ela_admin_pages');
-        }
-
         $belaAdmin = new BelaAdmin($this->options);
         $belaAdmin->run();
     }
