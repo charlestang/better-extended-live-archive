@@ -55,7 +55,7 @@ class Bela {
         /**
          * short code
          */
-        add_shortcode('extended-live-archive', 'af_ela_shorcode');
+        add_shortcode('extended-live-archive', array($this, 'shortCode'));
 
         /**
          * BELA admin panels
@@ -104,14 +104,30 @@ TEXT;
      * the Bela component on the web page
      * @return string
      */
-    public function getBelaComponent() {
+    public function printBelaContainer() {
         if (!$this->builder->isIndicesInitialized()) {
             $this->builder->initializeIndexCache();
         }
+        ?>
+        <div id="bela-container"></div>
+        <div style="clear:both;"></div>
+        <?php
     }
 
     public function echoAjaxEntry() {
         echo '<script type="text/javascript">var belaAjaxUrl="', admin_url('admin_ajax.php', 'relative'), '";</script>';
+    }
+
+    /**
+     * Short code process method
+     * @return string
+     */
+    public function shortCode() {
+        ob_start();
+        $this->printBelaContainer();
+        $bela = ob_get_contents();
+        ob_end_clean();
+        return $bela;
     }
 
 }

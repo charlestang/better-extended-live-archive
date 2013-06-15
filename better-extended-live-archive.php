@@ -23,6 +23,7 @@ require_once $bela_path . '/classes/BelaIndicesBuilder.php';
 require_once $bela_path . '/classes/BelaOptions.php';
 require_once $bela_path . '/classes/BelaHtml.php';
 require_once $bela_path . '/classes/BelaAdmin.php';
+require_once $bela_path . '/classes/BelaAjax.php';
 require_once $bela_path . '/classes/Bela.php';
 
 /**
@@ -331,7 +332,7 @@ function af_ela_shorcode() {
  */
 function better_extended_live_archive() {
     global $belaObj;
-    echo $belaObj->getBelaComponent();
+    $belaObj->printBelaContainer();
 }
 
 $belaObj = new Bela();

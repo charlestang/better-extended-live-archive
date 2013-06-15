@@ -44,12 +44,7 @@ class BelaIndicesBuilder {
     }
 
     public function initializeIndexCache() {
-        $typesStr = trim($this->_options->get(BelaKey::NAVIGATION_TABS_ORDER));
-        if (empty($typesStr)) {
-            return true;
-        }
-
-        $types = explode(',', $typesStr);
+        $types = $this->_options->get(BelaKey::NAVIGATION_TABS_ORDER);
 
         foreach ($types as $type) {
             $index = $this->getIndex($type);

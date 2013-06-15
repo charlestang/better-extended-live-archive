@@ -103,9 +103,6 @@ class BelaTimeIndex extends BelaIndex {
                 . $exclusions
                 . "ORDER By post_date DESC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
-        if ($year == '2013') {
-            var_dump($sql);
-        }
 
         if (!empty($results)) {
             $postsInMonth = array_map(array($this, 'generateEntryInPostsTable'), $results);
