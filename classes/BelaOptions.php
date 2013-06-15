@@ -50,7 +50,10 @@ class BelaOptions {
         /**
          * Navigate options.
          */
-        BelaKey::NAVIGATION_TABS_ORDER              => '27,28', //BelaKey::ORDER_KEY_BY_DATE, BelaKey::ORDER_KEY_BY_CATEGORY
+        BelaKey::NAVIGATION_TABS_ORDER              => array(
+            BelaKey::ORDER_KEY_BY_DATE,
+            BelaKey::ORDER_KEY_BY_CATEGORY,
+        ),
         BelaKey::BY_DATE_TEXT                       => 'By Date',
         BelaKey::BY_CATEGORY_TEXT                   => 'By Category',
         BelaKey::BY_TAGS_TEXT                       => 'By Tag',
@@ -103,33 +106,39 @@ class BelaOptions {
             BelaKey::ABBREVIATE_MONTH_NAME              => __('Abbreviate month names:', 'bela'),
             BelaKey::TAGS_PICK_STRATEGY                 => __('Displayed tags:', 'bela'),
             BelaKey::TAG_STRATEGY_THRESHOLD             => __('The X in the selected above description:', 'bela'),
-            BelaKey::NAVIGATION_TABS_ORDER            => __('Tab Order:', 'bela'),
-            BelaKey::BY_DATE_TEXT                     => __('Chronological Tab Text:', 'bela'),
-            BelaKey::BY_CATEGORY_TEXT                 => __('By Category Tab Text:', 'bela'),
-            BelaKey::BY_TAGS_TEXT                     => __('By Tag Tab Text:', 'bela'),
-            BelaKey::TEXT_BEFORE_CHILD_CATEGORY       => __('Before Child Text:', 'bela'),
-            BelaKey::TEXT_AFTER_CHILD_CATEGORY        => __('After Child Text:', 'bela'),
-            BelaKey::TEXT_WHEN_CONTENT_LOADING        => __('Loading Content:', 'bela'),
-            BelaKey::TEXT_WHEN_BLANK_CONTENT          => __('Idle Content:', 'bela'),
+            BelaKey::NAVIGATION_TABS_ORDER              => __('Tab Order:', 'bela'),
+            BelaKey::BY_DATE_TEXT                       => __('Chronological Tab Text:', 'bela'),
+            BelaKey::BY_CATEGORY_TEXT                   => __('By Category Tab Text:', 'bela'),
+            BelaKey::BY_TAGS_TEXT                       => __('By Tag Tab Text:', 'bela'),
+            BelaKey::TEXT_BEFORE_CHILD_CATEGORY         => __('Before Child Text:', 'bela'),
+            BelaKey::TEXT_AFTER_CHILD_CATEGORY          => __('After Child Text:', 'bela'),
+            BelaKey::TEXT_WHEN_CONTENT_LOADING          => __('Loading Content:', 'bela'),
+            BelaKey::TEXT_WHEN_BLANK_CONTENT            => __('Idle Content:', 'bela'),
             /**
              * Exclude items
              */
-            BelaKey::EXCLUDE_CATEGORY_LIST            => __('Select categories:', 'ela'),
-            BelaKey::EXCLUDE_PAGE                     => '',
-            BelaKey::EXCLUDE_POST_TYPE_LIST           => '',
+            BelaKey::EXCLUDE_CATEGORY_LIST              => __('Select categories:', 'ela'),
+            BelaKey::EXCLUDE_PAGE                       => '',
+            BelaKey::EXCLUDE_POST_TYPE_LIST             => '',
             /**
              * Pagination
              */
-            BelaKey::PAGE_OPT_NUMBER_PER_PAGE         => __('Max # of Posts per page:', 'bela'),
-            BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT      => __('Previous Page of Posts:', 'bela'),
-            BelaKey::PAGE_OPT_NEXT_PAGE_TEXT          => __('Next Page of Posts:', 'bela'),
+            BelaKey::PAGE_OPT_NUMBER_PER_PAGE           => __('Max # of Posts per page:', 'bela'),
+            BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT        => __('Previous Page of Posts:', 'bela'),
+            BelaKey::PAGE_OPT_NEXT_PAGE_TEXT            => __('Next Page of Posts:', 'bela'),
             /**
              * Tag Strategy
              */
-            BelaKey::TAGS_PICK_STRATEGY               => __('Displayed tags:', 'bela'),
-            BelaKey::TAG_STRATEGY_SHOW_ALL            => __('Show all tags.', 'bela'),
-            BelaKey::TAG_STRATEGY_FIRST_X_MOST_USED   => __('Show the first <strong>X</strong> most-used tags.', 'bela'),
-            BelaKey::TAG_STRATEGY_TAG_AT_LEAST_X_POST => __('Show tags with more than <strong>X</strong> posts.', 'bela'),
+            BelaKey::TAGS_PICK_STRATEGY                 => __('Displayed tags:', 'bela'),
+            BelaKey::TAG_STRATEGY_SHOW_ALL              => __('Show all tags.', 'bela'),
+            BelaKey::TAG_STRATEGY_FIRST_X_MOST_USED     => __('Show the first <strong>X</strong> most-used tags.', 'bela'),
+            BelaKey::TAG_STRATEGY_TAG_AT_LEAST_X_POST   => __('Show tags with more than <strong>X</strong> posts.', 'bela'),
+            /**
+             * Menu tabs name 
+             */
+            BelaKey::ORDER_KEY_BY_DATE                  => $this->get(BelaKey::BY_DATE_TEXT),
+            BelaKey::ORDER_KEY_BY_CATEGORY              => $this->get(BelaKey::BY_CATEGORY_TEXT),
+            BelaKey::ORDER_KEY_BY_TAGS                  => $this->get(BelaKey::BY_TAGS_TEXT),
         );
     }
 
@@ -156,9 +165,10 @@ class BelaOptions {
                                                                     Can contain HTML.', 'bela'),
             BelaKey::POST_DATE_FORMAT_STRING            => __('A date format string to show the day for each entry in the chronological 
                                                                     tab only (\'jS\' to show 1st, 3rd, and 14th). Format string is in 
-                                                                    the <a href="http://www.php.net/date">php date format</a>. Reference 
-                                                                    to year and month in there will result in error : this intended for 
-                                                                    days only. Leave empty to show no date.', 'bela'),
+                                                                    the <a href="http://www.php.net/date" target="blank">php date 
+                                                                    format</a>. Reference to year and month in there will result 
+                                                                    in error : this intended for days only. 
+                                                                    Leave empty to show no date.', 'bela'),
             //how to cut
             BelaKey::MAX_ENTRY_TITLE_LENGTH             => __('Length at which to truncate title of entries. Set to 
                                                                     <strong>0</strong> to leave the titles not truncated.', 'bela'),

@@ -1,6 +1,5 @@
 <?php $this->renderPartial('common/nav-tab'); ?>
-<h3 class="title"><?php _e('What about paged posts?.', 'ela'); ?></h3>
-<p><?php _e('The layout of the posts when using a paged list instead of complete list .', 'ela'); ?></p>
+<p><?php _e('The layout of the posts when using a paged list instead of complete list .', 'bela'); ?></p>
 <form method="post" actions="<?php echo BelaAdmin::URL('pagination');?>">
 <table class="form-table paged-posts-section">
     <tbody>

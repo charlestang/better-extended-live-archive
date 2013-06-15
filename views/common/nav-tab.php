@@ -1,4 +1,4 @@
-<div class="icon32" id="icon-bela"><br></div>
+<?php screen_icon(); ?>
 <h2>Better Extended Live Archive Options</h2>
 <ul class="subsubsub">
     <li>

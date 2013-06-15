@@ -1,5 +1,4 @@
 <?php $this->renderPartial('common/nav-tab'); ?>
-<h3 class="title"><?php _e('How to show?'); ?></h3>
 <p><?php _e('Control the output text tips of ELA.'); ?></p>
 <form method="post" actions="<?php echo BelaAdmin::URL('howToShow'); ?>">
     <table class="form-table">

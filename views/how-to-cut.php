@@ -1,6 +1,5 @@
 <?php /* @var $options BelaOptions */ ?>
 <?php $this->renderPartial('common/nav-tab'); ?>
-<h3 class="title"><?php _e('How to cut?'); ?></h3>
 <p><?php _e('Control the cut off of ELA.'); ?></p>
 <form method="post" actions="<?php echo BelaAdmin::URL('howToCut'); ?>">
     <table class="form-table">

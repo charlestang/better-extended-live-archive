@@ -161,31 +161,67 @@ class BelaAdmin {
         include $this->viewPath . $this->layout . '.php';
     }
 
+    /**
+     * Redirect the page to the specific action.
+     * @param string $action
+     */
+    public function redirect($action) {
+        $url = self::URL($action);
+        header('Location: ' . $url);
+        exit;
+    }
+
     public function actionWhatToShow() {
         if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
             $this->options->setOptions($_POST['BelaOptions']);
             $this->options->save();
+            $this->redirect('whatToShow');
         }
         $this->render('what-to-show', array('options' => $this->options));
     }
 
     public function actionHowToShow() {
+        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
+            $this->options->setOptions($_POST['BelaOptions']);
+            $this->options->save();
+            $this->redirect('howToShow');
+        }
         $this->render('how-to-show', array('options' => $this->options));
     }
 
     public function actionHowToCut() {
+        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
+            $this->options->setOptions($_POST['BelaOptions']);
+            $this->options->save();
+            $this->redirect('howToCut');
+        }
         $this->render('how-to-cut', array('options' => $this->options));
     }
 
     public function actionMenuSettings() {
+        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
+            $this->options->setOptions($_POST['BelaOptions']);
+            $this->options->save();
+            $this->redirect('menuSettings');
+        }
         $this->render('menu-settings', array('options' => $this->options));
     }
 
     public function actionCategoryExclusion() {
+        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
+            $this->options->setOptions($_POST['BelaOptions']);
+            $this->options->save();
+            $this->redirect('categoryExclusion');
+        }
         $this->render('category-exclusion', array('options' => $this->options));
     }
 
     public function actionPagination() {
+        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
+            $this->options->setOptions($_POST['BelaOptions']);
+            $this->options->save();
+            $this->redirect('pagination');
+        }
         $this->render('pagination', array('options' => $this->options));
     }
 

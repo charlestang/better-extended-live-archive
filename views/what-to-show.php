@@ -1,7 +1,6 @@
 <?php /* @var $options BelaOptions */ ?>
 <?php $this->renderPartial('common/nav-tab'); ?>
-<h3 class="title"><?php _e('What to show?'); ?></h3>
-<p><?php _e('Control the output infomation of ELA.'); ?></p>
+<p><?php _e('The basic options of <i>Better Extended Live Archive</i>. Control the output information of it.'); ?></p>
 <form method="post" actions="<?php echo BelaAdmin::URL('whatToShow');?>">
 <table class="form-table">
     <tbody>
