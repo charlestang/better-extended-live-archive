@@ -8,9 +8,9 @@
 class BelaTagIndex extends BelaIndex {
 
     public function build() {
-        $tags = $this->buildTagTable();
+        $tags = $this->buildTagsTable();
         foreach ($tags as $id => $tag) {
-            $this->buildPostInTagTable($id);
+            $this->buildPostsInTagTable($id);
         }
     }
 
@@ -18,7 +18,7 @@ class BelaTagIndex extends BelaIndex {
         
     }
 
-    public function buildTagTable() {
+    public function buildTagsTable() {
         $tagStrategy = $this->getOptions()->get(BelaKey::TAGS_PICK_STRATEGY);
         $strategySubstatement = '';
         $threshold = $this->getOptions()->get(BelaKey::TAG_STRATEGY_THRESHOLD);
@@ -47,6 +47,10 @@ class BelaTagIndex extends BelaIndex {
         return $tagsTable;
     }
 
+    public function getTagsTable() {
+        return $this->getCache()->get('tags.dat');
+    }
+
     private function getTagTableEntry($tag) {
         return array(
             $tag->term_taxonomy_id,
@@ -55,7 +59,7 @@ class BelaTagIndex extends BelaIndex {
         );
     }
 
-    public function buildPostInTagTable($tagId) {
+    public function buildPostsInTagTable($tagId) {
         $excludedPostIds = $this->getOptions()->get(BelaKey::EXCLUDED_POST_IDS);
         $exclusions = "";
         if (!empty($excludedPostIds)) {
@@ -89,6 +93,10 @@ class BelaTagIndex extends BelaIndex {
         }
 
         $this->getCache()->set('tag-' . $tagId. '.dat', $postTable);
+    }
+
+    public function getPostsInTagTable($tagId) {
+        $this->getCache()->get('tag-' . $tagId . '.dat');
     }
 
     private function getPostTableEntry($post) {

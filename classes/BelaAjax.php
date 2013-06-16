@@ -43,6 +43,10 @@ class BelaAjax {
                 $data = $this->generateCatgoryContent($params['cat']);
                 break;
 
+            case BelaKey::ORDER_KEY_BY_TAGS:
+                $data = $this->generateTagContent($params['tag']);
+                break;
+
             default:
                 break;
         }
@@ -50,6 +54,10 @@ class BelaAjax {
         die();
     }
 
+    /**
+     * Retrieve the user get params from the request
+     * @return array
+     */
     public function getRequest() {
         $params = array();
         $menu = BelaAdmin::getParam('menu', reset($this->options->get(BelaKey::NAVIGATION_TABS_ORDER)));
@@ -75,6 +83,11 @@ class BelaAjax {
                 }
                 break;
             case BelaKey::ORDER_KEY_BY_TAGS:
+                $params['tag'] = BelaAdmin::getParam('tag', false);
+                if (false === $params['tag']) {
+                    $tags = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_TAGS)->getTagsTable();
+                    $params['tag'] = reset(array_keys($tags));
+                }
                 break;
             default:
                 break;
@@ -96,7 +109,8 @@ class BelaAjax {
                     'class'  => 'year-entry',
                     'year'   => $y,
                     'menu'   => BelaKey::ORDER_KEY_BY_DATE,
-                    'active' => $y == $year,));
+                    'active' => $y == $year,
+                ));
             }
             ?>
         </ul>
@@ -108,7 +122,8 @@ class BelaAjax {
                     'year'   => $year,
                     'month'  => $m,
                     'menu'   => BelaKey::ORDER_KEY_BY_DATE,
-                    'active' => $m == $month,));
+                    'active' => $m == $month,
+                ));
             }
             ?>
         </ul>
@@ -135,11 +150,12 @@ class BelaAjax {
                     'class'  => 'category-entry',
                     'menu'   => BelaKey::ORDER_KEY_BY_CATEGORY,
                     'cat'    => $id,
-                    'active' => $id == $catId));
+                    'active' => $id == $catId,
+                ));
             }
             ?>
         </ul>
-        <ul class="bela-post-list" cat="<?php echo $catId; ?>">
+        <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_CATEGORY;?>" cat="<?php echo $catId; ?>">
             <?php $this->printPostList($posts); ?>
         </ul>
         <?php
@@ -149,17 +165,44 @@ class BelaAjax {
         return $data;
     }
 
-    public function printPostList($posts) {
-        if (is_array($posts) && !empty($posts))  {
-        foreach ($posts as $ID => $p) {
-            ?>
-            <li id="bela-post-<?php echo $ID; ?>" class="bela-post-entry">
-                <a class="bela-post-link" href="<?php echo $p[2]; ?>" title="<?php echo $p[1]; ?>">
-                    <?php echo $p[1]; ?>
-                </a>
-            </li>
+    public function generateTagContent($tagId) {
+        $index = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_TAGS);
+        $tags = $index->getTagsTable();
+        $posts = $index->getPostsInTagTable($tagId);
+        ob_start();
+        ?>
+        <ul class="bela-tag">
             <?php
-        }
+            foreach ($tags as $tid => $tag) {
+                echo BelaHtml::menuItem($tag[1], array(
+                    'class'  => 'tag-entry',
+                    'menu'   => BelaKey::ORDER_KEY_BY_TAGS,
+                    'tag'    => $tid,
+                    'active' => $tid == $tagId,
+                ));
+            }
+            ?>
+        </ul>
+        <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_TAGS;?>" tag="<?php echo $tagId; ?>">
+            <?php $this->printPostList($posts); ?>
+        </ul>
+        <?php
+        $data = ob_get_contents();
+        ob_end_clean();
+        return $data;
+    }
+
+    public function printPostList($posts) {
+        if (is_array($posts) && !empty($posts)) {
+            foreach ($posts as $ID => $p) {
+                ?>
+                <li id="bela-post-<?php echo $ID; ?>" class="bela-post-entry">
+                    <a class="bela-post-link" href="<?php echo $p[2]; ?>" title="<?php echo $p[1]; ?>">
+                        <?php echo $p[1]; ?>
+                    </a>
+                </li>
+                <?php
+            }
         } else {
             echo '<li class="bela-post-entry">empty</li>';
         }
