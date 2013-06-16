@@ -92,18 +92,27 @@ class BelaAjax {
         <ul class="bela-chrono-year">
             <?php
             foreach ($years as $y => $count) {
-                echo BelaHtml::menuItem($y, array('class'  => 'year-entry', 'data'   => $y, 'active' => $y == $year,));
+                echo BelaHtml::menuItem($y, array(
+                    'class'  => 'year-entry',
+                    'year'   => $y,
+                    'menu'   => BelaKey::ORDER_KEY_BY_DATE,
+                    'active' => $y == $year,));
             }
             ?>
         </ul>
         <ul class="bela-chrono-month">
             <?php
             foreach ($months as $m => $count) {
-                echo BelaHtml::menuItem($m, array('class'  => 'month-entry', 'data'   => $m, 'active' => $m == $month,));
+                echo BelaHtml::menuItem($m, array(
+                    'class'  => 'month-entry',
+                    'year'   => $year,
+                    'month'  => $m,
+                    'menu'   => BelaKey::ORDER_KEY_BY_DATE,
+                    'active' => $m == $month,));
             }
             ?>
         </ul>
-        <ul class="bela-post-list" year="<?php echo $year; ?>" month="<?php echo $month; ?>">
+        <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_DATE; ?>" year="<?php echo $year; ?>" month="<?php echo $month; ?>">
             <?php $this->printPostList($posts); ?>
         </ul>
         <?php
@@ -122,7 +131,11 @@ class BelaAjax {
         <ul class="bela-category">
             <?php
             foreach ($categories as $id => $cat) {
-                echo BelaHtml::menuItem($cat[1], array('class'  => 'category-entry', 'data'   => $id, 'active' => $id == $catId));
+                echo BelaHtml::menuItem($cat[1], array(
+                    'class'  => 'category-entry',
+                    'menu'   => BelaKey::ORDER_KEY_BY_CATEGORY,
+                    'cat'    => $id,
+                    'active' => $id == $catId));
             }
             ?>
         </ul>
@@ -137,6 +150,7 @@ class BelaAjax {
     }
 
     public function printPostList($posts) {
+        if (is_array($posts) && !empty($posts))  {
         foreach ($posts as $ID => $p) {
             ?>
             <li id="bela-post-<?php echo $ID; ?>" class="bela-post-entry">
@@ -145,6 +159,9 @@ class BelaAjax {
                 </a>
             </li>
             <?php
+        }
+        } else {
+            echo '<li class="bela-post-entry">empty</li>';
         }
     }
 

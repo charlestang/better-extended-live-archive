@@ -48,9 +48,55 @@ jQuery(function($) {
         init: function() {
             var that = this;
             var menu_id = $('li:first', that.menuBar).addClass('bela-menu-active active').attr('data');
-            that.ajaxRequest({menu: menu_id});
+            that.ajaxRequest({menu: menu_id}, function() {
+                that.eventBinding();
+            });
 
             that.naviClick();
+        },
+        eventBinding: function() {
+            var that = this;
+            that.yearClick();
+            that.monthClick();
+            that.categoryClick();
+            that.tagClick();
+        },
+        yearClick: function() {
+            var that = this;
+            $('li.year-entry', that.archiveContent).click(function() {
+                var entry = $(this),
+                        menu_id = entry.attr('menu'),
+                        year_id = entry.attr('year');
+                that.ajaxRequest({menu: menu_id, year: year_id}, function() {
+                    that.eventBinding();
+                });
+            });
+        },
+        monthClick: function() {
+            var that = this;
+            $('li.month-entry', that.archiveContent).click(function() {
+                var entry = $(this),
+                        menu_id = entry.attr('menu'),
+                        year_id = entry.attr('year'),
+                        month_id = entry.attr('month');
+                that.ajaxRequest({menu: menu_id, year: year_id, month: month_id}, function() {
+                    that.eventBinding();
+                });
+            });
+        },
+        categoryClick: function() {
+            var that = this;
+            $('li.category-entry', that.archiveContent).click(function() {
+                var entry = $(this),
+                        menu_id = entry.attr('menu'),
+                        cat_id = entry.attr('cat');
+                that.ajaxRequest({menu: menu_id, cat: cat_id}, function() {
+                    that.eventBinding();
+                });
+            });
+        },
+        tagClick: function() {
+
         },
         /**
          * bind the click event to navi tab click
@@ -64,6 +110,7 @@ jQuery(function($) {
                 that.ajaxRequest({menu: menu_id}, function() {
                     $('li', that.menuBar).removeClass('active');
                     curr.addClass('active');
+                    that.eventBinding();
                 });
             });
         },
