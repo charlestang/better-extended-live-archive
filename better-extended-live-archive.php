@@ -11,7 +11,6 @@
 
 $bela_path = dirname(__FILE__);
 require_once $bela_path . '/define-constants.php';
-require_once $bela_path . '/af-extended-live-archive-include.php';
 require_once $bela_path . '/classes/BelaLogger.php';
 require_once $bela_path . '/classes/interface.php';
 require_once $bela_path . '/classes/exception.php';
