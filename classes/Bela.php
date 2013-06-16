@@ -79,27 +79,8 @@ class Bela {
      */
     public function injectStaticFiles() {
         $this->echoAjaxEntry();
-        global $ela_plugin_basename;
-        // loading stuff
-        $settings = get_option('af_ela_options');
-        $plugin_path = WP_PLUGIN_URL . '/' . $ela_plugin_basename;
-        if ($settings['use_default_style']) {
-            if (file_exists(ABSPATH . 'wp-content/themes/' . get_template() . '/ela.css')) {
-                $csspath = get_bloginfo('template_url') . "/ela.css";
-            } else {
-                $csspath = $plugin_path . "/includes/af-ela-style.css";
-            }
-
-            $text = <<<TEXT
-
-	<link rel="stylesheet" href="$csspath" type="text/css" media="screen" />
-
-TEXT;
-        } else {
-            $text = '';
-        }
-
-        echo $text;
+        $style = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'bela-default.css';
+        echo '<link rel="stylesheet" href="', $style , '" type="text/css" medir="screen" />';
     }
 
     /**

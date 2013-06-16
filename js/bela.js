@@ -47,10 +47,18 @@ jQuery(function($) {
             var menu_id = $('li:first', that.menuBar).addClass('bela-menu-active').attr('data');
             that.ajaxRequest({menu: menu_id});
         },
+        /**
+         * Show the loading tips when ajax request
+         * @returns {undefined}
+         */
         loading: function() {
             this.loadingBar.html(belaLoadingTip);
             this.loadingBar.show();
         },
+        /**
+         * Hide the loading tips after ajax reqeust
+         * @returns {undefined}
+         */
         loadFinish: function() {
             this.loadingBar.html(belaIdleTip);
             this.loadingBar.hide();
