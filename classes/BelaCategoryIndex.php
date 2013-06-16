@@ -54,6 +54,10 @@ class BelaCategoryIndex extends BelaIndex {
         return $categoryTable;
     }
 
+    public function getCategoriesTable() {
+        return $this->getCache()->get('categories.dat');
+    }
+
     private function getCategoryTableEntry($cat) {
         return array(
             $cat->ID,
@@ -99,6 +103,10 @@ class BelaCategoryIndex extends BelaIndex {
 
             $this->getCache()->set('cat-' . $categoryId . '.dat', $postTable);
         }
+    }
+
+    public function getPostsInCategoryTable($catId) {
+        return $this->getCache()->get('cat-' . $catId . '.dat');
     }
 
     private function getPostTableEntry($post) {

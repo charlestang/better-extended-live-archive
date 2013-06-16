@@ -7,6 +7,8 @@
  */
 class Bela {
 
+    const JSVER = '20130615';
+
     /**
      * @var BelaOptions 
      */
@@ -22,7 +24,7 @@ class Bela {
      */
     public function __construct() {
         $this->options = new BelaOptions();
-        $this->builder = new BelaIndicesBuilder($this->options, 'file');
+        $this->builder = new BelaIndicesBuilder($this->options, BELA_CACHE_TYPE);
     }
 
     /**
@@ -108,14 +110,42 @@ TEXT;
         if (!$this->builder->isIndicesInitialized()) {
             $this->builder->initializeIndexCache();
         }
-        ?>
-        <div id="bela-container"></div>
-        <div style="clear:both;"></div>
-        <?php
+        $tabs = $this->options->get(BelaKey::NAVIGATION_TABS_ORDER);
+        $jsurl = BELA_BASE_URL . '/js/bela.js';
+        if (!empty($tabs)) {
+            ?>
+            <script type="text/javascript">
+                var belaLoadingTip = "loading ...";
+                var belaIdleTip = "";
+            </script> 
+            <script type="text/javascript" src="<?php echo $jsurl; ?>?ver=<?php echo self::JSVER; ?>"></script>
+            <div id="bela-container">
+                <ul id="bela-navi-menu">
+                    <?php foreach ($tabs as $tab) : ?>
+                        <li class="bela-navi-tab" data="<?php echo $tab; ?>"><?php echo $this->options->getLabel($tab); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+                <div class="bela-loading" style="display:none;"></div>
+                <div class="bela-indices"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <?php
+        }
     }
 
+    /**
+     * For front end to config the ajax entry
+     */
     public function echoAjaxEntry() {
-        echo '<script type="text/javascript">var belaAjaxUrl="', admin_url('admin_ajax.php', 'relative'), '";</script>';
+        $belaAjaxUrl = admin_url('admin-ajax.php', 'relative');
+        $belaAjaxAction = BelaAjax::BELA_AJAX_VAR;
+        $js = <<< JSCODE
+        <script type="text/javascript">
+            var belaAjaxUrl="{$belaAjaxUrl}";
+            var belaAjaxAction = "{$belaAjaxAction}";
+        </script>
+JSCODE;
+        echo $js;
     }
 
     /**

@@ -33,6 +33,7 @@ define('BELA_ENTRY_FILE', __FILE__);
 $directory_name = plugin_basename(dirname(BELA_ENTRY_FILE));
 define('BELA_BASE_PATH', WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $directory_name);
 define('BELA_BASE_URL', WP_PLUGIN_URL . DIRECTORY_SEPARATOR . $directory_name);
+define('BELA_CACHE_TYPE', 'file');
 
 $ela_js_version = "0.80";
 

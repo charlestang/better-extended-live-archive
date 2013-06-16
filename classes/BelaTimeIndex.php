@@ -61,6 +61,10 @@ class BelaTimeIndex extends BelaIndex {
         return array();
     }
 
+    public function getYearsTable() {
+        return $this->getCache()->get('years.dat');
+    }
+
     /**
      * This table should be rebuild, everytime a post is updated,
      * just the related year should be rebuild
@@ -89,6 +93,10 @@ class BelaTimeIndex extends BelaIndex {
         return array();
     }
 
+    public function getMonthsInYearTable($year) {
+        return $this->getCache()->get($year . '.dat');
+    }
+
     public function buildPostsInMonthTable($year, $month) {
         $excludedPostIds = $this->getOptions()->get(BelaKey::EXCLUDED_POST_IDS);
 
@@ -108,6 +116,10 @@ class BelaTimeIndex extends BelaIndex {
             $postsInMonth = array_map(array($this, 'generateEntryInPostsTable'), $results);
             $this->getCache()->set($year . '-' . $month . '.dat', $postsInMonth);
         }
+    }
+
+    public function getPostsInMonthTable($year, $month) {
+        return $this->getCache()->get($year . '-' . $month . '.dat');
     }
 
     public function generateEntryInPostsTable($post) {

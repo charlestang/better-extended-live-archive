@@ -52,7 +52,7 @@ class BelaHtml {
                     <legend class="screen-reader-text">
                         <span><?php echo $label; ?></span>
                     </legend>
-                    <?php 
+                    <?php
                     foreach ($group as $value) {
                         self::adminRadio($name, $value, $current, $options->getLabel($value));
                     }
@@ -111,15 +111,52 @@ class BelaHtml {
     public static function adminRadio($name, $value, $current, $label) {
         $id = 'radio-id-' . $name . '-' . $value;
         ?>
-        <label title="<?php echo $id;?>">
+        <label title="<?php echo $id; ?>">
             <input type="radio" 
-                   id="<?php echo $id;?>"
+                   id="<?php echo $id; ?>"
                    name="<?php echo $name; ?>" 
                    value="<?php echo $value; ?>" 
                    <?php checked($value, $current); ?> /> 
                    <?php echo $label; ?>
         </label><br/>
         <?php
+    }
+
+    /**
+     * Generate a <li> item 
+     * @param string $content
+     * @param array $options
+     */
+    public static function menuItem($content, $options) {
+        $li = '<li';
+        $class = array();
+        if (isset($options['active'])) {
+            if ($options['active']) {
+                if (isset($options['activeClass'])) {
+                    $class[] = explode(' ', $options['activeClass']);
+                    unset($options['activeClass']);
+                } else {
+                    $class[] = 'active';
+                }
+            }
+            unset($options['active']);
+        }
+
+
+        if (isset($options['class'])) {
+            $class = array_merge($class, explode(' ', $options['class']));
+            unset($options['class']);
+        }
+
+        $li .= ' class="' . implode(' ', $class) . '"';
+
+        foreach ($options as $key => $val) {
+            $li .= ' ';
+            $li .= $key . '="' . $val . '"';
+        }
+
+        $li .= '>' . $content . '</li>';
+        return $li;
     }
 
 }

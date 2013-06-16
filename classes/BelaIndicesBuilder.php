@@ -54,7 +54,7 @@ class BelaIndicesBuilder {
         $this->_options->set(BelaKey::CACHE_INITIALIZED, false);
     }
 
-    private function getIndex($type) {
+    public function getIndex($type) {
         if (isset($this->_indices[$type])) {
             return $this->_indices[$type];
         }

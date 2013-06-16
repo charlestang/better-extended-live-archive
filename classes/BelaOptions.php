@@ -317,6 +317,7 @@ class BelaOptions {
 class BelaKey {
 
     const CACHE_INITIALIZED = 1000; //<-- whether the cache is initialized
+    const BELA_VERSION = 1001;
     //meta
     const OFFICIAL_PAGE = 1;
     const PROJECT_PAGE = 2;
