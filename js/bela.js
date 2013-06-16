@@ -26,12 +26,15 @@ jQuery(function($) {
          * @param {Object} params
          * @returns {void}
          */
-        ajaxRequest: function(params) {
+        ajaxRequest: function(params, callback) {
             var that = this, request = $.extend({action: belaAjaxAction}, params);
             that.loading();
             $.getJSON(belaAjaxUrl, request, function(response) {
                 if (response.ret === 0) {
                     that.archiveContent.html(response.data);
+                    if (callback) {
+                        callback();
+                    }
                 } else {
                     that.archiveContent.html(response.msg);
                 }
@@ -44,8 +47,25 @@ jQuery(function($) {
          */
         init: function() {
             var that = this;
-            var menu_id = $('li:first', that.menuBar).addClass('bela-menu-active').attr('data');
+            var menu_id = $('li:first', that.menuBar).addClass('bela-menu-active active').attr('data');
             that.ajaxRequest({menu: menu_id});
+
+            that.naviClick();
+        },
+        /**
+         * bind the click event to navi tab click
+         * @returns {undefined}
+         */
+        naviClick: function() {
+            var that = this;
+            $('li', that.menuBar).click(function() {
+                var curr = $(this);
+                var menu_id = curr.attr('data');
+                that.ajaxRequest({menu: menu_id}, function() {
+                    $('li', that.menuBar).removeClass('active');
+                    curr.addClass('active');
+                });
+            });
         },
         /**
          * Show the loading tips when ajax request

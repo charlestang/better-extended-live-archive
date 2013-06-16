@@ -30,6 +30,14 @@
     text-align: left;
 }
 
+#bela-container ul li.active {
+    background: none repeat scroll 0 0 #FFF6BF;
+}
+
+#bela-container ul li:hover {
+    background: none repeat scroll 0 0 #F3F3F3;
+}
+
 /** navi menu **/
 #bela-navi-menu {
     border-bottom: 1px solid #CCCCCC;
@@ -44,6 +52,10 @@
     display: inline;
     margin-bottom: 0;
     padding: 2px 10px !important;
+}
+
+#bela-navi-menu li:hover {
+    
 }
 
 /** content **/
@@ -62,3 +74,6 @@
     width: 20%;
 }
 
+.bela-post-list {
+    width: 59%;
+}
