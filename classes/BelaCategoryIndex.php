@@ -25,6 +25,7 @@ class BelaCategoryIndex extends BelaIndex {
                 . $exclusion
                 . "ORDER BY ID ASC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        BelaLogger::log($sql, $results);
 
         $catIds = array_keys($results);
 
@@ -41,6 +42,8 @@ class BelaCategoryIndex extends BelaIndex {
                 . $exclusions
                 . "GROUP BY tr.term_taxonomy_id";
         $catStats = $this->getDb()->get_results($sql, OBJECT_K);
+        BelaLogger::log($sql, $catStats);
+
         if (!empty($results)) {
             foreach ($results as $id => $cat) {
                 $results[$id]->count = $catStats[$id]->count;
@@ -77,12 +80,14 @@ class BelaCategoryIndex extends BelaIndex {
 
         $sql = "SELECT p.ID, p.post_title, p.post_date "
                 . "FROM {$this->getDb()->posts} p "
-                . "INNER JOIN {$this->getDb()->term_relationships} tr ON p.ID=tr.term_taxonomy_id "
+                . "INNER JOIN {$this->getDb()->term_relationships} tr ON p.ID=tr.object_id "
                 . "WHERE tr.term_taxonomy_id={$categoryId} "
                 . "AND p.post_status='publish' "
                 . $exclusions
                 . "ORDER BY p.post_date DESC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        BelaLogger::log($sql, $results);
+
         if (!empty($results)) {
             $postTable = array_map(array($this, 'getPostTableEntry'), $results);
 

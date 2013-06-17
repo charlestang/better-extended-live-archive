@@ -69,7 +69,7 @@ class BelaTagIndex extends BelaIndex {
         $sql = "SELECT p.ID, p.post_title, p.post_date "
                 . "FROM {$this->getDb()->posts} p "
                 . "INNER JOIN {$this->getDb()->term_relationships} tr "
-                . "ON p.ID=tr.term_taxonomy_id "
+                . "ON p.ID=tr.object_id "
                 . "WHERE tr.term_taxonomy_id={$tagId} "
                 . $exclusions
                 . "ORDER BY p.post_date DESC";

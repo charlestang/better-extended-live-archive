@@ -52,6 +52,7 @@ class BelaTimeIndex extends BelaIndex {
                 . $exclusions
                 . 'GROUP BY year ORDER By post_date DESC';
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        BelaLogger::log($sql, $results);
 
         if (!empty($results)) {
             $yearTable = array_map(create_function('$entry', 'return $entry->count;'), $results);
@@ -84,6 +85,8 @@ class BelaTimeIndex extends BelaIndex {
                 . "AND post_status='publish' "
                 . "GROUP BY month ORDER By post_date DESC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        BelaLogger::log($sql, $results);
+        
         if (!empty($results)) {
             $monthTable = array_map(create_function('$entry', 'return $entry->count;'), $results);
             $this->getCache()->set($year . '.dat', $monthTable);
@@ -111,6 +114,7 @@ class BelaTimeIndex extends BelaIndex {
                 . $exclusions
                 . "ORDER By post_date DESC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        BelaLogger::log($sql, $results);
 
         if (!empty($results)) {
             $postsInMonth = array_map(array($this, 'generateEntryInPostsTable'), $results);
