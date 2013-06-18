@@ -66,13 +66,20 @@ class BelaTagIndex extends BelaIndex {
             $exclusions = "AND p.ID NOT IN (" . implode(',', $excludedPostIds) . ") ";
         }
 
+        $latestFirst = $this->getOptions()->get(BelaKey::SHOW_LATEST_FIRST);
+        if ($latestFirst) {
+            $order = 'DESC';
+        } else {
+            $order = 'ASC';
+        }
+
         $sql = "SELECT p.ID, p.post_title, p.post_date "
                 . "FROM {$this->getDb()->posts} p "
                 . "INNER JOIN {$this->getDb()->term_relationships} tr "
                 . "ON p.ID=tr.object_id "
                 . "WHERE tr.term_taxonomy_id={$tagId} "
                 . $exclusions
-                . "ORDER BY p.post_date DESC";
+                . "ORDER BY p.post_date {$order}";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
 
         $postTable = array_map(array($this, 'getPostTableEntry'), $results);

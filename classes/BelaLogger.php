@@ -27,6 +27,12 @@ class BelaLogger {
         }
 
         if (isset($callinfo['class'])) {
+            if (defined('BELA_DEBUG_CLASS')) {
+                $classes = explode(',', BELA_DEBUG_CLASS);
+                if (!in_array($callinfo['class'], $classes)) {
+                    return;
+                }
+            }
             $log .= '[func:' . $callinfo['class'] . $callinfo['type'] . $callinfo['function'] . '()]';
         } else {
             $log .= '[func:' . $callinfo['function'] . '()]';

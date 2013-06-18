@@ -103,6 +103,13 @@ class BelaTimeIndex extends BelaIndex {
     public function buildPostsInMonthTable($year, $month) {
         $excludedPostIds = $this->getOptions()->get(BelaKey::EXCLUDED_POST_IDS);
 
+        $latestFirst = $this->getOptions()->get(BelaKey::SHOW_LATEST_FIRST);
+        if ($latestFirst) {
+            $order = 'DESC';
+        } else {
+            $order = 'ASC';
+        }
+
         $exclusions = "";
         if (!empty($excludedPostIds)) {
             $exclusions = "ID NOT IN (" . implode(',', $excludedPostIds) . ") ";
@@ -112,7 +119,7 @@ class BelaTimeIndex extends BelaIndex {
                 . "AND MONTH(post_date)={$month} "
                 . "AND post_status='publish' "
                 . $exclusions
-                . "ORDER By post_date DESC";
+                . "ORDER By post_date {$order}";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
         BelaLogger::log($sql, $results);
 

@@ -137,13 +137,7 @@ TEXT;
     }
 }
 
-/* * *************************************
- * loading stuff in the header.
- * ************************************ */
 
-function af_ela_header() {
-    
-}
 
 /* * *************************************
  * actions when a comment changes.	
@@ -259,70 +253,6 @@ function af_ela_create_cache($settings) {
         $generator->buildPostsInTagsTable($settings['excluded_categories'], $settings['hide_pingbacks_and_trackbacks']);
 
     return true;
-}
-
-/* * *************************************
- * Force settings from external plugin.
- * TODO  need to do some more checks 
- * ************************************ */
-
-function af_ela_set_config($config, $reset = false) {
-    global $wpdb;
-
-    $settings = get_option('af_ela_options');
-
-    foreach ($config as $optionKey => $optionValue) {
-        switch ($optionKey) {
-            case 'newest_first':
-            case 'num_entries' :
-            case 'num_entries_tagged' :
-            case 'num_comments':
-            case 'fade':
-            case 'hide_pingbacks_and_trackbacks':
-            case 'use_default_style':
-            case 'paged_posts':
-            case 'truncate_title_at_space':
-            case 'abbreviated_month':
-                if ($optionValue != 0 && $optionValue != 1)
-                    return -1;
-                break;
-            case 'tag_soup_cut':
-            case 'tag_soup_X':
-            case 'truncate_title_length':
-            case 'truncate_cat_length' :
-            case 'excluded_categories' :
-            case 'paged_post_num' :
-                //if(!is_numeric($optionValue)) return -2;	
-                break;
-            case 'menu_order' :
-                $table = split(',', $optionValue);
-                foreach ($table as $content) {
-                    if ($content != 'chrono' && $content != 'cats' && $content != 'tags' && !empty($content))
-                        return -3;
-                }
-                break;
-            default :
-                break;
-        }
-    }
-    $config['last_modified'] = gmdate("D, d M Y H:i:s", time());
-    if (!$reset)
-        $config = array_merge($settings, $config);
-    BelaLogger::log($config);
-    update_option('af_ela_options', $config, 'Set of Options for Extended Live Archive');
-
-    return true;
-}
-
-/* * *************************************
- * bound admin page.
- * ************************************ */
-function af_ela_shorcode() {
-    ob_start();
-    af_ela_super_archive();
-    $ela = ob_get_contents();
-    ob_end_clean();
-    return $ela;
 }
 
 /**

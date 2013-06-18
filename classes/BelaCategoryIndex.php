@@ -78,13 +78,20 @@ class BelaCategoryIndex extends BelaIndex {
             $exclusions = "AND p.ID NOT IN (" . implode(',', $excludedPostIds) . ") ";
         }
 
+        $latestFirst = $this->getOptions()->get(BelaKey::SHOW_LATEST_FIRST);
+        if ($latestFirst) {
+            $order = 'DESC';
+        } else {
+            $order = 'ASC';
+        }
+
         $sql = "SELECT p.ID, p.post_title, p.post_date "
                 . "FROM {$this->getDb()->posts} p "
                 . "INNER JOIN {$this->getDb()->term_relationships} tr ON p.ID=tr.object_id "
                 . "WHERE tr.term_taxonomy_id={$categoryId} "
                 . "AND p.post_status='publish' "
                 . $exclusions
-                . "ORDER BY p.post_date DESC";
+                . "ORDER BY p.post_date {$order}";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
         BelaLogger::log($sql, $results);
 
@@ -97,7 +104,6 @@ class BelaCategoryIndex extends BelaIndex {
                     . "INNER JOIN {$this->getDb()->comments} c ON p.ID=c.comment_post_ID "
                     . "WHERE p.ID IN (" . implode(',', $postIds) . ") "
                     . "GROUP BY p.ID";
-
 
             $results2 = $this->getDb()->get_results($sql2, OBJECT_K);
             foreach ($postTable as $k => $post) {

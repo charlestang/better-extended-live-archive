@@ -5,7 +5,7 @@
 <table class="form-table">
     <tbody>
         <?php
-        BelaHtml::optionCheckbox($options, BelaKey::SHOW_NEWEST_FIRST);
+        BelaHtml::optionCheckbox($options, BelaKey::SHOW_LATEST_FIRST);
         BelaHtml::optionCheckbox($options, BelaKey::SHOW_NUMBER_OF_ENTRIES);
         BelaHtml::optionCheckbox($options, BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG);
         BelaHtml::optionCheckbox($options, BelaKey::SHOW_NUMBER_OF_COMMENTS);

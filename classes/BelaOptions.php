@@ -20,7 +20,7 @@ class BelaOptions {
         /**
          * Display switches.
          */
-        BelaKey::SHOW_NEWEST_FIRST                  => true,
+        BelaKey::SHOW_LATEST_FIRST                  => true,
         BelaKey::SHOW_NUMBER_OF_ENTRIES             => true,
         BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG     => true,
         BelaKey::SHOW_NUMBER_OF_COMMENTS            => true,
@@ -83,7 +83,7 @@ class BelaOptions {
     public function getLabels() {
         return array(
             //what to show
-            BelaKey::SHOW_NEWEST_FIRST                  => __('Show Newest First:', 'bela'),
+            BelaKey::SHOW_LATEST_FIRST                  => __('Show Newest First:', 'bela'),
             BelaKey::SHOW_NUMBER_OF_ENTRIES             => __('Show Number of Entries:', 'bela'),
             BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG     => __('Show Number of Entries Per Tag:', 'bela'),
             BelaKey::SHOW_NUMBER_OF_COMMENTS            => __('Show Number of Comments:', 'bela'),
@@ -145,7 +145,7 @@ class BelaOptions {
     public function getDescriptions() {
         return array(
             //what to show
-            BelaKey::SHOW_NEWEST_FIRST                  => __('The latest posts should be shown on top of the listings.', 'bela'),
+            BelaKey::SHOW_LATEST_FIRST                  => __('The latest posts should be shown on top of the listings.', 'bela'),
             BelaKey::SHOW_NUMBER_OF_ENTRIES             => __('The number of entries for each year/month/category should be shown.', 'bela'),
             BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG     => __('The number of entries for each tags should be shown.', 'bela'),
             BelaKey::SHOW_NUMBER_OF_COMMENTS            => __('The number of comments for each entry should be shown.', 'bela'),
@@ -323,7 +323,7 @@ class BelaKey {
     const PROJECT_PAGE = 2;
     const ISSUE_TRACKER = 3;
     //stitchs
-    const SHOW_NEWEST_FIRST = 4;
+    const SHOW_LATEST_FIRST = 4;
     const SHOW_NUMBER_OF_ENTRIES = 5;
     const SHOW_NUMBER_OF_ENTRIES_PER_TAG = 6;
     const SHOW_NUMBER_OF_COMMENTS = 7;
