@@ -100,12 +100,22 @@ class BelaAjax {
         $years = $index->getYearsTable();
         $months = $index->getMonthsInYearTable($year);
         $posts = $index->getPostsInMonthTable($year, $month);
+
+        $showNumOfEntry = $this->options->get(BelaKey::SHOW_NUMBER_OF_ENTRIES);
+        if ($showNumOfEntry) {
+            $templateNumOfEntry = $this->options->get(BelaKey::TEMPLATE_NUMBER_OF_ENTRIES);
+        }
         ob_start();
         ?>
         <ul class="bela-chrono-year">
             <?php
             foreach ($years as $y => $count) {
-                echo BelaHtml::menuItem($y, array(
+                if ($showNumOfEntry) {
+                    $numStr = str_replace('%', $count, $templateNumOfEntry);
+                } else {
+                    $numStr = '';
+                }
+                echo BelaHtml::menuItem($y . $numStr, array(
                     'class'  => 'year-entry',
                     'year'   => $y,
                     'menu'   => BelaKey::ORDER_KEY_BY_DATE,
@@ -117,7 +127,12 @@ class BelaAjax {
         <ul class="bela-chrono-month">
             <?php
             foreach ($months as $m => $count) {
-                echo BelaHtml::menuItem($m, array(
+                if ($showNumOfEntry) {
+                    $numStr = str_replace('%', $count, $templateNumOfEntry);
+                } else {
+                    $numStr = '';
+                }
+                echo BelaHtml::menuItem($m . $numStr, array(
                     'class'  => 'month-entry',
                     'year'   => $year,
                     'month'  => $m,
@@ -141,12 +156,22 @@ class BelaAjax {
         $index = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_CATEGORY);
         $categories = $index->getCategoriesTable();
         $posts = $index->getPostsInCategoryTable($catId);
+
+        $showNumOfEntry = $this->options->get(BelaKey::SHOW_NUMBER_OF_ENTRIES);
+        if ($showNumOfEntry) {
+            $templateNumOfEntry = $this->options->get(BelaKey::TEMPLATE_NUMBER_OF_ENTRIES);
+        }
         ob_start();
         ?>
         <ul class="bela-category">
             <?php
             foreach ($categories as $id => $cat) {
-                echo BelaHtml::menuItem($cat[1], array(
+                if ($showNumOfEntry) {
+                    $numStr = str_replace('%', $cat[4], $templateNumOfEntry);
+                } else {
+                    $numStr = '';
+                }
+                echo BelaHtml::menuItem($cat[1] . $numStr, array(
                     'class'  => 'category-entry',
                     'menu'   => BelaKey::ORDER_KEY_BY_CATEGORY,
                     'cat'    => $id,
@@ -155,7 +180,7 @@ class BelaAjax {
             }
             ?>
         </ul>
-        <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_CATEGORY;?>" cat="<?php echo $catId; ?>">
+        <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_CATEGORY; ?>" cat="<?php echo $catId; ?>">
             <?php $this->printPostList($posts); ?>
         </ul>
         <?php
@@ -183,7 +208,7 @@ class BelaAjax {
             }
             ?>
         </ul>
-        <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_TAGS;?>" tag="<?php echo $tagId; ?>">
+        <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_TAGS; ?>" tag="<?php echo $tagId; ?>">
             <?php $this->printPostList($posts); ?>
         </ul>
         <?php
