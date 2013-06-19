@@ -38,7 +38,8 @@ class BelaCategoryIndex extends BelaIndex {
         $sql = "SELECT tr.term_taxonomy_id ID, count(p.ID) count "
                 . "FROM {$this->getDb()->posts} p "
                 . "INNER JOIN {$this->getDb()->term_relationships} tr ON p.ID=tr.object_id "
-                . "WHERE tr.term_taxonomy_id IN (" . implode(',', $catIds) . ") "
+                . "WHERE p.post_status='publish' "
+                . "AND tr.term_taxonomy_id IN (" . implode(',', $catIds) . ") "
                 . $exclusions
                 . "GROUP BY tr.term_taxonomy_id";
         $catStats = $this->getDb()->get_results($sql, OBJECT_K);
@@ -46,7 +47,11 @@ class BelaCategoryIndex extends BelaIndex {
 
         if (!empty($results)) {
             foreach ($results as $id => $cat) {
-                $results[$id]->count = $catStats[$id]->count;
+                if (isset($catStats[$id])) { // if the cat contains posts, update the count
+                    $results[$id]->count = $catStats[$id]->count;
+                } else { // if the cat doesnot contains any post, remove the entry
+                    unset($results[$id]);
+                }
             }
         }
 
