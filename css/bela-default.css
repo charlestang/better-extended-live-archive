@@ -85,3 +85,7 @@
 .bela-post-list {
     width: 59%;
 }
+
+.tag-entry {
+    display: inline-block;
+}

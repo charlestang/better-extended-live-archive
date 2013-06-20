@@ -41,6 +41,8 @@ class BelaTagIndex extends BelaIndex {
                 . "WHERE tt.taxonomy='post_tag' "
                 . $strategySubstatement;
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        BelaLogger::log($sql, $results);
+
         $tagsTable = array_map(array($this, 'getTagTableEntry'), $results);
         $this->getCache()->set('tags.dat', $tagsTable);
 
@@ -81,18 +83,22 @@ class BelaTagIndex extends BelaIndex {
                 . $exclusions
                 . "ORDER BY p.post_date {$order}";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
+        BelaLogger::log($sql, $results);
+        if (empty($results)) {
+            return;
+        }
 
         $postTable = array_map(array($this, 'getPostTableEntry'), $results);
-        $postIds = array_keys($results);
+        $postIds = array_keys($postTable);
 
-        $sql2 = "SELECT p.ID, COUNT(c.comment_ID) count"
+        $sql2 = "SELECT p.ID, COUNT(c.comment_ID) count "
                 . "FROM {$this->getDb()->posts} p "
                 . "INNER JOIN {$this->getDb()->comments} c ON p.ID=c.comment_post_ID "
                 . "WHERE p.ID IN (" . implode(',', $postIds) . ") "
                 . "GROUP BY p.ID ";
+        $results2 = $this->getDb()->get_results($sql2, OBJECT_K);
+        BelaLogger::log($sql2, $results2);
 
-
-        $results2 = $this->getDb()->get_results($sql, OBJECT_K);
         foreach ($postTable as $k => $post) {
             if (isset($results2[$k])) {
                 $postTable[$k][3] = $results2[$k]->count;
