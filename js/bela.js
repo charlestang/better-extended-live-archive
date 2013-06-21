@@ -96,6 +96,15 @@ jQuery(function($) {
             });
         },
         tagClick: function() {
+            var that = this;
+            $('li.tag-entry', that.archiveContent).click(function() {
+                var entry = $(this),
+                        menu_id = entry.attr('menu'),
+                        tag_id = entry.attr('tag');
+                that.ajaxRequest({menu: menu_id, tag: tag_id}, function() {
+                    that.eventBinding();
+                });
+            });
 
         },
         /**

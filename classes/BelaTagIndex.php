@@ -109,7 +109,7 @@ class BelaTagIndex extends BelaIndex {
     }
 
     public function getPostsInTagTable($tagId) {
-        $this->getCache()->get('tag-' . $tagId . '.dat');
+        return $this->getCache()->get('tag-' . $tagId . '.dat');
     }
 
     private function getPostTableEntry($post) {

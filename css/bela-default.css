@@ -67,7 +67,7 @@
 }
 
 /** content **/
-.bela-category, .bela-chrono-year, .bela-chrono-month, .bela-post-list {
+.bela-category, .bela-chrono-year, .bela-chrono-month, .bela-tag, .bela-post-list {
     border-left: 1px solid #CCCCCC;
     float: left;
     font-weight: bold;
@@ -82,10 +82,11 @@
     width: 20%;
 }
 
-.bela-post-list {
-    width: 59%;
-}
-
 .tag-entry {
     display: inline-block;
+    font-weight: normal;
+}
+
+.bela-post-list {
+    width: 59%;
 }
