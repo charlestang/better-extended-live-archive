@@ -205,6 +205,8 @@ class BelaAjax {
             foreach ($tags as $tid => $tag) {
                 if ($showNumberOfEntriesPerTag) {
                     $numStr = str_replace('%', $tag[2], $numberTemplate);
+                } else {
+                    $numStr = '';
                 }
                 echo BelaHtml::menuItem($tag[1] . $numStr, array(
                     'class'  => 'tag-entry',
@@ -226,11 +228,20 @@ class BelaAjax {
 
     public function printPostList($posts) {
         if (is_array($posts) && !empty($posts)) {
+            $showCommentsCount = $this->options->get(BelaKey::SHOW_NUMBER_OF_COMMENTS);
+            if ($showCommentsCount) {
+                $commentsCountTemplate = $this->options->get(BelaKey::TEMPLATE_NUMBER_OF_COMMENTS);
+            }
             foreach ($posts as $ID => $p) {
+                if ($showCommentsCount) {
+                    $numStr = str_replace('%', $p[3], $commentsCountTemplate);
+                } else {
+                    $numStr = '';
+                }
                 ?>
                 <li id="bela-post-<?php echo $ID; ?>" class="bela-post-entry">
                     <a class="bela-post-link" href="<?php echo $p[2]; ?>" title="<?php echo $p[1]; ?>">
-                        <?php echo $p[1]; ?>
+                        <?php echo $p[1], $numStr; ?>
                     </a>
                 </li>
                 <?php
