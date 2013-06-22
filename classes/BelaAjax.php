@@ -194,12 +194,19 @@ class BelaAjax {
         $index = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_TAGS);
         $tags = $index->getTagsTable();
         $posts = $index->getPostsInTagTable($tagId);
+        $showNumberOfEntriesPerTag = $this->options->get(BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG);
+        if ($showNumberOfEntriesPerTag) {
+            $numberTemplate = $this->options->get(BelaKey::TEMPLATE_NUMBER_OF_ENTRIES_PER_TAG);
+        }
         ob_start();
         ?>
         <ul class="bela-tag">
             <?php
             foreach ($tags as $tid => $tag) {
-                echo BelaHtml::menuItem($tag[1], array(
+                if ($showNumberOfEntriesPerTag) {
+                    $numStr = str_replace('%', $tag[2], $numberTemplate);
+                }
+                echo BelaHtml::menuItem($tag[1] . $numStr, array(
                     'class'  => 'tag-entry',
                     'menu'   => BelaKey::ORDER_KEY_BY_TAGS,
                     'tag'    => $tid,
