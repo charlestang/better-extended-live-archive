@@ -101,12 +101,12 @@ class Bela {
             </script> 
             <script type="text/javascript" src="<?php echo $jsurl; ?>?ver=<?php echo self::JSVER; ?>"></script>
             <div id="bela-container">
+                <div class="bela-loading" style="display:none;"></div>
                 <ul id="bela-navi-menu">
                     <?php foreach ($tabs as $tab) : ?>
                         <li class="bela-navi-tab" data="<?php echo $tab; ?>"><?php echo $this->options->getLabel($tab); ?></li>
                     <?php endforeach; ?>
                 </ul>
-                <div class="bela-loading" style="display:none;"></div>
                 <div class="bela-indices"></div>
             </div>
             <div style="clear:both;"></div>
