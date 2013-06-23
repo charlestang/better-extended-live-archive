@@ -96,6 +96,7 @@ class BelaAjax {
     }
 
     public function generateChronologicalContent($year, $month) {
+        global $wp_locale;
         $index = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_DATE);
         $years = $index->getYearsTable();
         $months = $index->getMonthsInYearTable($year);
@@ -105,6 +106,9 @@ class BelaAjax {
         if ($showNumOfEntry) {
             $templateNumOfEntry = $this->options->get(BelaKey::TEMPLATE_NUMBER_OF_ENTRIES);
         }
+
+        $abbreviateMonth = $this->options->get(BelaKey::ABBREVIATE_MONTH_NAME);
+        
         ob_start();
         ?>
         <ul class="bela-chrono-year">
@@ -132,7 +136,13 @@ class BelaAjax {
                 } else {
                     $numStr = '';
                 }
-                echo BelaHtml::menuItem($m . $numStr, array(
+
+                $monthName = $wp_locale->get_month($m);
+                if ($abbreviateMonth) {
+                    $monthName = $wp_locale->get_month_abbrev($monthName);
+                } 
+                
+                echo BelaHtml::menuItem($monthName . $numStr, array(
                     'class'  => 'month-entry',
                     'year'   => $year,
                     'month'  => $m,
