@@ -149,7 +149,7 @@ class BelaOptions {
             BelaKey::SHOW_NUMBER_OF_ENTRIES             => __('The number of entries for each year/month/category should be shown.', 'bela'),
             BelaKey::SHOW_NUMBER_OF_ENTRIES_PER_TAG     => __('The number of entries for each tags should be shown.', 'bela'),
             BelaKey::SHOW_NUMBER_OF_COMMENTS            => __('The number of comments for each entry should be shown.', 'bela'),
-            BelaKey::FADE_EVERYTHING                    => __('Changes should fade using the Fade Anything.', 'bela'),
+            BelaKey::FADE_EVERYTHING                    => __('Changes should fade using the Fade Anything.(Not supported now)', 'bela'),
             BelaKey::EXCLUDE_TRACKBACKS                 => __('Trackbacks should influence the number of comments on an entry.', 'bela'),
             BelaKey::PAGINATE_THE_LIST                  => __('The posts list should be cut into several pages or a chunk.', 'bela'),
             //how to show
