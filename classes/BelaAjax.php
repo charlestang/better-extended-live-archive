@@ -108,7 +108,7 @@ class BelaAjax {
         }
 
         $abbreviateMonth = $this->options->get(BelaKey::ABBREVIATE_MONTH_NAME);
-        
+
         ob_start();
         ?>
         <ul class="bela-chrono-year">
@@ -140,8 +140,8 @@ class BelaAjax {
                 $monthName = $wp_locale->get_month($m);
                 if ($abbreviateMonth) {
                     $monthName = $wp_locale->get_month_abbrev($monthName);
-                } 
-                
+                }
+
                 echo BelaHtml::menuItem($monthName . $numStr, array(
                     'class'  => 'month-entry',
                     'year'   => $year,
@@ -238,10 +238,34 @@ class BelaAjax {
 
     public function printPostList($posts) {
         if (is_array($posts) && !empty($posts)) {
+            //the count of the posts list
+            $count = count($posts);
+
+            //pagination options
+            $pagination = $this->options->get(BelaKey::PAGINATE_THE_LIST);
+            $pagesize = $this->options->get(BelaKey::PAGE_OPT_NUMBER_PER_PAGE);
+            $pretext = $this->options->get(BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT);
+            $nexttext = $this->options->get(BelaKey::PAGE_OPT_NEXT_PAGE_TEXT);
+
+            //if paginate, truncate the posts list
+            if ($pagination) {
+                $curpage = intval(BelaAdmin::getParam('page', 0));
+                $offset = $curpage * $pagesize;
+                if ($offset < $count) {
+                    $posts = array_slice($posts, $offset, $pagesize);
+                }
+            }
+
             $showCommentsCount = $this->options->get(BelaKey::SHOW_NUMBER_OF_COMMENTS);
             if ($showCommentsCount) {
                 $commentsCountTemplate = $this->options->get(BelaKey::TEMPLATE_NUMBER_OF_COMMENTS);
             }
+
+            //pagination
+            if ($pagination && $curpage > 0) {
+                echo '<div class="bela-pre-page" page="', $curpage - 1, '">', $pretext, '</div>';
+            }
+
             foreach ($posts as $ID => $p) {
                 if ($showCommentsCount) {
                     $numStr = str_replace('%', $p[3], $commentsCountTemplate);
@@ -255,6 +279,11 @@ class BelaAjax {
                     </a>
                 </li>
                 <?php
+            }
+
+            //pagination
+            if ($pagination && $count > $pagesize && $offset + $pagesize < $count) {
+                echo '<div class="bela-next-page" page="', $curpage + 1, '">', $nexttext, '</div>';
             }
         } else {
             echo '<li class="bela-post-entry">empty</li>';

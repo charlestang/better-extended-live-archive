@@ -60,6 +60,8 @@ jQuery(function($) {
             that.monthClick();
             that.categoryClick();
             that.tagClick();
+            that.preClick();
+            that.nextClick();
         },
         yearClick: function() {
             var that = this;
@@ -106,6 +108,27 @@ jQuery(function($) {
                 });
             });
 
+        },
+        pageNaviEventHandler: function() {
+            var $parent = $(this).parent(),
+                    page_num = $(this).attr('page'),
+                    menu_id = $parent.attr('menu'),
+                    year_id = $parent.attr('year'),
+                    month_id = $parent.attr('month'),
+                    cat_id = $parent.attr('cat'),
+                    tag_id = $parent.attr('tag');
+            BELA.ajaxRequest({menu: menu_id, year: year_id, month: month_id, cat: cat_id, tag: tag_id, page: page_num}, function() {
+                BELA.eventBinding();
+            });
+
+        },
+        preClick: function() {
+            var that = this;
+            $('div.bela-pre-page', that.archiveContent).click(that.pageNaviEventHandler);
+        },
+        nextClick: function() {
+            var that = this;
+            $('div.bela-next-page', that.archiveContent).click(that.pageNaviEventHandler);
         },
         /**
          * bind the click event to navi tab click
