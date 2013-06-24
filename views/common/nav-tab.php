@@ -18,6 +18,9 @@
             href="<?php echo BelaAdmin::URL('categoryExclusion'); ?>">Category exclusion</a> |</li>
     <li>
         <a <?php echo $this->isCurr('pagination') ? 'class="current"' : ''; ?> 
-            href="<?php echo BelaAdmin::URL('pagination'); ?>">Pagination</a></li>
+            href="<?php echo BelaAdmin::URL('pagination'); ?>">Pagination</a> |</li>
+    <li>
+        <a <?php echo $this->isCurr('appearance') ? 'class="current"' : ''; ?> 
+            href="<?php echo BelaAdmin::URL('appearance'); ?>">Appearance</a></li>
 </ul>
 <div class="clear"></div>

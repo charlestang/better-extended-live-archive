@@ -210,4 +210,15 @@ class BelaAdmin {
         $this->render('pagination', array('options' => $this->options));
     }
 
+    public function actionAppearance() {
+        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
+            $this->options->setOptions($_POST['BelaOptions']);
+            $this->options->save();
+        }
+        $styles_path = BELA_BASE_PATH . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
+        $styles = glob($styles_path . 'bela-*.css');
+        $styles = array_map(create_function('$item', '$temp = str_replace("' . $styles_path . 'bela-' . '", "", $item); return str_replace(".css", "", $temp);'), $styles);
+        $this->render('appearance', array('options' => $this->options, 'styles' => $styles));
+    }
+
 }

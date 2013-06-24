@@ -74,6 +74,10 @@ class BelaOptions {
         BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT        => '&lt;-- Previous',
         BelaKey::PAGE_OPT_NEXT_PAGE_TEXT            => 'Next --&gt;',
         BelaKey::EXCLUDED_POST_IDS                  => array(),
+        /**
+         * Appearance
+         */
+        BelaKey::STYLE_NAME                         => 'default',
     );
 
     /**
@@ -126,6 +130,10 @@ class BelaOptions {
             BelaKey::PAGE_OPT_NUMBER_PER_PAGE           => __('Max # of Posts per page:', 'bela'),
             BelaKey::PAGE_OPT_PREVIOUS_PAGE_TEXT        => __('Previous Page of Posts:', 'bela'),
             BelaKey::PAGE_OPT_NEXT_PAGE_TEXT            => __('Next Page of Posts:', 'bela'),
+            /**
+             * Appearance
+             */
+            BelaKey::STYLE_NAME                         => __('Stylesheet:', 'bela'),
             /**
              * Tag Strategy
              */
@@ -214,12 +222,12 @@ class BelaOptions {
 
     public function getLabel($key) {
         $labels = $this->getLabels();
-        return $labels[$key];
+        return isset($labels[$key]) ? $labels[$key] : $key;
     }
 
     public function getDescription($key) {
         $descriptions = $this->getDescriptions();
-        return $descriptions[$key];
+        return isset($descriptions[$key]) ? $descriptions[$key] : $key;
     }
 
     public function getNameAttr($key) {
@@ -370,9 +378,9 @@ class BelaKey {
     const PAGE_OPT_NUMBER_PER_PAGE = 41;
     const PAGE_OPT_NEXT_PAGE_TEXT = 42;
     const PAGE_OPT_PREVIOUS_PAGE_TEXT = 43;
-
     //excluded result cache
     const EXCLUDED_POST_IDS = 44;
     const FADE_EVERYTHING = 45;
-
+    //appearance
+    const STYLE_NAME = 46;
 }

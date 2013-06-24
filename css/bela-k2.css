@@ -39,7 +39,7 @@
     background: none repeat scroll 0 0 #FFF6BF;
 }
 
-#bela-container ul li:hover {
+#bela-container ul li:hover, div.bela-next-page:hover, div.bela-pre-page:hover  {
     background: none repeat scroll 0 0 #F3F3F3;
 }
 
@@ -84,4 +84,8 @@
 }
 #bela-container ul.bela-post-list li {
     display: block;
+}
+
+.bela-next-page, .bela-pre-page {
+    text-align: center;
 }

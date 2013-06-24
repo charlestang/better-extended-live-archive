@@ -79,7 +79,8 @@ class Bela {
      */
     public function injectStaticFiles() {
         $this->echoAjaxEntry();
-        $style = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'bela-default.css';
+        $style_name = $this->options->get(BelaKey::STYLE_NAME);
+        $style = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'bela-' . $style_name . '.css';
         echo '<link rel="stylesheet" href="', $style , '" type="text/css" medir="screen" />';
     }
 
