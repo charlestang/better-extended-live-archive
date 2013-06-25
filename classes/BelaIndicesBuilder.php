@@ -23,7 +23,6 @@ class BelaIndicesBuilder {
     private $_indices = array();
 
     public function __construct($options, $cache) {
-        global $ela_cache_root;
         if ($options instanceof BelaOptions) {
             $this->_options = $options;
         } else {
@@ -36,7 +35,7 @@ class BelaIndicesBuilder {
         switch ($cache) {
             case 'file':
                 $this->_cache = new BelaFileCache();
-                $this->_cache->cacheFilePath = $ela_cache_root;
+                $this->_cache->cacheFilePath = BELA_CACHE_ROOT;
                 break;
             default:
                 break;
