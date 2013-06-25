@@ -293,8 +293,11 @@ class BelaOptions {
      * @param int $key
      * @param mixed $value
      */
-    public function set($key, $value) {
+    public function set($key, $value, $writeThrough = false) {
         $this->options[$key] = $value;
+        if ($writeThrough) {
+            $this->save();
+        }
     }
 
     /**

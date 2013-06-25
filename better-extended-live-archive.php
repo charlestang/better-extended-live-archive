@@ -35,7 +35,7 @@ define('BELA_BASE_URL', WP_PLUGIN_URL . DIRECTORY_SEPARATOR . $directory_name);
 define('BELA_CACHE_TYPE', 'file');
 define('BELA_CACHE_ROOT', BELA_BASE_PATH . DIRECTORY_SEPARATOR . 'cache');
 define('BELA_DEBUG', true);
-define('BELA_DEBUG_CLASS', 'BelaTagIndex');
+//define('BELA_DEBUG_CLASS', 'BelaTagIndex');
 
 
 /**

@@ -50,7 +50,7 @@ class BelaIndicesBuilder {
             $index->build();
         }
 
-        $this->_options->set(BelaKey::CACHE_INITIALIZED, false);
+        $this->_options->set(BelaKey::CACHE_INITIALIZED, true, true);
     }
 
     public function getIndex($type) {
@@ -86,7 +86,7 @@ class BelaIndicesBuilder {
     public function isIndicesInitialized() {
         $initialized = $this->_options->get(BelaKey::CACHE_INITIALIZED);
 
-        if ($initialized) {
+        if ($initialized) { //if the indices are already exists, check them
             foreach ($this->_indices as $idx) {
                 $initialized = $initialized && $idx->initialized();
             }
