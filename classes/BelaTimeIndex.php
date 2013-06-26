@@ -33,9 +33,15 @@ class BelaTimeIndex extends BelaIndex {
      * @param WP_Post $post
      */
     public function update($postId, $post = null) {
+        if (is_null($post)) {
+            $post = get_post($postId);
+        }
+        if ($post->post_type == 'revision') {
+            return;
+        }
         $time = strtotime($post->post_date);
         $year = date('Y', $time);
-        $month = date('m', $time);
+        $month = intval(date('m', $time));
         $this->buildYearsTable();
         $this->buildMonthsInYearTable($year);
         $this->buildPostsInMonthTable($year, $month);
@@ -92,7 +98,7 @@ class BelaTimeIndex extends BelaIndex {
                 . "GROUP BY month ORDER By post_date DESC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
         BelaLogger::log($sql, $results);
-        
+
         if (!empty($results)) {
             $monthTable = array_map(create_function('$entry', 'return $entry->count;'), $results);
             $this->getCache()->set($year . '.dat', $monthTable);
@@ -154,3 +160,4 @@ class BelaTimeIndex extends BelaIndex {
     }
 
 }
+

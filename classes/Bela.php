@@ -48,8 +48,17 @@ class Bela {
          *     file: /wp-includes/post.php 
          *     func: wp_transition_post_status
          *     params: $postId, $post
+         * trashed_post:
+         *     file: /wp-includes/post.php
+         *     func: wp_trash_post
+         *     params: $postId
+         * deleted_post:
+         *     file: /wp-includes/post.php
+         *     func: wp_delete_post
+         *     params: $postId
          */
         add_action('publish_post', array($this->builder, 'updateIndexCache'), 10, 2);
+        add_action('trashed_post', array($this->builder, 'updateIndexCache'));
         add_action('deleted_post', array($this->builder, 'updateIndexCache'));
         /**
          * when comment changes, update the index
