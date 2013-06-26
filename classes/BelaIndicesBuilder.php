@@ -75,8 +75,13 @@ class BelaIndicesBuilder {
         return $this->_indices[$type];
     }
 
-    public function updateIndexCache() {
-        
+    public function updateIndexCache($postId, $post = null) {
+        $types = $this->_options->get(BelaKey::NAVIGATION_TABS_ORDER);
+
+        foreach ($types as $type) {
+            $index = $this->getIndex($type);
+            $index->update($postId, $post);
+        }
     }
 
     /**

@@ -33,6 +33,12 @@ class BelaTimeIndex extends BelaIndex {
      * @param WP_Post $post
      */
     public function update($postId, $post = null) {
+        $time = strtotime($post->post_date);
+        $year = date('Y', $time);
+        $month = date('m', $time);
+        $this->buildYearsTable();
+        $this->buildMonthsInYearTable($year);
+        $this->buildPostsInMonthTable($year, $month);
     }
 
     /**

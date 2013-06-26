@@ -44,8 +44,12 @@ class Bela {
         add_action('wp_head', array($this, 'injectStaticFiles'));
         /**
          * when post changes, update the index
+         * publish_post: 
+         *     file: /wp-includes/post.php 
+         *     func: wp_transition_post_status
+         *     params: $postId, $post
          */
-        add_action('publish_post', array($this->builder, 'updateIndexCache'));
+        add_action('publish_post', array($this->builder, 'updateIndexCache'), 10, 2);
         add_action('deleted_post', array($this->builder, 'updateIndexCache'));
         /**
          * when comment changes, update the index
