@@ -143,11 +143,45 @@ class BelaCategoryIndex extends BelaIndex {
     }
 
     public function update($postId, $post = null) {
-        
+        if ($post == null) {
+            $post = get_post($postId);
+        }
+
+        if ($post->post_type == 'revision') {
+            return;
+        }
+
+        $sql = "SELECT tr.term_taxonomy_id "
+               . "FROM {$this->getDb()->term_relationships} tr "
+               . "INNER JOIN {$this->getDb()->term_taxonomy} tt "
+               . "ON tr.term_taxonomy_id=tt.term_taxonomy_id "
+               . "WHERE tt.taxonomy='category' "
+               . "AND tr.object_id=" . intval($postId);
+        $catIds = $this->getDb()->get_col($sql);
+        BelaLogger::log($sql, $catIds);
+
+        $oldCategoriesTable = $this->getCategoriesTable();
+        $newCategoriesTable = $this->buildCategoriesTable();
+        $diff1 = array_diff_assoc($newCategoriesTable, $oldCategoriesTable);
+        $diff2 = array_diff_assoc($oldCategoriesTable, $newCategoriesTable);
+
+        if (!empty($diff1)) {
+            $catIds = array_merge($catIds, array_keys($diff1));
+        }
+        if (!empty($diff2)) {
+            $catIds = array_merge($catIds, array_keys($diff2));
+        }
+        BelaLogger::log($catIds);
+        foreach ($catIds as $cId) {
+            $this->buildPostsInCategoryTable($cId);
+        }
     }
 
+    /**
+     * Test the category index is ok or not
+     * @return boolean The category index is built or not
+     */
     public function initialized() {
-
         return $this->getCache()->exists('categories.dat');
     }
 

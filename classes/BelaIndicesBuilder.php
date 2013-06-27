@@ -90,7 +90,15 @@ class BelaIndicesBuilder {
      * @param boolean $approved
      */
     public function updateIndexCacheByComment($commentIds, $approved = null) {
+        if (!is_array($commentIds)) {
+            if (!is_null($approved)) {
+                
+            } else {
 
+            }
+        } elseif (is_array($commentIds)) {
+
+        }
     }
 
     /**
