@@ -85,6 +85,15 @@ class BelaIndicesBuilder {
     }
 
     /**
+     * Update the index cache according to the comment
+     * @param mixed $commentIds
+     * @param boolean $approved
+     */
+    public function updateIndexCacheByComment($commentIds, $approved = null) {
+
+    }
+
+    /**
      * Check the indices are initialized or not
      * @return boolean
      */

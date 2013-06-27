@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of Bela
+ * Plugin's class, include the entry point, install, uninstall, etc.
  *
  * @author Charles Tang<charlestang@foxmail.com>
  */
@@ -62,11 +62,33 @@ class Bela {
         add_action('deleted_post', array($this->builder, 'updateIndexCache'));
         /**
          * when comment changes, update the index
+         * comment_post:
+         *     file: /wp-includes/comment.php
+         *     func: wp_new_comment
+         *     params: $comment_ID, $approved
+         * trackback_post:
+         *     file: /wp-trackback.php
+         *     func: null
+         *     params: $comment_ID
+         * pingback_post:
+         *     file: /wp-includes/class-wp-xmlrpc-server.php
+         *     func: pingback_ping
+         *     params: $comment_ID 
+         * delete_comment:
+         *     file: akismet/akismet.php
+         *     func: akismet_delete_old
+         *     params: $comment_ids
+         *     file: akismet/legacy.php
+         *     func: akismet_caught
+         *     params: $comment_ids
+         *     file: /wp-includes/comment.php
+         *     func: wp_delete_comment
+         *     params: $comment_ID
          */
-        add_action('comment_post', array($this->builder, 'updateIndexCache'));
-        add_action('trackback_post', array($this->builder, 'updateIndexCache'));
-        add_action('pingback_post', array($this->builder, 'updateIndexCache'));
-        add_action('delete_comment', array($this->builder, 'updateIndexCache'));
+        add_action('comment_post', array($this->builder, 'updateIndexCacheByComment'), 10, 2);
+        add_action('trackback_post', array($this->builder, 'updateIndexCacheByComment'));
+        add_action('pingback_post', array($this->builder, 'updateIndexCacheByComment'));
+        add_action('delete_comment', array($this->builder, 'updateIndexCacheByComment'));
         /**
          * short code
          */
