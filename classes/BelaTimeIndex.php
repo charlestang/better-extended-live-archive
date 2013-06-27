@@ -34,7 +34,8 @@ class BelaTimeIndex extends BelaIndex {
      */
     public function update($postId, $post = null) {
         if (is_null($post)) {
-            $post = get_post($postId);
+            $post = get_post($postId); // when the post is deleted, the post can
+                                       // still be fetched because of the cache
         }
         if ($post->post_type == 'revision') {
             return;
