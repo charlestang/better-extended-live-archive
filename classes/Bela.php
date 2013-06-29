@@ -58,6 +58,7 @@ class Bela {
          *     params: $postId
          */
         add_action('publish_post', array($this->builder, 'updateIndexCache'), 10, 2);
+        add_action('post_updated', array($this->builder, 'updateIndexCache'), 10, 3);
         add_action('trashed_post', array($this->builder, 'updateIndexCache'));
         add_action('deleted_post', array($this->builder, 'updateIndexCache'));
         /**

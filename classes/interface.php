@@ -94,7 +94,8 @@ abstract class BelaIndex {
 
     abstract public function build();
 
-    abstract public function update($postId, $post = null);
+    abstract public function beforeUpdate($postId, $post = null);
+    abstract public function afterUpdate($postId, $post = null);
 
     abstract public function initialized();
 }
