@@ -117,7 +117,7 @@ class Bela {
         $this->echoAjaxEntry();
         $style_name = $this->options->get(BelaKey::STYLE_NAME);
         $style = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'bela-' . $style_name . '.css';
-        echo '<link rel="stylesheet" href="', $style , '" type="text/css" medir="screen" />';
+        echo '<link rel="stylesheet" href="', $style, '" type="text/css" medir="screen" />';
     }
 
     /**

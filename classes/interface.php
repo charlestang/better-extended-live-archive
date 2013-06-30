@@ -6,6 +6,8 @@
  * @method void set(string $key, mixed $value) put some data into cache
  * @method mixed get(string $key) retrieve data from cache, if the data dose not exist, false will be returned
  * @method void del(string $key) clear data with the specific key in cache
+ * @method void clearAllCache() clear all the cache
+ * @method boolean exists(string $key) decide if the cache file exists or not
  */
 interface BelaCache {
 
@@ -92,10 +94,24 @@ abstract class BelaIndex {
         return $this->_cache;
     }
 
+    /**
+     * Build this kind of the index
+     */
     abstract public function build();
 
-    abstract public function beforeUpdate($postId, $post = null);
-    abstract public function afterUpdate($postId, $post = null);
-
+    /**
+     * Decide if the index is intialized
+     * @return boolean If this kind of index is initialized
+     */
     abstract public function initialized();
+
+    /**
+     * Before the post is updated.
+     */
+    abstract public function beforeUpdate();
+
+    /**
+     * After the post is updated.
+     */
+    abstract public function afterUpdate();
 }
