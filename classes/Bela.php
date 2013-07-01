@@ -44,23 +44,24 @@ class Bela {
         add_action('wp_head', array($this, 'injectStaticFiles'));
         /**
          * when post changes, update the index
-         * publish_post: 
+         * publish_post: not suitable for this plugin 
          *     file: /wp-includes/post.php 
          *     func: wp_transition_post_status
          *     params: $postId, $post
-         * trashed_post:
+         * trashed_post: not need any more
          *     file: /wp-includes/post.php
          *     func: wp_trash_post
          *     params: $postId
-         * deleted_post:
+         * deleted_post: not need any more
          *     file: /wp-includes/post.php
          *     func: wp_delete_post
          *     params: $postId
+         * wp_insert_post:
+         *     file: /wp-includes/post.php
+         *     func: wp_insert_post, wp_publish_post
+         *     params: $postId, $post
          */
-        add_action('publish_post', array($this->builder, 'updateIndexCache'), 10, 2);
-        add_action('post_updated', array($this->builder, 'updateIndexCache'), 10, 3);
-        add_action('trashed_post', array($this->builder, 'updateIndexCache'));
-        add_action('deleted_post', array($this->builder, 'updateIndexCache'));
+        add_action('wp_insert_post', array($this->builder, 'afterUpdate'), 10, 2);
         /**
          * when comment changes, update the index
          * comment_post:

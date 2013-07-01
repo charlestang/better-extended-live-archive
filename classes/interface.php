@@ -112,6 +112,8 @@ abstract class BelaIndex {
 
     /**
      * After the post is updated.
+     * @param int $postId the post ID of the current inserted post
+     * @param WP_Post $post the current post object
      */
-    abstract public function afterUpdate();
+    abstract public function afterUpdate($postId, $post);
 }
