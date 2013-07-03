@@ -91,8 +91,22 @@ class BelaIndicesBuilder {
         return $this->_indices[$type];
     }
 
-    public function beforePostUpdate($postId) {
+    /**
+     * When the post is updated, this hook will be called.
+     * @param int $postId
+     * @param WP_Post $postAfter
+     * @param WP_Post $postBefore
+     */
+    public function beforePostUpdate($postId, $postAfter, $postBefore) {
+        if ($postAfter != null && $postAfter->post_status != 'publish') {
+            return;
+        }
+        $types = $this->_options->get(BelaKey::NAVIGATION_TABS_ORDER);
 
+        foreach ($types as $type) {
+            $index = $this->getIndex($type);
+            $index->beforeUpdate($postId, $postAfter, $postBefore);
+        }
     }
 
     public function updateIndexCache($postId, $post = null) {
@@ -117,10 +131,10 @@ class BelaIndicesBuilder {
             if (!is_null($approved)) {
                 
             } else {
-
+                
             }
         } elseif (is_array($commentIds)) {
-
+            
         }
     }
 

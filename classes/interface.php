@@ -108,7 +108,7 @@ abstract class BelaIndex {
     /**
      * Before the post is updated.
      */
-    abstract public function beforeUpdate();
+    abstract public function beforeUpdate($postId, $postAfter, $postBefore);
 
     /**
      * After the post is updated.

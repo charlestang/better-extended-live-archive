@@ -14,7 +14,7 @@ class BelaTagIndex extends BelaIndex {
         }
     }
 
-    public function beforeUpdate() {
+    public function beforeUpdate($postId, $postAfter, $postBefore) {
         ;
     }
     public function afterUpdate($postId, $post = null) {

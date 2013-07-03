@@ -27,7 +27,7 @@ class BelaTimeIndex extends BelaIndex {
         }
     }
 
-    public function beforeUpdate() {
+    public function beforeUpdate($postId, $postAfter, $postBefore) {
     }
     /**
      * Update the chronological index.
