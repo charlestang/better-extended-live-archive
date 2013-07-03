@@ -142,7 +142,9 @@ class BelaCategoryIndex extends BelaIndex {
         }
     }
 
-    public function update($postId, $post = null) {
+    public function beforeUpdate() {
+    }
+    public function afterUpdate($postId, $post = null) {
         if ($post == null) {
             $post = get_post($postId);
         }

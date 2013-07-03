@@ -27,12 +27,14 @@ class BelaTimeIndex extends BelaIndex {
         }
     }
 
+    public function beforeUpdate() {
+    }
     /**
      * Update the chronological index.
      * @param int $postId
      * @param WP_Post $post
      */
-    public function update($postId, $post = null) {
+    public function afterUpdate($postId, $post = null) {
         if (is_null($post)) {
             $post = get_post($postId); // when the post is deleted, the post can
                                        // still be fetched because of the cache
