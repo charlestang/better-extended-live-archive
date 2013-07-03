@@ -4,6 +4,7 @@
  * This object is used to generate the archive cache.
  *
  * @author Charles Tang<charlestang@foxmail.com>
+ * @since 1.0
  */
 class BelaIndicesBuilder {
 
@@ -22,6 +23,12 @@ class BelaIndicesBuilder {
      */
     private $_indices = array();
 
+    /**
+     * The constructor of the BelaIndicesBuilder
+     * @param BelaOptions $options
+     * @param BelaCache $cache
+     * @throws BelaIndexException
+     */
     public function __construct($options, $cache) {
         if ($options instanceof BelaOptions) {
             $this->_options = $options;
@@ -42,6 +49,9 @@ class BelaIndicesBuilder {
         }
     }
 
+    /**
+     * initialize the indices "files" if the first time run
+     */
     public function initializeIndexCache() {
         $types = $this->_options->get(BelaKey::NAVIGATION_TABS_ORDER);
 
@@ -53,6 +63,12 @@ class BelaIndicesBuilder {
         $this->_options->set(BelaKey::CACHE_INITIALIZED, true, true);
     }
 
+    /**
+     * Index factory, return the index object according to the index name
+     * @param string $type
+     * @return BelaIndex
+     * @throws BelaIndexException
+     */
     public function getIndex($type) {
         if (isset($this->_indices[$type])) {
             return $this->_indices[$type];
