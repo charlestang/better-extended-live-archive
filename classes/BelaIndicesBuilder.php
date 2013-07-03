@@ -96,6 +96,9 @@ class BelaIndicesBuilder {
     }
 
     public function updateIndexCache($postId, $post = null) {
+        if ($post != null && $post->post_status != 'publish') {
+            return;
+        }
         $types = $this->_options->get(BelaKey::NAVIGATION_TABS_ORDER);
 
         foreach ($types as $type) {

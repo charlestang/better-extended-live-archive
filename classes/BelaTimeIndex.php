@@ -35,6 +35,7 @@ class BelaTimeIndex extends BelaIndex {
      * @param WP_Post $post
      */
     public function afterUpdate($postId, $post = null) {
+        BelaLogger::log($postId, $post);
         if (is_null($post)) {
             $post = get_post($postId); // when the post is deleted, the post can
                                        // still be fetched because of the cache
