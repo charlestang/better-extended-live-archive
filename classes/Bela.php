@@ -61,7 +61,6 @@ class Bela {
          *     func: wp_insert_post, wp_publish_post
          *     params: $postId, $post
          */
-        add_action('post_updated', array($this->builder, 'beforePostUpdate'), 10, 3);
         add_action('wp_insert_post', array($this->builder, 'updateIndexCache'), 10, 2);
         /**
          * when comment changes, update the index
