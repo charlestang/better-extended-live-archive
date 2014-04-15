@@ -41,6 +41,7 @@ class Bela {
         /**
          * static files
          */
+        add_action('wp_enqueue_scripts', array($this, 'enqueueScripts'));
         add_action('wp_head', array($this, 'injectStaticFiles'));
         /**
          * when post changes, update the index
@@ -108,6 +109,13 @@ class Bela {
         $belaAjax = new BelaAjax($this->options);
         add_action('wp_ajax_nopriv_' . BelaAjax::BELA_AJAX_VAR, array($belaAjax, 'entry'));
         add_action('wp_ajax_' . BelaAjax::BELA_AJAX_VAR, array($belaAjax, 'entry'));
+    }
+
+    /**
+     * Enqueue the script library.
+     */
+    public function enqueueScripts() {
+        wp_enqueue_script('jquery');
     }
 
     /**
