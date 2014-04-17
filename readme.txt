@@ -1,23 +1,30 @@
 === Better Extended Live Archive ===
 Contributors: Charles
 Donate link: http://sexywp.com/archives
-Tags: template tags, archive, post, archives, BELA, ELA,
+Tags: template tags, archive, post, archives, BELA, ELA
 Requires at least: 3.1.0
-Tested up to: 3.6-beta3
+Tested up to: 4.0-alpha
 Stable tag: 0.80
+License: GPLv2
 
-Extended Live Archive(ELA) is a very cool WordPress plugin, which can generate a clean, structured archive page with fantastic visual effect.
+Better Extended Live Archive(BELA) is a very cool WordPress plugin, which can generate a clean, structured archive page with fantastic visual effect.
 
 == Description ==
 
-Extended Live Archive (ELA) is a cool AJAX application with which you can display a well-structured and multi-viewed archive navigator on your archive page. With the help of this navigator, visitors of your blog can surf all the articles on your blog easily. They can sort titles of your articles by date, by category or by tag. [Here](http://sexywp.com/archives "The author's site") is a LIVE DEMO.
+Better Extended Live Archive (BELA) is a cool AJAX application with which you can display a well-structured and multi-viewed archive navigator on your archive page. With the help of this navigator, visitors of your blog can surf all the articles on your blog easily. They can sort titles of your articles by date, by category or by tag. [Here](http://sexywp.com/archives "The author's site") is a LIVE DEMO.
 
 To install the plugin,
 
 1. Upload the `better-extended-live-archive` directory and its content to your `wp-content/plugins/` directory.
 2. Make sure the `cache` directory permission are set to 0777 (refer to your webhost knowledge-base if need be).
-3. Place `<?php af_ela_super_archive(); ?>` in your archive page template. Generally it is named archives.php NOT the archive.php.
-4. Then, visit the Settings->Ext. Live Archive page once to initialize it.
+3. Activate it in the plugins admin page.
+4. Create a archive page, and put this `[extended-live-archive]` in your page content.
+5. Done!
+
+For theme developers:
+You can include the plugin in your theme like this:
+`<?php if (function_exists('better_extended_live_archive')) better_extended_live_archive();?>`
+
 
 = Some History =
 
@@ -30,12 +37,11 @@ Although there are many patches of ELA, none of them make it better. All the pat
 This section describes how to install the plugin and get it working.
 
 1. Upload the `better-extended-live-archive` directory and its content to your `wp-content/plugins/` directory.
-1. Make sure the `cache` directory permission are set to 0777 (refer to your webhost knowledge-base if need be).
-1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Place `<?php af_ela_super_archive(); ?>` in your archive page template. Generally it is named archives.php NOT the archive.php.
-1. NEW(2010-6-20): ShortCode supported, insert'[extended-live-archive]' to your post, then that post will show ELA.
-1. Create a page based on the "Archives" page template.
-1. Then, visit the Settings->Ext. Live Archive page once to initialize it.
+2. Make sure the `cache` directory permission are set to 0777 (refer to your webhost knowledge-base if need be).
+3. Activate it in the plugins admin page.
+4. Create a archive page, and put this `[extended-live-archive]` in your page content.
+5. Done!
+6. Then, visit the Settings->Ext. Live Archive page once to initialize it.
 
 == Frequently Asked Questions ==
 
@@ -49,6 +55,9 @@ none.
 2. by category
 
 == Changelog ==
+= 1.0 = 
+* All the code be rewritten.
+
 = 0.80 =
 * Remove the version check in the admin page, you can use WP Plugin directory now.
 * Exclude categories feature was not working, now it has been fixed.
