@@ -194,7 +194,7 @@ class BelaAdmin {
         $this->render('menu-settings', array('options' => $this->options));
     }
 
-    public function actionCategoryExclusion() {
+    public function actionCatSettings() {
         if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
             $this->options->setOptions($_POST['BelaOptions']);
             $this->options->save();

@@ -125,7 +125,8 @@ class BelaTagIndex extends BelaIndex {
     }
 
     public function initialized() {
-        return $this->getCache()->exists('tags.dat');       
+        $ret = $this->getCache()->exists('tags.dat');       
+        return $ret;
     }
 
 }

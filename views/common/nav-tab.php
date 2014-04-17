@@ -1,4 +1,3 @@
-<?php screen_icon(); ?>
 <h2>Better Extended Live Archive Options</h2>
 <ul class="subsubsub">
     <li>
@@ -14,8 +13,8 @@
         <a <?php echo $this->isCurr('menuSettings') ? 'class="current"' : ''; ?> 
             href="<?php echo BelaAdmin::URL('menuSettings'); ?>">Menu settings</a> |</li>
     <li>
-        <a <?php echo $this->isCurr('categoryExclusion') ? 'class="current"' : ''; ?> 
-            href="<?php echo BelaAdmin::URL('categoryExclusion'); ?>">Category exclusion</a> |</li>
+        <a <?php echo $this->isCurr('catSettings') ? 'class="current"' : ''; ?> 
+            href="<?php echo BelaAdmin::URL('catSettings'); ?>">Category exclusion</a> |</li>
     <li>
         <a <?php echo $this->isCurr('pagination') ? 'class="current"' : ''; ?> 
             href="<?php echo BelaAdmin::URL('pagination'); ?>">Pagination</a> |</li>
