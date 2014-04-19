@@ -4,7 +4,7 @@ Donate link: http://sexywp.com/archives
 Tags: template tags, archive, post, archives, BELA, ELA
 Requires at least: 3.1.0
 Tested up to: 4.0-alpha
-Stable tag: 0.80
+Stable tag: 1.0
 License: GPLv2
 
 Better Extended Live Archive(BELA) is a very cool WordPress plugin, which can generate a clean, structured archive page with fantastic visual effect.
@@ -30,7 +30,7 @@ You can include the plugin in your theme like this:
 
 The development of the original ELA stopped in June 22nd, 2006. The final version is 0.10 beta R18, which is for WordPress older than version 2.3. Because of the changes of WP database structure, the original ELA did not work in WordPress 2.3 or later. Nevertheless, bloggers can not stop loving it. Many warm hearted programmers fixed this plugin again and again. Till now, you can still find a few working versions of ELA for even WordPress 2.7 or later (This project is also one of them). Of course, this kind of searching work is not that easy.
 
-Although there are many patches of ELA, none of them make it better. All the patches you can find are to fix ELA under a certain WordPress version. The aim of this project is to make ELA stronger, faster and easier to use. And this page will exist until Google Company is closed down.
+Although there are many patches of ELA, none of them make it better. All the patches you can find are to fix ELA under a certain WordPress version. The aim of this project is to make ELA stronger, faster and easier to use. 
 
 == Installation ==
 
@@ -56,7 +56,7 @@ none.
 
 == Changelog ==
 = 1.0 = 
-* All the code be rewritten.
+* Rewrite all the code of the plugin, use the MVC to redesign it.
 
 = 0.80 =
 * Remove the version check in the admin page, you can use WP Plugin directory now.
@@ -82,6 +82,9 @@ none.
 
 
 == Upgrade Notice ==
+= 1.0 =
+* All the code has been rewritten.
+
 = 0.70 =
 * Bugs fixed and speed optimized. Upgrade recommended.
 
