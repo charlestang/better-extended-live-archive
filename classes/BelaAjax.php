@@ -90,7 +90,8 @@ class BelaAjax {
                 $params['tag'] = BelaAdmin::getParam('tag', false);
                 if (false === $params['tag']) {
                     $tags = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_TAGS)->getTagsTable();
-                    $params['tag'] = reset(array_keys($tags));
+                    $tags = array_keys($tags);
+                    $params['tag'] = $tags[0];
                 }
                 break;
             default:

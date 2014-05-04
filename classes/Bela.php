@@ -138,12 +138,14 @@ class Bela {
             $this->builder->initializeIndexCache();
         }
         $tabs = $this->options->get(BelaKey::NAVIGATION_TABS_ORDER);
+        $loading = $this->options->get(BelaKey::TEXT_WHEN_CONTENT_LOADING);
+        $idle = $this->options->get(BelaKey::TEXT_WHEN_BLANK_CONTENT);
         $jsurl = BELA_BASE_URL . '/js/bela.js';
         if (!empty($tabs)) {
             ?>
             <script type="text/javascript">
-                var belaLoadingTip = "loading ...";
-                var belaIdleTip = "";
+                var belaLoadingTip = "<?php echo $loading;?>";
+                var belaIdleTip = "<?php echo $idle;?>";
             </script> 
             <script type="text/javascript" src="<?php echo $jsurl; ?>?ver=<?php echo self::JSVER; ?>"></script>
             <div id="bela-container">
