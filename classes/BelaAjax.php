@@ -60,26 +60,30 @@ class BelaAjax {
      */
     public function getRequest() {
         $params = array();
-        $menu = BelaAdmin::getParam('menu', reset($this->options->get(BelaKey::NAVIGATION_TABS_ORDER)));
+        $menu = BelaAdmin::getParam('menu');
+        if (null == $menu) {
+            $navigation_tabs_array = $this->options->get(BelaKey::NAVIGATION_TABS_ORDER);
+            $menu = reset($navigation_tabs_array);
+        }
         $params['menu'] = $menu;
         switch ($menu) {
             case BelaKey::ORDER_KEY_BY_DATE:
                 $params['year'] = BelaAdmin::getParam('year', false);
                 if (false === $params['year']) {
-                    $years = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_DATE)->getYearsTable();
-                    $params['year'] = reset(array_keys($years));
+                    $years = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_DATE)->getYearsList();
+                    $params['year'] = reset($years);
                 }
                 $params['month'] = BelaAdmin::getParam('month', false);
                 if (false === $params['month']) {
-                    $months = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_DATE)->getMonthsInYearTable($params['year']);
-                    $params['month'] = reset(array_keys($months));
+                    $months = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_DATE)->getMonthsInYearList($params['year']);
+                    $params['month'] = reset($months);
                 }
                 break;
             case BelaKey::ORDER_KEY_BY_CATEGORY:
                 $params['cat'] = BelaAdmin::getParam('cat', false);
                 if (false === $params['cat']) {
-                    $categories = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_CATEGORY)->getCategoriesTable();
-                    $params['cat'] = reset(array_keys($categories));
+                    $categories = $this->builder->getIndex(BelaKey::ORDER_KEY_BY_CATEGORY)->getCategoriesList();
+                    $params['cat'] = reset($categories);
                 }
                 break;
             case BelaKey::ORDER_KEY_BY_TAGS:
@@ -171,23 +175,23 @@ class BelaAjax {
         if ($showNumOfEntry) {
             $templateNumOfEntry = $this->options->get(BelaKey::TEMPLATE_NUMBER_OF_ENTRIES);
         }
+        $catobjs = array();
+        foreach ($categories as $cat) {
+            $catobj = new stdClass;
+            $catobj->id = $cat[0];
+            $catobj->name = $cat[1];
+            $catobj->slug = $cat[2];
+            $catobj->parent = $cat[3];
+            $catobj->count = $cat[4];
+            $catobjs[] = $catobj;
+        }
+        $textBeforeChildCategory = $this->options->get(BelaKey::TEXT_BEFORE_CHILD_CATEGORY);
         ob_start();
         ?>
         <ul class="bela-category">
             <?php
-            foreach ($categories as $id => $cat) {
-                if ($showNumOfEntry) {
-                    $numStr = str_replace('%', $cat[4], $templateNumOfEntry);
-                } else {
-                    $numStr = '';
-                }
-                echo BelaHtml::menuItem($cat[1] . $numStr, array(
-                    'class'  => 'category-entry',
-                    'menu'   => BelaKey::ORDER_KEY_BY_CATEGORY,
-                    'cat'    => $id,
-                    'active' => $id == $catId,
-                ));
-            }
+            $walker = new BelaCategoryWalker;
+            echo $walker->walk($catobjs, 0, $catId, BelaKey::ORDER_KEY_BY_CATEGORY, $showNumOfEntry, $templateNumOfEntry, $textBeforeChildCategory);
             ?>
         </ul>
         <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_CATEGORY; ?>" cat="<?php echo $catId; ?>">

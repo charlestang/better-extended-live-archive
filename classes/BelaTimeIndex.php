@@ -83,6 +83,18 @@ class BelaTimeIndex extends BelaIndex {
     }
 
     /**
+     * Read the year list from the year table.
+     * @return array the array of year.
+     */
+    public function getYearsList() {
+        $yearTable= $this->getYearsTable();
+        if ($yearTable && !empty($yearTable)) {
+            return array_keys($yearTable);
+        }
+        return array();
+    }
+
+    /**
      * This table should be rebuild, everytime a post is updated,
      * just the related year should be rebuild
      * @return array The month set in the year
@@ -114,6 +126,14 @@ class BelaTimeIndex extends BelaIndex {
 
     public function getMonthsInYearTable($year) {
         return $this->getCache()->get($year . '.dat');
+    }
+
+    public function getMonthsInYearList($year) {
+        $monthInYearTable = $this->getMonthsInYearTable($year);
+        if ($monthInYearTable && !empty($monthInYearTable)) {
+            return array_keys($monthInYearTable);
+        }
+        return array();
     }
 
     public function buildPostsInMonthTable($year, $month) {

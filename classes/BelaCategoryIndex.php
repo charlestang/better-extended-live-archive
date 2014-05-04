@@ -8,8 +8,19 @@
 class BelaCategoryIndex extends BelaIndex {
 
     /**
-     * 
-     * @return array
+     * Build the category index and output the category list with stats.
+     * The return array elements are the category entry, and the keys are 
+     * the category id. e.g.
+     * array(
+     *     3 => array(      // the key is the category ID
+     *          3,          // the 1st element is the category ID too
+     *          'Firefox',  // the 2nd element is the category name
+     *          'firefox',  // the 3rd element is the category slug
+     *          0,          // the 4th element is the parent category ID
+     *          4,          // the 5th element is the number of posts in this category
+     *      ),
+     * );
+     * @return array 
      */
     public function buildCategoriesTable() {
         $excludedCategoryIds = $this->getOptions()->get(BelaKey::EXCLUDE_CATEGORY_LIST);
@@ -64,6 +75,14 @@ class BelaCategoryIndex extends BelaIndex {
 
     public function getCategoriesTable() {
         return $this->getCache()->get('categories.dat');
+    }
+
+    public function getCategoriesList() {
+        $categoriesTable = $this->getCategoriesTable();
+        if ($categoriesTable && !empty($categoriesTable)) {
+            return array_keys($categoriesTable);
+        }
+        return array();
     }
 
     private function getCategoryTableEntry($cat) {
