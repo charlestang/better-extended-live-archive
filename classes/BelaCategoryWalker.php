@@ -13,7 +13,7 @@ class BelaCategoryWalker extends Walker {
         'parent' => 'parent'
     );
 
-    function start_el(&$output, $object, $depth = 0) {
+    function start_el(&$output, $object, $depth = 0, $args = array(), $current_object_id = 0) {
         $elargs = func_get_args();
         if ($elargs[5]) {
             $numStr = str_replace('%', $object->count, $elargs[6]);
