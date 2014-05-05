@@ -28,7 +28,9 @@ class BelaTimeIndex extends BelaIndex {
     }
 
     public function beforeUpdate($postId, $postAfter, $postBefore) {
+        
     }
+
     /**
      * Update the chronological index.
      * @param int $postId
@@ -38,7 +40,7 @@ class BelaTimeIndex extends BelaIndex {
         BelaLogger::log($postId, $post);
         if (is_null($post)) {
             $post = get_post($postId); // when the post is deleted, the post can
-                                       // still be fetched because of the cache
+            // still be fetched because of the cache
         }
         if ($post->post_type == 'revision') {
             return;
@@ -70,12 +72,12 @@ class BelaTimeIndex extends BelaIndex {
         $results = $this->getDb()->get_results($sql, OBJECT_K);
         BelaLogger::log($sql, $results);
 
+        $yearTable = array();
         if (!empty($results)) {
             $yearTable = array_map(create_function('$entry', 'return $entry->count;'), $results);
-            $this->getCache()->set('years.dat', $yearTable);
-            return array_keys($yearTable);
         }
-        return array();
+        $this->getCache()->set('years.dat', $yearTable);
+        return array_keys($yearTable);
     }
 
     public function getYearsTable() {
@@ -87,7 +89,7 @@ class BelaTimeIndex extends BelaIndex {
      * @return array the array of year.
      */
     public function getYearsList() {
-        $yearTable= $this->getYearsTable();
+        $yearTable = $this->getYearsTable();
         if ($yearTable && !empty($yearTable)) {
             return array_keys($yearTable);
         }
