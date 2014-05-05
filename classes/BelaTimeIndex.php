@@ -81,7 +81,12 @@ class BelaTimeIndex extends BelaIndex {
     }
 
     public function getYearsTable() {
-        return $this->getCache()->get('years.dat');
+        $yearTable = $this->getCache()->get('years.dat');
+        if (false === $yearTable) {
+            $this->getOptions()->set(BelaKey::CACHE_INITIALIZED, false, true);
+            return array();
+        }
+        return $yearTable;
     }
 
     /**
@@ -127,7 +132,8 @@ class BelaTimeIndex extends BelaIndex {
     }
 
     public function getMonthsInYearTable($year) {
-        return $this->getCache()->get($year . '.dat');
+        $monthInYearTable = $this->getCache()->get($year . '.dat');
+        return (false === $monthInYearTable) ? array() : $monthInYearTable;
     }
 
     public function getMonthsInYearList($year) {
@@ -168,7 +174,8 @@ class BelaTimeIndex extends BelaIndex {
     }
 
     public function getPostsInMonthTable($year, $month) {
-        return $this->getCache()->get($year . '-' . $month . '.dat');
+        $postInMonthTable = $this->getCache()->get($year . '-' . $month . '.dat');
+        return (false === $postInMonthTable) ? array() : $postInMonthTable;
     }
 
     public function generateEntryInPostsTable($post) {
