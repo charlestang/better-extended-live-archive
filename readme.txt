@@ -55,6 +55,9 @@ none.
 2. by category
 
 == Changelog ==
+= 1.2 =
+* Test if the years table is broken and try to rebuild the indeices.
+
 = 1.1 =
 * Category cannot display indent. Fixed.
 * Loading tip cannot customize. Fixed.
