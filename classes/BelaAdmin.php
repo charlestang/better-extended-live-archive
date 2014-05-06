@@ -179,9 +179,15 @@ class BelaAdmin {
     }
 
     public function actionHowToCut() {
+        $tagsPickStrategy = $this->options->get(BelaKey::TAGS_PICK_STRATEGY);
         if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
             $this->options->setOptions($_POST['BelaOptions']);
             $this->options->save();
+        }
+        $newStrategy = $this->options->get(BelaKey::TAGS_PICK_STRATEGY);
+        if ($newStrategy != $tagsPickStrategy) {//when the tags cut strategy change, rebuild tags table.
+            $indexBuilder = new BelaIndicesBuilder($this->options, BELA_CACHE_TYPE);
+            $indexBuilder->getIndex(BelaKey::ORDER_KEY_BY_TAGS)->build();
         }
         $this->render('how-to-cut', array('options' => $this->options));
     }
