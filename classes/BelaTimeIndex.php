@@ -25,6 +25,7 @@ class BelaTimeIndex extends BelaIndex {
                 $this->buildPostsInMonthTable($year, $month);
             }
         }
+        return $years;
     }
 
     public function beforeUpdate($postId, $postAfter, $postBefore) {
@@ -83,8 +84,7 @@ class BelaTimeIndex extends BelaIndex {
     public function getYearsTable() {
         $yearTable = $this->getCache()->get('years.dat');
         if (false === $yearTable) {
-            $this->getOptions()->set(BelaKey::CACHE_INITIALIZED, false, true);
-            return array();
+            $yearTable = $this->build();
         }
         return $yearTable;
     }

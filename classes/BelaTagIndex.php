@@ -12,6 +12,7 @@ class BelaTagIndex extends BelaIndex {
         foreach ($tags as $id => $tag) {
             $this->buildPostsInTagTable($id);
         }
+        return $tags;
     }
 
     public function beforeUpdate($postId, $postAfter, $postBefore) {
@@ -53,7 +54,12 @@ class BelaTagIndex extends BelaIndex {
     }
 
     public function getTagsTable() {
-        return $this->getCache()->get('tags.dat');
+        $tagsTable = $this->getCache()->get('tags.dat');
+        if (false === $tagsTable) {
+            $tagsTable = $this->build();
+        }
+
+        return $tagsTable;
     }
 
     private function getTagTableEntry($tag) {

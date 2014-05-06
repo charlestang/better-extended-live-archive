@@ -74,7 +74,11 @@ class BelaCategoryIndex extends BelaIndex {
     }
 
     public function getCategoriesTable() {
-        return $this->getCache()->get('categories.dat');
+        $categoriesTable = $this->getCache()->get('categories.dat');
+        if (false === $categoriesTable) {
+            $categoriesTable = $this->build();
+        }
+        return $categoriesTable;
     }
 
     public function getCategoriesList() {
@@ -159,6 +163,8 @@ class BelaCategoryIndex extends BelaIndex {
         foreach ($catIds as $cId) {
             $this->buildPostsInCategoryTable($cId);
         }
+
+        return $categories;
     }
 
     public function beforeUpdate($postId, $postAfter, $postBefore) {
