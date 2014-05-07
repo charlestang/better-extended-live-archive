@@ -10,14 +10,9 @@
                         <?php
                         $categories = get_categories();
                         $excluded_cats = $options->get(BelaKey::EXCLUDE_CATEGORY_LIST);
-                        foreach ($categories as $cat) {
-                            $checked = in_array($cat->term_taxonomy_id, $excluded_cats) ? 'checked="checked"' : '';
-                            echo '<label for="category-' . $cat->term_id . '">';
-                            echo '<input value="', $cat->term_taxonomy_id, '" type="checkbox" ';
-                            echo 'name="', $options->getNameAttr(BelaKey::EXCLUDE_CATEGORY_LIST);
-                            echo '[]" id="category-' . $cat->term_id . '" ' . $checked . '/>';
-                            echo $cat->name, '</label><br/>';
-                        }
+
+                        $walker = new BelaAdminCategoryWalker();
+                        echo $walker->walk($categories, 0, empty($excluded_cats) ? false : $excluded_cats, $options);
                         ?>
                     </fieldset></td>
             </tr>

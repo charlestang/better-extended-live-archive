@@ -56,11 +56,18 @@ class BelaCategoryIndex extends BelaIndex {
         $catStats = $this->getDb()->get_results($sql, OBJECT_K);
         BelaLogger::log($sql, $catStats);
 
+        $catStatsRecursive = array(); //stats the category post count recursively
         if (!empty($results)) {
             foreach ($results as $id => $cat) {
                 if (isset($catStats[$id])) { // if the cat contains posts, update the count
                     $results[$id]->count = $catStats[$id]->count;
-                } else { // if the cat doesnot contains any post, remove the entry
+                    if ($cat->parent != 0) {
+                        $catStatsRecursive[$cat->parent] = $catStats[$id]->count;
+                    }
+                }
+            }
+            foreach ($results as $id => $cat) {
+                if ($cat->count == 0 && !isset($catStatsRecursive[$id])) {
                     unset($results[$id]);
                 }
             }
@@ -168,7 +175,9 @@ class BelaCategoryIndex extends BelaIndex {
     }
 
     public function beforeUpdate($postId, $postAfter, $postBefore) {
+        
     }
+
     public function afterUpdate($postId, $post = null) {
         if ($post == null) {
             $post = get_post($postId);
@@ -179,11 +188,11 @@ class BelaCategoryIndex extends BelaIndex {
         }
 
         $sql = "SELECT tr.term_taxonomy_id "
-               . "FROM {$this->getDb()->term_relationships} tr "
-               . "INNER JOIN {$this->getDb()->term_taxonomy} tt "
-               . "ON tr.term_taxonomy_id=tt.term_taxonomy_id "
-               . "WHERE tt.taxonomy='category' "
-               . "AND tr.object_id=" . intval($postId);
+                . "FROM {$this->getDb()->term_relationships} tr "
+                . "INNER JOIN {$this->getDb()->term_taxonomy} tt "
+                . "ON tr.term_taxonomy_id=tt.term_taxonomy_id "
+                . "WHERE tt.taxonomy='category' "
+                . "AND tr.object_id=" . intval($postId);
         $catIds = $this->getDb()->get_col($sql);
         BelaLogger::log($sql, $catIds);
 

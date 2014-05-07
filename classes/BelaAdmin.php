@@ -201,10 +201,18 @@ class BelaAdmin {
     }
 
     public function actionCatSettings() {
+        $catExlcudes = $this->options->get(BelaKey::EXCLUDE_CATEGORY_LIST);
         if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
             $this->options->setOptions($_POST['BelaOptions']);
             $this->options->save();
         }
+        $newExcludes = $this->options->get(BelaKey::EXCLUDE_CATEGORY_LIST);
+        $intersect = array_intersect($catExlcudes, $newExcludes);
+        if (!empty($intersect)) {
+            $indexBuilder = new BelaIndicesBuilder($this->options, BELA_CACHE_TYPE);
+            $indexBuilder->getIndex(BelaKey::ORDER_KEY_BY_CATEGORY)->build();
+        }
+        
         $this->render('category-exclusion', array('options' => $this->options));
     }
 
