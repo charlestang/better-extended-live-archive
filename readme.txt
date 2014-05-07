@@ -55,6 +55,10 @@ none.
 2. by category
 
 == Changelog ==
+= 1.3 =
+* Category exclusion manager can show the category list in tree style.
+* Empty parent category will not show in the category index page. Fixed.
+
 = 1.2 =
 * Test if the years table is broken and try to rebuild the indeices.
 
