@@ -161,29 +161,26 @@ class BelaAdmin {
         include $this->viewPath . $this->layout . '.php';
     }
 
-
-    public function actionWhatToShow() {
+    protected function saveOptions() {
         if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
             $this->options->setOptions($_POST['BelaOptions']);
             $this->options->save();
         }
+    }
+
+    public function actionWhatToShow() {
+        $this->saveOptions();
         $this->render('what-to-show', array('options' => $this->options));
     }
 
     public function actionHowToShow() {
-        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
-            $this->options->setOptions($_POST['BelaOptions']);
-            $this->options->save();
-        }
+        $this->saveOptions();
         $this->render('how-to-show', array('options' => $this->options));
     }
 
     public function actionHowToCut() {
         $tagsPickStrategy = $this->options->get(BelaKey::TAGS_PICK_STRATEGY);
-        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
-            $this->options->setOptions($_POST['BelaOptions']);
-            $this->options->save();
-        }
+        $this->saveOptions();
         $newStrategy = $this->options->get(BelaKey::TAGS_PICK_STRATEGY);
         if ($newStrategy != $tagsPickStrategy) {//when the tags cut strategy change, rebuild tags table.
             $indexBuilder = new BelaIndicesBuilder($this->options, BELA_CACHE_TYPE);
@@ -193,19 +190,13 @@ class BelaAdmin {
     }
 
     public function actionMenuSettings() {
-        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
-            $this->options->setOptions($_POST['BelaOptions']);
-            $this->options->save();
-        }
+        $this->saveOptions();
         $this->render('menu-settings', array('options' => $this->options));
     }
 
     public function actionCatSettings() {
         $catExlcudes = $this->options->get(BelaKey::EXCLUDE_CATEGORY_LIST);
-        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
-            $this->options->setOptions($_POST['BelaOptions']);
-            $this->options->save();
-        }
+        $this->saveOptions();
         $newExcludes = $this->options->get(BelaKey::EXCLUDE_CATEGORY_LIST);
         $intersect = array_intersect($catExlcudes, $newExcludes);
         if (!empty($intersect)) {
@@ -217,18 +208,12 @@ class BelaAdmin {
     }
 
     public function actionPagination() {
-        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
-            $this->options->setOptions($_POST['BelaOptions']);
-            $this->options->save();
-        }
+        $this->saveOptions();
         $this->render('pagination', array('options' => $this->options));
     }
 
     public function actionAppearance() {
-        if (isset($_POST['submit']) && isset($_POST['BelaOptions'])) {
-            $this->options->setOptions($_POST['BelaOptions']);
-            $this->options->save();
-        }
+        $this->saveOptions();
         $styles_path = BELA_BASE_PATH . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
         $styles = glob($styles_path . 'bela-*.css');
         $styles = array_map(create_function('$item', '$temp = str_replace("' . $styles_path . 'bela-' . '", "", $item); return str_replace(".css", "", $temp);'), $styles);
