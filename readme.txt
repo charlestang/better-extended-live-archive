@@ -7,11 +7,11 @@ Tested up to: 4.0-alpha
 Stable tag: 1.1
 License: GPLv2
 
-Better Extended Live Archive(BELA) is a very cool WordPress plugin, which can generate a clean, structured archive page with fantastic visual effect.
+Better Extended Live Archive(BELA) is a very cool WordPress plugin, with which you can generate a clean and structured archive page with fantastic visual effect.
 
 == Description ==
 
-Better Extended Live Archive (BELA) is a cool AJAX application with which you can display a well-structured and multi-viewed archive navigator on your archive page. With the help of this navigator, visitors of your blog can surf all the articles on your blog easily. They can sort titles of your articles by date, by category or by tag. [Here](http://sexywp.com/archives "The author's site") is a LIVE DEMO.
+Better Extended Live Archive (BELA) is a cool AJAX application with which you can display a well-structured and multi-viewed archive navigator on your archive page. With the help of this navigator, visitors of your blog can surf all articles on your blog easily. They can sort titles of your articles by date, by category or by tag. [Here](http://sexywp.com/archives "The author's site") is a LIVE DEMO.
 
 To install the plugin,
 
