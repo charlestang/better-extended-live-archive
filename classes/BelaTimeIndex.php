@@ -118,6 +118,7 @@ class BelaTimeIndex extends BelaIndex {
                 . "WHERE YEAR(post_date)={$year} "
                 . $exclusions
                 . "AND post_status='publish' "
+                . "AND (post_type='post' OR post_type='page')"
                 . "GROUP BY month ORDER By post_date DESC";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
         BelaLogger::log($sql, $results);
@@ -162,6 +163,7 @@ class BelaTimeIndex extends BelaIndex {
                 . "FROM {$this->getDb()->posts} WHERE YEAR(post_date)={$year} "
                 . "AND MONTH(post_date)={$month} "
                 . "AND post_status='publish' "
+                . "AND (post_type='post' OR post_type='page')"
                 . $exclusions
                 . "ORDER By post_date {$order}";
         $results = $this->getDb()->get_results($sql, OBJECT_K);
