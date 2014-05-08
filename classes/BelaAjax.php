@@ -232,7 +232,7 @@ class BelaAjax {
             }
             ?>
         </ul>
-        <ul class="bela-post-list" menu="<?php echo BelaKey::ORDER_KEY_BY_TAGS; ?>" tag="<?php echo $tagId; ?>">
+        <ul class="bela-post-list bela-orderby-tag" menu="<?php echo BelaKey::ORDER_KEY_BY_TAGS; ?>" tag="<?php echo $tagId; ?>">
             <?php $this->printPostList($posts); ?>
         </ul>
         <?php

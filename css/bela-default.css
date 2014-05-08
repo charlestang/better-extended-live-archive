@@ -91,6 +91,10 @@
     width: 59%;
 }
 
+ul.bela-orderby-tag {
+    width: 80%;
+}
+
 .bela-next-page, .bela-pre-page {
     text-align: center;
 }

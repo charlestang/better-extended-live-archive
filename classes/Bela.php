@@ -8,6 +8,7 @@
 class Bela {
 
     const JSVER = '20130615';
+    const CSSVER = '20140508';
 
     /**
      * @var BelaOptions 
@@ -125,7 +126,7 @@ class Bela {
     public function injectStaticFiles() {
         $this->echoAjaxEntry();
         $style_name = $this->options->get(BelaKey::STYLE_NAME);
-        $style = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'bela-' . $style_name . '.css';
+        $style = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'bela-' . $style_name . '.css?ver=' . self::CSSVER;
         echo '<link rel="stylesheet" href="', $style, '" type="text/css" medir="screen" />';
     }
 
