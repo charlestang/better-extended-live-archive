@@ -35,8 +35,8 @@ define('BELA_BASE_PATH', WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $directory_name);
 define('BELA_BASE_URL', WP_PLUGIN_URL . DIRECTORY_SEPARATOR . $directory_name);
 define('BELA_CACHE_TYPE', 'file');
 define('BELA_CACHE_ROOT', BELA_BASE_PATH . DIRECTORY_SEPARATOR . 'cache');
-define('BELA_DEBUG', true);
-define('BELA_DEBUG_CLASS', 'BelaIndicesBuilder');
+define('BELA_DEBUG', false);
+define('BELA_DEBUG_CLASS', 'BelaAdmin');
 
 /**
  * This is a template tag offered by this plugin,

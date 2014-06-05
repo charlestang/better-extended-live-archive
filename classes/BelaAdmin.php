@@ -63,7 +63,15 @@ class BelaAdmin {
                 add_action('admin_head', array($this, 'injectAdminStylesAndScripts'));
             }
             add_action('admin_menu', array($this, 'registerAdminPage'));
+            add_filter('plugin_action_links', array($this, 'showOptionLink'), 10, 3);
         }
+    }
+
+    public function showOptionLink($actions, $plugin_file, $plugin_data) {
+        if ($plugin_data['Name'] == 'Better Extended Live Archives') {
+            $actions = array('options' => '<a href="' . self::URL('what-to-show') . '">' . __('Options') . '</a>') + $actions;
+        }
+        return $actions;
     }
 
     public static function getParam($key, $default = null) {
@@ -215,7 +223,7 @@ class BelaAdmin {
             $indexBuilder = new BelaIndicesBuilder($this->options, BELA_CACHE_TYPE);
             $indexBuilder->getIndex(BelaKey::ORDER_KEY_BY_CATEGORY)->build();
         }
-        
+
         $this->render('category-exclusion', array('options' => $this->options));
     }
 
