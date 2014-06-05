@@ -31,7 +31,14 @@ class BelaAdmin {
      * to the WordPress admin panel of the plugin
      */
     public function injectAdminStylesAndScripts() {
-        
+        if ($this->isCurr('menuSettings')) {
+            $cssSrc1 = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'jquery-ui-1.9.2.custom.min.css';
+            $cssSrc2 = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'jquery-ui-multiselect.css';
+            wp_enqueue_style('jquery-ui-common', $cssSrc1, array(), Bela::CSSVER);
+            wp_enqueue_style('jquery-ui-multiselect', $cssSrc2, array(), Bela::CSSVER);
+            $jsSrc = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'jquery-ui-multiselect.js';
+            wp_enqueue_script('jquery-ui-multiselect', $jsSrc, array('jquery-ui-core', 'jquery-ui-sortable', 'jquery-ui-draggable'), Bela::JSVER);
+        }
     }
 
     /**
@@ -95,6 +102,11 @@ class BelaAdmin {
         return menu_page_url(self::PAGE_SLUG, false) . '&' . self::SUBPAGE_VAR . '=' . $param;
     }
 
+    /**
+     * To test if the given $action is the current visiting action.
+     * @param string $action
+     * @return boolean
+     */
     public function isCurr($action) {
         $belaAction = self::getParam(self::SUBPAGE_VAR);
         return $this->parseRoute($belaAction) == ('action' . ucfirst($action));

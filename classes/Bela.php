@@ -8,7 +8,7 @@
 class Bela {
 
     const JSVER = '20130615';
-    const CSSVER = '20140508';
+    const CSSVER = '20140509';
 
     /**
      * @var BelaOptions 

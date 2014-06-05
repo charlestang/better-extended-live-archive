@@ -7,7 +7,7 @@
             <tr valign="top">
                 <th scope="row"><abel for="menu_order_tab0"><?php _e('Tab Order:', 'bela'); ?></label></th>
                 <td>
-                    <select name="<?php echo $options->getNameAttr(BelaKey::NAVIGATION_TABS_ORDER); ?>[]" multiple="multiple">
+                    <select name="<?php echo $options->getNameAttr(BelaKey::NAVIGATION_TABS_ORDER); ?>[]" multiple="multiple" class="multiselect">
                         <?php
                         $tabs = $options->get(BelaKey::NAVIGATION_TABS_ORDER);
                         $available = array(BelaKey::ORDER_KEY_BY_DATE, BelaKey::ORDER_KEY_BY_CATEGORY, BelaKey::ORDER_KEY_BY_TAGS);
@@ -38,3 +38,8 @@
         <input type="submit" value="<?php _e("Save Changes", 'bela'); ?>" class="button button-primary" id="submit" name="submit">
     </p>
 </form>
+<script type="text/javascript">
+    jQuery(function(){
+        jQuery(".multiselect").multiselect();
+    });
+</script>
