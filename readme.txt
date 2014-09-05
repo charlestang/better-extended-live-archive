@@ -3,7 +3,7 @@ Contributors: Charles
 Donate link: http://sexywp.com/archives
 Tags: template tags, archive, post, archives, BELA, ELA
 Requires at least: 3.1.0
-Tested up to: 4.0-alpha
+Tested up to: 4.0
 Stable tag: 1.4
 License: GPLv2
 
