@@ -32,7 +32,7 @@ require_once $bela_path . '/classes/Bela.php';
 define('BELA_ENTRY_FILE', __FILE__);
 $directory_name = plugin_basename(dirname(BELA_ENTRY_FILE));
 define('BELA_BASE_PATH', WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $directory_name);
-define('BELA_BASE_URL', WP_PLUGIN_URL . DIRECTORY_SEPARATOR . $directory_name);
+define('BELA_BASE_URL', plugins_url('', BELA_ENTRY_FILE));
 define('BELA_CACHE_TYPE', 'file');
 define('BELA_CACHE_ROOT', BELA_BASE_PATH . DIRECTORY_SEPARATOR . 'cache');
 define('BELA_DEBUG', false);
