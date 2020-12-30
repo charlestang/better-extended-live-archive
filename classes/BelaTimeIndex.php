@@ -75,7 +75,7 @@ class BelaTimeIndex extends BelaIndex {
 
         $yearTable = array();
         if (!empty($results)) {
-            $yearTable = array_map(create_function('$entry', 'return $entry->count;'), $results);
+            $yearTable = array_map(function ($entry) { return $entry->count; }, $results);
         }
         $this->getCache()->set('years.dat', $yearTable);
         return array_keys($yearTable);
@@ -124,7 +124,7 @@ class BelaTimeIndex extends BelaIndex {
         BelaLogger::log($sql, $results);
 
         if (!empty($results)) {
-            $monthTable = array_map(create_function('$entry', 'return $entry->count;'), $results);
+            $monthTable = array_map(function ($entry) { return $entry->count; }, $results);
             $this->getCache()->set($year . '.dat', $monthTable);
             return array_keys($monthTable);
         }

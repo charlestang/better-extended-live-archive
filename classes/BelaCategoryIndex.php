@@ -73,7 +73,15 @@ class BelaCategoryIndex extends BelaIndex {
             }
         }
 
-        $categoryTable = array_map(array($this, 'getCategoryTableEntry'), $results);
+        $categoryTable = array_map(function ($cat) {
+            return array(
+              $cat->ID,
+              $cat->name,
+              $cat->slug,
+              $cat->parent,
+              $cat->count,
+            );
+        }, $results);
 
         $this->getCache()->set('categories.dat', $categoryTable);
 
@@ -94,16 +102,6 @@ class BelaCategoryIndex extends BelaIndex {
             return array_keys($categoriesTable);
         }
         return array();
-    }
-
-    private function getCategoryTableEntry($cat) {
-        return array(
-            $cat->ID,
-            $cat->name,
-            $cat->slug,
-            $cat->parent,
-            $cat->count,
-        );
     }
 
     public function buildPostsInCategoryTable($categoryId) {

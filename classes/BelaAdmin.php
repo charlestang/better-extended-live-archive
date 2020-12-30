@@ -235,8 +235,10 @@ class BelaAdmin {
     public function actionAppearance() {
         $this->saveOptions();
         $styles_path = BELA_BASE_PATH . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR;
-        $styles = glob($styles_path . 'bela-*.css');
-        $styles = array_map(create_function('$item', '$temp = str_replace("' . $styles_path . 'bela-' . '", "", $item); return str_replace(".css", "", $temp);'), $styles);
+        $styles = array_map(function ($item) use($styles_path) {
+            $temp = str_replace($styles_path ."bela-", "", $item);
+            return str_replace(".css", "", $temp);
+        }, glob($styles_path . 'bela-*.css'));
         $this->render('appearance', array('options' => $this->options, 'styles' => $styles));
     }
 

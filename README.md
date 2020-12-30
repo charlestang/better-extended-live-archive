@@ -23,14 +23,6 @@ Any good idea, suggestions or bugs, please feel free to issue a ticket for me.
  3. Don't forget to check the permission of the plugin directory, make sure it is accessible and writable.
  4. Done. ^o^
 
-## Screenshots
-
-![Chronological Index](/screenshot-1.png)
-
-Archive list by date:
-
-![Category Index](/screenshot-2.png)
-
 Archive list by category:
 
 ## Changelog
