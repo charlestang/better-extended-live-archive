@@ -59,4 +59,3 @@ class BelaAdminCategoryWalker extends Walker {
 	}
 
 }
-/* vim: set et=off ts=4 sw=4 */

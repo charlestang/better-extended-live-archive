@@ -9,6 +9,7 @@
 				<td>
 					<select name="<?php echo $options->getNameAttr( BelaKey::NAVIGATION_TABS_ORDER ); ?>[]" multiple="multiple" class="multiselect">
 						<?php
+						// TODO: this js plugin not work well. failed.
 						$tabs      = $options->get( BelaKey::NAVIGATION_TABS_ORDER );
 						$available = array( BelaKey::ORDER_KEY_BY_DATE, BelaKey::ORDER_KEY_BY_CATEGORY, BelaKey::ORDER_KEY_BY_TAGS );
 						$diff      = array_diff( $available, $tabs );
@@ -43,4 +44,3 @@
 		jQuery(".multiselect").multiselect();
 	});
 </script>
-/* vim: set et=off ts=4 sw=4 */

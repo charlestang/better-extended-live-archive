@@ -23,4 +23,3 @@ class BelaIndexException extends Exception {
 class BelaAdminException extends Exception {
 
 }
-/* vim: set et=off ts=4 sw=4 */

@@ -435,4 +435,3 @@ class BelaKey {
 	// appearance
 	const STYLE_NAME = 46;
 }
-/* vim: set et=off ts=4 sw=4 */

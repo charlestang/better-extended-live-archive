@@ -23,4 +23,3 @@
 			href="<?php echo BelaAdmin::URL( 'appearance' ); ?>">Appearance</a></li>
 </ul>
 <div class="clear"></div>
-/* vim: set et=off ts=4 sw=4 */

@@ -198,21 +198,34 @@ class BelaCategoryIndex extends BelaIndex {
 		$catIds = $this->getDb()->get_col( $sql );
 		BelaLogger::log( $sql, $catIds );
 
-		$oldCategoriesTable = $this->getCategoriesTable();
-		$newCategoriesTable = $this->buildCategoriesTable();
-		$diff1              = array_diff_assoc( $newCategoriesTable, $oldCategoriesTable );
-		$diff2              = array_diff_assoc( $oldCategoriesTable, $newCategoriesTable );
+		$old_cat_table = $this->getCategoriesTable();
+		$new_cat_table = $this->buildCategoriesTable();
+		$changed_ids   = $this->changed_category_ids( $old_cat_table, $new_cat_table );
 
-		if ( ! empty( $diff1 ) ) {
-			$catIds = array_merge( $catIds, array_keys( $diff1 ) );
-		}
-		if ( ! empty( $diff2 ) ) {
-			$catIds = array_merge( $catIds, array_keys( $diff2 ) );
+		if ( ! empty( $changed_ids ) ) {
+			$catIds = array_merge( $catIds, $changed_ids );
 		}
 		BelaLogger::log( $catIds );
 		foreach ( $catIds as $cId ) {
 			$this->buildPostsInCategoryTable( $cId );
 		}
+	}
+
+	public function changed_category_ids( $old_cat_table, $new_cat_table ) {
+		$changed_ids = array();
+		foreach ( $old_cat_table as $cat_id => $cat_meta ) {
+			if ( array_key_exists( $cat_id, $new_cat_table ) ) {
+				$diff = array_diff( $old_cat_table[ $cat_id ], $new_cat_table[ $cat_id ] );
+				if ( ! empty( $diff ) ) {
+					$changed_ids[] = $cat_id;
+				}
+				unset( $new_cat_table[ $cat_id ] );
+			}
+		}
+		foreach ( $new_cat_table as $cat_id => $cat_meta ) {
+			$changed_ids[] = $cat_id;
+		}
+		return $changed_ids;
 	}
 
 	/**
@@ -225,5 +238,3 @@ class BelaCategoryIndex extends BelaIndex {
 	}
 
 }
-
-/* vim: set et=off ts=4 sw=4 */

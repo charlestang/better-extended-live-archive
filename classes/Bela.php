@@ -94,6 +94,10 @@ class Bela {
 		add_action( 'pingback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
 		add_action( 'delete_comment', array( $this->builder, 'updateIndexCacheByComment' ) );
 		/**
+		 * when category change
+		 */
+		// TODO: when category change register hooks.
+		/**
 		 * short code
 		 */
 		add_shortcode( 'extended-live-archive', array( $this, 'shortCode' ) );
@@ -193,6 +197,31 @@ JSCODE;
 		return $bela;
 	}
 
-}
+	/**
+	 * This is used for debugging.
+	 *
+	 * @return void
+	 */
+	public static function log() {
+		if ( ! WP_DEBUG ) {
+			return;
+		}
 
-/* vim: set et=off ts=4 sw=4 */
+		$args = func_get_args();
+		$msg  = '';
+		foreach ( $args as $arg ) {
+			if ( is_string( $arg ) || is_numeric( $arg ) ) {
+				$msg .= $arg;
+			} else {
+				$msg .= var_export( $arg, true );
+			}
+		}
+
+		$trace = debug_backtrace();
+		$file  = basename( $trace[0]['file'] );
+		$line  = $trace[0]['line'];
+		$func  = $trace[1]['function'];
+
+		error_log( "[$file][$func][$line]:" . $msg );
+	}
+}

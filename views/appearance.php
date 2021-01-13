@@ -12,4 +12,3 @@
 	<input type="submit" value="<?php _e( 'Save Changes', 'bela' ); ?>" class="button button-primary" id="submit" name="submit">
 </p>
 </form>
-/* vim: set et=off ts=4 sw=4 */

@@ -126,4 +126,3 @@ abstract class BelaIndex {
 	 */
 	abstract public function afterUpdate( $postId, $post);
 }
-/* vim: set et=off ts=4 sw=4 */
