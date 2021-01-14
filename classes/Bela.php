@@ -69,7 +69,7 @@ class Bela {
 		 * comment_post:
 		 *     file: /wp-includes/comment.php
 		 *     func: wp_new_comment
-		 *     params: $comment_ID, $approved
+		 *     params: $comment_ID, $approved, $comment_data
 		 * trackback_post:
 		 *     file: /wp-trackback.php
 		 *     func: null
@@ -90,9 +90,9 @@ class Bela {
 		 *     params: $comment_ID
 		 */
 		add_action( 'comment_post', array( $this->builder, 'updateIndexCacheByComment' ), 10, 2 );
-		add_action( 'trackback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
-		add_action( 'pingback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
-		add_action( 'delete_comment', array( $this->builder, 'updateIndexCacheByComment' ) );
+		//add_action( 'trackback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
+		//add_action( 'pingback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
+		// TODO: add_action( 'delete_comment', array( $this->builder, 'updateIndexCacheByComment' ) );
 		/**
 		 * when category change
 		 */

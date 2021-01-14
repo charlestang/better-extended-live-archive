@@ -32,11 +32,13 @@ class BelaAdmin {
 	 */
 	public function injectAdminStylesAndScripts() {
 		if ( $this->isCurr( 'menuSettings' ) ) {
-			$cssSrc1 = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'jquery-ui-1.9.2.custom.min.css';
-			$cssSrc2 = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'jquery-ui-multiselect.css';
+			$cssSrc1 = BELA_BASE_URL . '/css/'. 'jquery-ui-1.9.2.custom.min.css';
+			$cssSrc2 = BELA_BASE_URL . '/css/'. 'jquery-ui-multiselect.css';
 			wp_enqueue_style( 'jquery-ui-common', $cssSrc1, array(), Bela::CSSVER );
 			wp_enqueue_style( 'jquery-ui-multiselect', $cssSrc2, array(), Bela::CSSVER );
-			$jsSrc = BELA_BASE_URL . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . 'jquery-ui-multiselect.js';
+			$jsSrc = BELA_BASE_URL . '/js/' . 'jquery-ui-multiselect.js';
+			Bela::log(DIRECTORY_SEPARATOR);
+			Bela::log($jsSrc);
 			wp_enqueue_script( 'jquery-ui-multiselect', $jsSrc, array( 'jquery-ui-core', 'jquery-ui-sortable', 'jquery-ui-draggable' ), Bela::JSVER );
 		}
 	}

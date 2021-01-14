@@ -51,4 +51,3 @@ function better_extended_live_archive() {
 
 $belaObj = new Bela();
 $belaObj->run();
-/* vim: set et=off ts=4 sw=4 */
