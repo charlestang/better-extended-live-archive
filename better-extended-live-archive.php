@@ -1,12 +1,11 @@
 <?php
-
-/*
-  Plugin Name: Better Extended Live Archives
-  Plugin URI: https://github.com/charlestang/better-extended-live-archive
-  Description: Bloggers can generate a multidimensional archive of all posts in his or her blog with this plugin.
-  Version: 1.5
-  Author: Charles Tang
-  Author URI: http://sexywp.com
+/**
+Plugin Name: Better Extended Live Archives
+Plugin URI: https://github.com/charlestang/better-extended-live-archive
+Description: Bloggers can generate a multidimensional archive of all posts in his or her blog with this plugin.
+Version: 1.5.1
+Author: Charles Tang
+Author URI: http://sexywp.com
  */
 
 $bela_path = dirname( __FILE__ );

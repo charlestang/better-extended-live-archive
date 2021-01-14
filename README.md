@@ -2,9 +2,9 @@
 Contributors: charlestang  
 Donate link: http://sexywp.com/archives  
 Tags: template tags, archive, post, archives, BELA, ELA  
-Requires at least: 3.1.0  
-Tested up to: 4.0  
-Stable tag: 1.5  
+Requires at least: 5.2.3  
+Tested up to: 5.6 
+Stable tag: 1.5.1  
 License: GPLv2  
 
 Better Extended Live Archive(BELA) is a very cool WordPress plugin, with which you can generate a clean and structured archive page with fantastic visual effect.
@@ -57,6 +57,10 @@ none.
 2. by category
 
 ## Changelog
+### 1.5.1
+* FIXED. Tab selector does not work.
+* FIXED. PHP notice generated when category table is rebuilding.
+
 ### 1.4
 * Improve the options page design, make the tab menu setting easy to use.
 * Add options link in plugin manager page.
@@ -99,6 +103,9 @@ none.
 
 
 ## Upgrade Notice
+### 1.5.1
+* No big deal, no need to update.
+
 ### 1.4
 * No big deal, no need to update.
 
