@@ -51,7 +51,7 @@ class BelaLogger {
 			}
 		}
 
-		error_log( $log, 3, WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'bela.log' );
+		error_log( $log );
 	}
 
 }

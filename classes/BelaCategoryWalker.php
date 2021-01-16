@@ -50,12 +50,12 @@ class BelaAdminCategoryWalker extends Walker {
 			$checked = ' checked="checked" ';
 		}
 		$output .= '<label for="category-' . $object->term_id . '">'
-				. '<input type="checkbox"' . $checked
-				. 'name="' . $options->getNameAttr( BelaKey::EXCLUDE_CATEGORY_LIST ) . '[] '
+				. '<input type="checkbox"' . $checked . ' '
+				. 'name="' . $options->getNameAttr( BelaKey::EXCLUDE_CATEGORY_LIST ) . '[]" '
 				. 'id="category-' . $object->term_id . '" '
 				. 'value="' . $object->term_taxonomy_id . '">'
 				. str_repeat( '--&nbsp;', $depth ) . $object->name
-				. '(' . $object->category_count . ')</label><br/>';
+				. '(' . $object->category_count . ')</label><br/>' . "\n";
 	}
 
 }

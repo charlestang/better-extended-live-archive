@@ -10,6 +10,9 @@
 						<?php
 						$categories    = get_categories();
 						$excluded_cats = $options->get( BelaKey::EXCLUDE_CATEGORY_LIST );
+						$excluded_cats = array_map( function( $item ) {
+							return intval( $item );
+						}, $excluded_cats );
 
 						$walker = new BelaAdminCategoryWalker();
 						echo $walker->walk( $categories, 0, empty( $excluded_cats ) ? false : $excluded_cats, $options );
