@@ -1,5 +1,5 @@
 <?php $this->renderPartial( 'common/nav-tab' ); ?>
-<p><?php _e( 'Check the categories you want to show in the category tab.', 'bela' ); ?></p>
+<p><?php _e( 'Check the categories you want to hide in the category tab.', 'bela' ); ?></p>
 <form method="post" actions="<?php echo BelaAdmin::URL( 'categoryExclusion' ); ?>">
 	<table class="form-table">
 		<tbody>
