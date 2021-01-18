@@ -76,7 +76,7 @@ none.
 * Category cannot display indent. Fixed.
 * Loading tip cannot customize. Fixed.
 
-### 1.0 
+### 1.0
 * Rewrite all the code of the plugin, use the MVC to redesign it.
 
 ### 0.80
