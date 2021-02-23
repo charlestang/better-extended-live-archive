@@ -3,7 +3,7 @@
 Plugin Name: Better Extended Live Archives
 Plugin URI: https://github.com/charlestang/better-extended-live-archive
 Description: Bloggers can generate a multidimensional archive of all posts in his or her blog with this plugin.
-Version: 1.5.1
+Version: 1.5.2
 Author: Charles Tang
 Author URI: http://sexywp.com
  */
