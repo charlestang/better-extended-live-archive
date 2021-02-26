@@ -131,7 +131,7 @@ class BelaIndicesBuilder {
 	 * @param int|string $approved 1 if the comment is approved, 0 if not. 'spam' if spam.
 	 * @param array      $comment_data
 	 */
-	public function updateIndexCacheByComment( $comment_id, $approved, $comment_data) {
+	public function updateIndexCacheByComment( $comment_id, $approved = 1, $comment_data = array() ) {
 		if ( 1 === $approved ) {
 			$this->updateIndexCache( $comment_data['comment_post_ID'] );
 		}

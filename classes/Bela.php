@@ -89,9 +89,9 @@ class Bela {
 		 *     func: wp_delete_comment
 		 *     params: $comment_ID
 		 */
-		add_action( 'comment_post', array( $this->builder, 'updateIndexCacheByComment' ), 10, 2 );
-		//add_action( 'trackback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
-		//add_action( 'pingback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
+		add_action( 'comment_post', array( $this->builder, 'updateIndexCacheByComment' ), 10, 3 );
+		// add_action( 'trackback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
+		// add_action( 'pingback_post', array( $this->builder, 'updateIndexCacheByComment' ) );
 		// TODO: add_action( 'delete_comment', array( $this->builder, 'updateIndexCacheByComment' ) );
 		/**
 		 * when category change
